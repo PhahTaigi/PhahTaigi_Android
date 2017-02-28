@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/PhahTaigi_Android.iml" filepath="$PROJECT_DIR$/PhahTaigi_Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tailo_realm_model/tailo_realm_model.iml" filepath="$PROJECT_DIR$/tailo_realm_model/tailo_realm_model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tailo_realm_parser_app/tailo_realm_parser_app.iml" filepath="$PROJECT_DIR$/tailo_realm_parser_app/tailo_realm_parser_app.iml" />
+    </modules>
+  </component>
+</project>

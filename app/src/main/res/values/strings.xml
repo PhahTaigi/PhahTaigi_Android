@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Phah Taigi</string>
+
+    <!-- Titles for ImePreference -->
+    <string name="settings_name">Phah Taigi Keyboard Settings</string>
+    <string name="language_selection_title">Input languages</string>
+    <string name="select_language">Select input languages</string>
+    <string name="general_category">General</string>
+
+    <!-- Symbols that are commonly considered word separators in this language -->
+    <string name="word_separators">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|&quot;、，。：；？！「」</string>
+
+    <!-- Labels on soft keys -->
+    <string name="label_go_key">Go</string>
+    <string name="label_next_key">Next</string>
+    <string name="label_send_key">Send</string>
+
+    <!-- Labels for subtype -->
+    <string name="label_subtype_taigi">Taigi (TW)</string>
+</resources>

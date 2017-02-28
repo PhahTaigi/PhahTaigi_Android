@@ -1,0 +1,1 @@
+include ':app', ':tailo_realm_model', ':tailo_realm_parser_app'

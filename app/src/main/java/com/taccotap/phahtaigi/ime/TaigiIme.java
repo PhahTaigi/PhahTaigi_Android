@@ -49,6 +49,8 @@ import java.util.List;
  */
 public class TaigiIme extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
+    private static final String TAG = TaigiIme.class.getSimpleName();
+
     /**
      * This boolean indicates the optional example code for performing
      * processing of hard keys in addition to regular text generation
@@ -585,16 +587,45 @@ public class TaigiIme extends InputMethodService
         if (mKeyboardSwitcher.isCurrentKeyboardViewUseQwertyKeyboard()) {
             // Alphabet keyboard
             checkToggleCapsLock();
+
             mTaigiKeyboardView.setShifted(mCapsLock || !mTaigiKeyboardView.isShifted());
         } else {
             mKeyboardSwitcher.handleShift();
         }
+
+        // update icon
+        updateShiftIcon();
+    }
+
+    private void updateShiftIcon() {
+        final List<Keyboard.Key> keys = mTaigiKeyboardView.getKeyboard().getKeys();
+        final int shiftKeyIndex = mTaigiKeyboardView.getKeyboard().getShiftKeyIndex();
+        final Keyboard.Key shiftkey = keys.get(shiftKeyIndex);
+        int[] state;
+        if (mCapsLock) {
+            state = new int[]{android.R.attr.state_checked};/**/
+            shiftkey.icon.setState(state);
+        } else {
+            if (mTaigiKeyboardView.isShifted()) {
+                state = new int[]{android.R.attr.state_pressed};
+                shiftkey.icon.setState(state);
+            } else {
+                state = new int[]{android.R.attr.state_empty};
+                shiftkey.icon.setState(state);
+            }
+        }
+        mTaigiKeyboardView.invalidateKey(shiftKeyIndex);
     }
 
     private void handleCharacter(int primaryCode, int[] keyCodes) {
         if (isInputViewShown()) {
             if (mTaigiKeyboardView.isShifted()) {
                 primaryCode = Character.toUpperCase(primaryCode);
+
+                if (!mCapsLock) {
+                    mTaigiKeyboardView.setShifted(false);
+                    updateShiftIcon();
+                }
             }
         }
         if (isAlphabet(primaryCode) && mPredictionOn) {
@@ -631,6 +662,12 @@ public class TaigiIme extends InputMethodService
     }
 
     private void checkToggleCapsLock() {
+        if (mCapsLock) {
+            mCapsLock = false;
+            mLastShiftTime = 0;
+            return;
+        }
+
         long now = System.currentTimeMillis();
         if (mLastShiftTime + 800 > now) {
             mCapsLock = !mCapsLock;

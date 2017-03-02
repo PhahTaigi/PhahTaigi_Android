@@ -33,6 +33,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
 import com.taccotap.phahtaigi.R;
+import com.taccotap.phahtaigi.ime.keyboard.CustomKeycode;
 import com.taccotap.phahtaigi.ime.keyboard.KeyboardSwitcher;
 import com.taccotap.phahtaigi.ime.ui.TaigiCandidateView;
 import com.taccotap.phahtaigi.ime.ui.TaigiKeyboardView;
@@ -114,7 +115,7 @@ public class TaigiIme extends InputMethodService
 
         if (mKeyboardSwitcher == null) {
             mKeyboardSwitcher = new KeyboardSwitcher(this, mInputMethodManager, mTaigiKeyboardView);
-            mKeyboardSwitcher.setKeyboard(KeyboardSwitcher.KEYBOARD_TYPE_QWERTY);
+            mKeyboardSwitcher.setKeyboard(KeyboardSwitcher.KEYBOARD_TYPE_QWERTY_LOMAJI);
         }
     }
 
@@ -176,7 +177,7 @@ public class TaigiIme extends InputMethodService
                 // normal alphabetic keyboard, and assume that we should
                 // be doing predictive text (showing candidates as the
                 // user types).
-                mKeyboardSwitcher.setKeyboard(KeyboardSwitcher.KEYBOARD_TYPE_QWERTY);
+                mKeyboardSwitcher.setKeyboard(KeyboardSwitcher.KEYBOARD_TYPE_QWERTY_LOMAJI);
                 mPredictionOn = true;
 
                 // We now look for a few special variations of text that will
@@ -216,7 +217,7 @@ public class TaigiIme extends InputMethodService
             default:
                 // For all unknown input types, default to the alphabetic
                 // keyboard with no special features.
-                mKeyboardSwitcher.setKeyboard(KeyboardSwitcher.KEYBOARD_TYPE_QWERTY);
+                mKeyboardSwitcher.setKeyboard(KeyboardSwitcher.KEYBOARD_TYPE_QWERTY_LOMAJI);
                 updateShiftKeyState(attribute);
         }
 
@@ -243,7 +244,7 @@ public class TaigiIme extends InputMethodService
         // its window.
         setCandidatesViewShown(false);
 
-        mKeyboardSwitcher.setKeyboard(KeyboardSwitcher.KEYBOARD_TYPE_QWERTY);
+        mKeyboardSwitcher.setKeyboard(KeyboardSwitcher.KEYBOARD_TYPE_QWERTY_LOMAJI);
         if (mTaigiKeyboardView != null) {
             mTaigiKeyboardView.closing();
         }
@@ -509,10 +510,11 @@ public class TaigiIme extends InputMethodService
         } else if (primaryCode == Keyboard.KEYCODE_CANCEL) {
             handleClose();
             return;
-        } else if (primaryCode == TaigiKeyboardView.KEYCODE_LANGUAGE_SWITCH) {
-            handleLanguageSwitch();
-            return;
-        } else if (primaryCode == TaigiKeyboardView.KEYCODE_OPTIONS) {
+        } else if (primaryCode == CustomKeycode.KEYCODE_SWITCH_TO_HANJI) {
+            mKeyboardSwitcher.setKeyboard(KeyboardSwitcher.KEYBOARD_TYPE_QWERTY_HANJI);
+        } else if (primaryCode == CustomKeycode.KEYCODE_SWITCH_TO_LOMAJI) {
+            mKeyboardSwitcher.setKeyboard(KeyboardSwitcher.KEYBOARD_TYPE_QWERTY_LOMAJI);
+        } else if (primaryCode == CustomKeycode.KEYCODE_SETTINGS) {
             // Show a menu or somethin'
         } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE
                 && mTaigiKeyboardView != null) {
@@ -655,10 +657,6 @@ public class TaigiIme extends InputMethodService
             return null;
         }
         return window.getAttributes().token;
-    }
-
-    private void handleLanguageSwitch() {
-        mInputMethodManager.switchToNextInputMethod(getToken(), false /* onlyCurrentIme */);
     }
 
     private void checkToggleCapsLock() {

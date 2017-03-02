@@ -168,29 +168,36 @@
         <Key
             android:codes="-2"
             android:keyEdgeFlags="left"
-            android:keyLabel="!?;"
+            android:keyLabel="!?'"
             android:keyWidth="15%p"/>
+
+        <!--
+            android:codes: -2000 is not a framework-defined key code
+        -->
         <Key
-            android:codes="44"
-            android:keyLabel=","
+            android:codes="-2000"
+            android:keyIcon="@drawable/sym_keyboard_settings"
             android:keyWidth="10%p"/>
 
         <!--
-            android:codes: -101 is not a framework-defined key code but a key code that is
-            privately defined in com.example.android.softkeyboard.LatinKeyboardView.
+            android:codes: -1000 is not a framework-defined key code
         -->
         <Key
-            android:codes="-101"
-            android:keyIcon="@drawable/sym_keyboard_language_switch_lxx_dark"
+            android:codes="-1000"
+            android:keyLabel="漢"
+            android:keyWidth="15%p"/>
+        <Key
+            android:codes="44"
+            android:keyLabel="，"
             android:keyWidth="10%p"/>
         <Key
             android:codes="32"
             android:isRepeatable="true"
             android:keyIcon="@drawable/sym_keyboard_space_lxx_dark"
-            android:keyWidth="40%p"/>
+            android:keyWidth="25%p"/>
         <Key
             android:codes="46"
-            android:keyLabel="."
+            android:keyLabel="。"
             android:keyWidth="10%p"/>
         <Key
             android:codes="10"

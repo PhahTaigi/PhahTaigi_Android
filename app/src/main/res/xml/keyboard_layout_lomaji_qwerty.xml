@@ -181,7 +181,7 @@
         -->
         <Key
             android:codes="-1001"
-            android:keyLabel="Lô"
+            android:keyLabel="LMJ"
             android:keyWidth="15%p"/>
         <Key
             android:codes="44"

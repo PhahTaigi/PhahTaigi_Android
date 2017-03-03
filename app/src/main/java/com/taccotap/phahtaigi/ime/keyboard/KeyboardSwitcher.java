@@ -1,5 +1,6 @@
 package com.taccotap.phahtaigi.ime.keyboard;
 
+import android.content.res.Resources;
 import android.inputmethodservice.Keyboard;
 import android.view.inputmethod.InputMethodManager;
 
@@ -27,6 +28,8 @@ public class KeyboardSwitcher {
     private TaigiKeyboard mHanjiSymbolsKeyboard;
     private TaigiKeyboard mHanjiSymbolsShiftedKeyboard;
 
+    private int mImeOptions;
+
     public KeyboardSwitcher(TaigiIme taigiIme, InputMethodManager inputMethodManager, TaigiKeyboardView taigiKeyboardView) {
         mTaigiIme = taigiIme;
         mInputMethodManager = inputMethodManager;
@@ -45,27 +48,25 @@ public class KeyboardSwitcher {
     }
 
     public void setKeyboardByType(int keyboardType) {
-        TaigiKeyboard newKeyboard;
+        TaigiKeyboard nextKeyboard;
 
         if (keyboardType == KEYBOARD_TYPE_LOMAJI_QWERTY) {
-            newKeyboard = mLomajiQwertyKeyboard;
+            nextKeyboard = mLomajiQwertyKeyboard;
         } else if (keyboardType == KEYBOARD_TYPE_HANJI_QWERTY) {
-            newKeyboard = mHanjiQwertyKeyboard;
+            nextKeyboard = mHanjiQwertyKeyboard;
         } else if (keyboardType == KEYBOARD_TYPE_LOMAJI_SYMBOL) {
-            newKeyboard = mLomajiSymbolsKeyboard;
+            nextKeyboard = mLomajiSymbolsKeyboard;
         } else if (keyboardType == KEYBOARD_TYPE_LOMAJI_SYMBOL_SHIFTED) {
-            newKeyboard = mLomajiSymbolsShiftedKeyboard;
+            nextKeyboard = mLomajiSymbolsShiftedKeyboard;
         } else if (keyboardType == KEYBOARD_TYPE_HANJI_SYMBOL) {
-            newKeyboard = mHanjiSymbolsKeyboard;
+            nextKeyboard = mHanjiSymbolsKeyboard;
         } else if (keyboardType == KEYBOARD_TYPE_HANJI_SYMBOL_SHIFTED) {
-            newKeyboard = mHanjiSymbolsShiftedKeyboard;
+            nextKeyboard = mHanjiSymbolsShiftedKeyboard;
         } else {
-            newKeyboard = mLomajiQwertyKeyboard;
+            nextKeyboard = mLomajiQwertyKeyboard;
         }
 
-        mTaigiKeyboardView.setKeyboard(newKeyboard);
-
-        resetKeyboard();
+        setKeyboard(nextKeyboard);
     }
 
     public void resetKeyboard() {
@@ -94,30 +95,33 @@ public class KeyboardSwitcher {
             nextKeyboard.setShifted(false);
         }
 
-        mTaigiKeyboardView.setKeyboard(nextKeyboard);
+        setKeyboard(nextKeyboard);
     }
 
     public void handleShift() {
         Keyboard currentKeyboard = mTaigiKeyboardView.getKeyboard();
-
-//        if (currentKeyboard == mLomajiSymbolsKeyboard) {
-//            mLomajiSymbolsKeyboard.setShifted(true);
-//            setKeyboardByType(KEYBOARD_TYPE_LOMAJI_SYMBOL_SHIFTED);
-//            mLomajiSymbolsShiftedKeyboard.setShifted(true);
-//        } else if (currentKeyboard == mLomajiSymbolsShiftedKeyboard) {
-//            mLomajiSymbolsShiftedKeyboard.setShifted(false);
-//            setKeyboardByType(KEYBOARD_TYPE_LOMAJI_SYMBOL);
-//            mLomajiSymbolsKeyboard.setShifted(false);
-//        }
+        TaigiKeyboard nextKeyboard = mLomajiQwertyKeyboard;
 
         if (currentKeyboard == mLomajiSymbolsKeyboard) {
-            mTaigiKeyboardView.setKeyboard(mLomajiSymbolsShiftedKeyboard);
+            nextKeyboard = mLomajiSymbolsShiftedKeyboard;
         } else if (currentKeyboard == mLomajiSymbolsShiftedKeyboard) {
-            mTaigiKeyboardView.setKeyboard(mLomajiSymbolsKeyboard);
+            nextKeyboard = mLomajiSymbolsKeyboard;
         } else if (currentKeyboard == mHanjiSymbolsKeyboard) {
-            mTaigiKeyboardView.setKeyboard(mHanjiSymbolsShiftedKeyboard);
+            nextKeyboard = mHanjiSymbolsShiftedKeyboard;
         } else if (currentKeyboard == mHanjiSymbolsShiftedKeyboard) {
-            mTaigiKeyboardView.setKeyboard(mHanjiSymbolsKeyboard);
+            nextKeyboard = mHanjiSymbolsKeyboard;
         }
+
+        setKeyboard(nextKeyboard);
+    }
+
+    private void setKeyboard(TaigiKeyboard nextKeyboard) {
+        nextKeyboard.setImeOptions(mTaigiIme.getResources(), mImeOptions);
+        mTaigiKeyboardView.setKeyboard(nextKeyboard);
+    }
+
+    public void setImeOptions(Resources resources, int imeOptions) {
+        mImeOptions = imeOptions;
+        getCurrentKeyboard().setImeOptions(resources, imeOptions);
     }
 }

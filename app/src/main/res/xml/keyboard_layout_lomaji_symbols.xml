@@ -141,6 +141,10 @@
             android:keyLabel="."
             android:keyWidth="10%p"/>
         <Key
+            android:codes="33"
+            android:keyLabel="!"
+            android:keyWidth="10%p"/>
+        <Key
             android:codes="10"
             android:keyEdgeFlags="right"
             android:keyIcon="@drawable/sym_keyboard_return"

@@ -223,7 +223,7 @@ public class TaigiIme extends InputMethodService
 
         // Update the label on the enter key, depending on what the application
         // says it will do.
-        mKeyboardSwitcher.getCurrentKeyboard().setImeOptions(getResources(), attribute.imeOptions);
+        mKeyboardSwitcher.setImeOptions(getResources(), attribute.imeOptions);
     }
 
     /**

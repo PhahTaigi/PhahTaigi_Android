@@ -8,6 +8,8 @@
     <color name="key_normal_background">#0fff</color>
     <color name="key_pressed_background">#ff666666</color>
 
+    <color name="spacekey_text_color">#f777</color>
+
     <color name="key_background_lxx_dark">#263238</color>
     <color name="key_background_pressed_lxx_dark">#19FFFFFF</color>
     <color name="key_background_lxx_light">#ECEFF1</color>

@@ -17,4 +17,5 @@
 
     <!-- Labels for subtype -->
     <string name="label_subtype_taigi">Tâi-gí 臺語</string>
+    <string name="spacekey_text">Phah Tâi-gí</string>
 </resources>

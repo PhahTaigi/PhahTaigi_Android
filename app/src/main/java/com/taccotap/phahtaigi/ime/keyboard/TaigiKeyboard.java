@@ -21,8 +21,8 @@ import static android.R.attr.opacity;
 public class TaigiKeyboard extends Keyboard {
     private static final String TAG = TaigiKeyboard.class.getSimpleName();
 
-    private static final float SPACEKEY_LANGUAGE_BASELINE = 0.8f;
-    private static final int SPACEKEY_TEXT_SIZE = 14;
+    private static final float SPACEKEY_LANGUAGE_BASELINE = 0.75f;
+    private static final int SPACEKEY_TEXT_SIZE = 11;
     private static final int SPACEKEY_ICON_MARGIN_SIZE = 15;
 
     private Key mEnterKey;

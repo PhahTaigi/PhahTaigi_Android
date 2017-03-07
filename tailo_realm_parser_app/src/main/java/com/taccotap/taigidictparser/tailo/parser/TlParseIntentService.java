@@ -3,6 +3,7 @@ package com.taccotap.taigidictparser.tailo.parser;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.taccotap.taigidictmodel.tailo.TlTaigiWord;
@@ -93,7 +94,9 @@ public class TlParseIntentService extends IntentService {
                     colNum++;
                 }
 
-                taigiWords.add(currentTaigiWord);
+                if (!TextUtils.isEmpty(currentTaigiWord.getLomaji()) && !TextUtils.isEmpty(currentTaigiWord.getHanji())) {
+                    taigiWords.add(currentTaigiWord);
+                }
 
                 rowNum++;
             }

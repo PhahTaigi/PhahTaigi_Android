@@ -6,7 +6,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.taccotap.phahtaigi.R;
 import com.taccotap.phahtaigi.ime.TaigiIme;
-import com.taccotap.phahtaigi.ime.ui.TaigiKeyboardView;
+import com.taccotap.phahtaigi.ime.candidate.TaigiCandidateView;
 
 public class KeyboardSwitcher {
 
@@ -20,6 +20,7 @@ public class KeyboardSwitcher {
     private final TaigiIme mTaigiIme;
     private final InputMethodManager mInputMethodManager;
     private final TaigiKeyboardView mTaigiKeyboardView;
+    private TaigiCandidateView mTaigiCandidateView;
 
     private TaigiKeyboard mLomajiQwertyKeyboard;
     private TaigiKeyboard mHanjiQwertyKeyboard;
@@ -41,6 +42,10 @@ public class KeyboardSwitcher {
         mLomajiSymbolsShiftedKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_lomaji_symbols_shift);
         mHanjiSymbolsKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_hanji_symbols);
         mHanjiSymbolsShiftedKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_hanji_symbols_shift);
+    }
+
+    public void setTaigiCandidateView(TaigiCandidateView taigiCandidateView) {
+        mTaigiCandidateView = taigiCandidateView;
     }
 
     public TaigiKeyboard getCurrentKeyboard() {
@@ -89,10 +94,8 @@ public class KeyboardSwitcher {
             nextKeyboard = mHanjiSymbolsKeyboard;
         } else if (currentKeyboard == mLomajiSymbolsKeyboard || currentKeyboard == mLomajiSymbolsShiftedKeyboard) {
             nextKeyboard = mLomajiQwertyKeyboard;
-            nextKeyboard.setShifted(false);
         } else if (currentKeyboard == mHanjiSymbolsKeyboard || currentKeyboard == mHanjiSymbolsShiftedKeyboard) {
             nextKeyboard = mHanjiQwertyKeyboard;
-            nextKeyboard.setShifted(false);
         }
 
         setKeyboard(nextKeyboard);
@@ -118,6 +121,16 @@ public class KeyboardSwitcher {
     private void setKeyboard(TaigiKeyboard nextKeyboard) {
         nextKeyboard.setImeOptions(mTaigiIme.getResources(), mImeOptions);
         mTaigiKeyboardView.setKeyboard(nextKeyboard);
+
+        if (mTaigiCandidateView != null) {
+            if (nextKeyboard == mLomajiQwertyKeyboard
+                    || nextKeyboard == mLomajiSymbolsKeyboard
+                    || nextKeyboard == mLomajiSymbolsShiftedKeyboard) {
+                mTaigiCandidateView.setIsMainCandidateLomaji(true);
+            } else {
+                mTaigiCandidateView.setIsMainCandidateLomaji(false);
+            }
+        }
     }
 
     public void setImeOptions(Resources resources, int imeOptions) {

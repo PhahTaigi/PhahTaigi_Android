@@ -46,9 +46,9 @@
 
     <Row>
         <Key
-            android:codes="33"
+            android:codes="65281"
             android:keyEdgeFlags="left"
-            android:keyLabel="!"/>
+            android:keyLabel="！"/>
         <Key
             android:codes="64"
             android:keyLabel="\@"/>
@@ -129,11 +129,13 @@
             android:keyEdgeFlags="left"
             android:keyLabel="返回"
             android:keyWidth="15%p"/>
-
+        <!--
+            android:codes: -2000 is not a framework-defined key code
+        -->
         <Key
-            android:codes="65292"
-            android:keyLabel="，"
-            android:keyWidth="10%p"/>
+            android:codes="-2000"
+            android:keyIcon="@drawable/sym_keyboard_settings"
+            android:keyWidth="15%p"/>
         <Key
             android:codes="65307"
             android:keyLabel="；"
@@ -142,14 +144,14 @@
             android:codes="32"
             android:isRepeatable="true"
             android:keyIcon="@drawable/btn_keyboard_spacebar_lxx_dark"
-            android:keyWidth="30%p"/>
+            android:keyWidth="25%p"/>
+        <Key
+            android:codes="65292"
+            android:keyLabel="，"
+            android:keyWidth="10%p"/>
         <Key
             android:codes="12290"
             android:keyLabel="。"
-            android:keyWidth="10%p"/>
-        <Key
-            android:codes="65281"
-            android:keyLabel="！"
             android:keyWidth="10%p"/>
         <Key
             android:codes="10"

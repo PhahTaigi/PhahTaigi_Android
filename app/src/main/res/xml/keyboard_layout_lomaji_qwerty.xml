@@ -35,9 +35,10 @@
             android:codes="57"
             android:keyLabel="9"/>
         <Key
-            android:codes="45"
+            android:codes="33"
             android:keyEdgeFlags="right"
-            android:keyLabel="-"/>
+            android:keyLabel="!"
+            android:keyWidth="10%p"/>
     </Row>
 
     <Row>
@@ -152,13 +153,6 @@
             android:keyLabel="!?0"
             android:keyWidth="15%p"/>
         <!--
-             android:codes: -2000 is not a framework-defined key code
-        -->
-        <Key
-            android:codes="-2000"
-            android:keyIcon="@drawable/sym_keyboard_settings"
-            android:keyWidth="10%p"/>
-        <!--
             android:codes: -1001 is not a framework-defined key code
         -->
         <Key
@@ -166,8 +160,8 @@
             android:keyLabel="LMJ"
             android:keyWidth="15%p"/>
         <Key
-            android:codes="44"
-            android:keyLabel=","
+            android:codes="45"
+            android:keyLabel="-"
             android:keyWidth="10%p"/>
         <Key
             android:codes="32"
@@ -175,9 +169,14 @@
             android:keyIcon="@drawable/btn_keyboard_spacebar_lxx_dark"
             android:keyWidth="25%p"/>
         <Key
+            android:codes="44"
+            android:keyLabel=","
+            android:keyWidth="10%p"/>
+        <Key
             android:codes="46"
             android:keyLabel="."
             android:keyWidth="10%p"/>
+
         <Key
             android:codes="10"
             android:keyEdgeFlags="right"

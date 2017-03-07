@@ -26,43 +26,53 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/lmjSwitchLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/keyboard_background_lxx_dark"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:background="#0fff"
+        android:gravity="right"
+        android:orientation="horizontal">
 
-        <RadioGroup
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/keyboardSettingLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:checkedButton="@+id/tailoRadioButton"
-            android:orientation="horizontal">
+            android:background="@drawable/keyboard_background_lxx_dark"
+            android:gravity="left"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
-            <RadioButton
-                android:id="@+id/tailoRadioButton"
+            <RadioGroup
+                android:id="@+id/lomajiSelectionRadioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="#fccc"
-                android:text="Tâi-lô 臺羅"
-                android:textColor="#fccc"
-                android:textSize="18sp"/>
+                android:layout_margin="10dp"
+                android:checkedButton="@+id/tailoRadioButton"
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/pojRadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:buttonTint="#fccc"
-                android:text="Pe̍h-ōe-jī 白話字"
-                android:textColor="#fccc"
-                android:textSize="18sp"/>
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/tailoRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#fccc"
+                    android:text="Tâi-lô 臺羅"
+                    android:textColor="#fccc"
+                    android:textSize="16sp"/>
+
+                <RadioButton
+                    android:id="@+id/pojRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:buttonTint="#fccc"
+                    android:text="Pe̍h-ōe-jī 白話字"
+                    android:textColor="#fccc"
+                    android:textSize="16sp"/>
+            </RadioGroup>
+        </LinearLayout>
 
     </LinearLayout>
 
-    <com.taccotap.phahtaigi.ime.ui.TaigiKeyboardView
+    <com.taccotap.phahtaigi.ime.keyboard.TaigiKeyboardView
         android:id="@+id/taigi_keyboard"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"

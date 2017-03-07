@@ -1,12 +1,10 @@
-package com.taccotap.phahtaigi.ime.ui;
+package com.taccotap.phahtaigi.ime.keyboard;
 
 import android.content.Context;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
-
-import com.taccotap.phahtaigi.ime.keyboard.CustomKeycode;
 
 public class TaigiKeyboardView extends KeyboardView {
 

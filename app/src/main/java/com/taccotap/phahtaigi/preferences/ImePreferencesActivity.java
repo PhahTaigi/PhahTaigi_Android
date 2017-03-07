@@ -26,7 +26,7 @@ import com.taccotap.phahtaigi.settings.InputMethodSettingsFragment;
 /**
  * Displays the IME preferences inside the input method setting.
  */
-public class ImePreferences extends PreferenceActivity {
+public class ImePreferencesActivity extends PreferenceActivity {
     @Override
     public Intent getIntent() {
         final Intent modIntent = new Intent(super.getIntent());

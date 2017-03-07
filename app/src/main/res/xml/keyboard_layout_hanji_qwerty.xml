@@ -35,9 +35,10 @@
             android:codes="57"
             android:keyLabel="9"/>
         <Key
-            android:codes="45"
+            android:codes="65281"
             android:keyEdgeFlags="right"
-            android:keyLabel="-"/>
+            android:keyLabel="！"
+            android:keyWidth="10%p"/>
     </Row>
 
     <Row>
@@ -76,6 +77,13 @@
     </Row>
 
     <Row>
+        <!--
+             android:codes: -2000 is not a framework-defined key code
+        -->
+        <!--<Key-->
+        <!--android:codes="-2000"-->
+        <!--android:keyIcon="@drawable/sym_keyboard_settings"-->
+        <!--android:keyWidth="10%p"/>-->
         <Key
             android:codes="97"
             android:horizontalGap="5%p"
@@ -152,13 +160,6 @@
             android:keyLabel="!?0"
             android:keyWidth="15%p"/>
         <!--
-             android:codes: -2000 is not a framework-defined key code
-        -->
-        <Key
-            android:codes="-2000"
-            android:keyIcon="@drawable/sym_keyboard_settings"
-            android:keyWidth="10%p"/>
-        <!--
             android:codes: -1000 is not a framework-defined key code
         -->
         <Key
@@ -166,14 +167,18 @@
             android:keyLabel="漢"
             android:keyWidth="15%p"/>
         <Key
-            android:codes="44"
-            android:keyLabel="，"
+            android:codes="45"
+            android:keyLabel="-"
             android:keyWidth="10%p"/>
         <Key
             android:codes="32"
             android:isRepeatable="true"
             android:keyIcon="@drawable/btn_keyboard_spacebar_lxx_dark"
             android:keyWidth="25%p"/>
+        <Key
+            android:codes="44"
+            android:keyLabel="，"
+            android:keyWidth="10%p"/>
         <Key
             android:codes="46"
             android:keyLabel="。"

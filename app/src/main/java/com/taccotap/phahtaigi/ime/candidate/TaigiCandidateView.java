@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextUtils;
@@ -21,6 +22,8 @@ import java.util.List;
 
 public class TaigiCandidateView extends View {
     private static final int OUT_OF_BOUNDS = -1;
+
+    private final Context mContext;
 
     private TaigiIme mService;
     private List<TlTaigiWord> mSuggestions;
@@ -50,6 +53,7 @@ public class TaigiCandidateView extends View {
 
     private Paint mRawInputPaint;
     private Paint mSuggestionsMainPaint;
+    private Paint mSuggestionsMainFirstLomajiPaint;
     private Paint mSuggestionsHintPaint;
     private Paint mWordSeperatorLinePaint;
 
@@ -57,6 +61,7 @@ public class TaigiCandidateView extends View {
     private float mSuggestionsMainTextHeight;
     private float mSuggestionsHintTextHeight;
     private float mMainSuggestionHeightForPaint;
+    private float mMainSuggestionFirstLomajiHeightForPaint;
     private float mHintSuggestionHeightForPaint;
     private float mWordSeperatorLineYForPaint;
 
@@ -68,14 +73,17 @@ public class TaigiCandidateView extends View {
     private GestureDetectorCompat mGestureDetector;
     private String mRawInput;
     private int mDesiredHeight;
+    private Typeface mLomajiTypeface;
+    private Typeface mHanjiTypeface;
 
     public TaigiCandidateView(Context context) {
         super(context);
-        init(context);
+        mContext = context;
+        init();
     }
 
-    private void init(Context context) {
-        Resources resources = context.getResources();
+    private void init() {
+        final Resources resources = mContext.getResources();
 
         mSelectionHighlightDrawable = resources.getDrawable(android.R.drawable.list_selector_background);
         mSelectionHighlightDrawable.setState(new int[]{
@@ -91,9 +99,7 @@ public class TaigiCandidateView extends View {
         mVerticalPadding = resources.getDimensionPixelSize(R.dimen.candidate_vertical_padding);
         setBackgroundColor(resources.getColor(R.color.candidate_background));
 
-        initTextPaintAndTextHeightCalculation(resources);
-
-        mGestureDetector = new GestureDetectorCompat(context, new GestureDetector.SimpleOnGestureListener() {
+        mGestureDetector = new GestureDetectorCompat(mContext, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                     float distanceX, float distanceY) {
@@ -120,41 +126,77 @@ public class TaigiCandidateView extends View {
         setWillNotDraw(false);
         setHorizontalScrollBarEnabled(false);
         setVerticalScrollBarEnabled(false);
+
+        initTextPaintAndTextHeightCalculation();
     }
 
-    private void initTextPaintAndTextHeightCalculation(Resources resources) {
+    private void initTextPaintAndTextHeightCalculation() {
+        final Resources resources = mContext.getResources();
+
         mColorNormal = resources.getColor(R.color.candidate_normal);
         mColorRecommended = resources.getColor(R.color.candidate_recommended);
         mColorOther = resources.getColor(R.color.candidate_other);
+
+        mLomajiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/twu3.ttf");
+        mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/mingliub.ttc");
 
         mRawInputPaint = new Paint();
         mRawInputPaint.setColor(mColorNormal);
         mRawInputPaint.setAntiAlias(true);
         mRawInputPaint.setTextSize(resources.getDimensionPixelSize(R.dimen.candidate_raw_input_font_height));
         mRawInputPaint.setStrokeWidth(0);
+        mRawInputPaint.setTypeface(mLomajiTypeface);
         final Paint.FontMetrics rawInputPaintFontMetrics = mRawInputPaint.getFontMetrics();
         mRawInputPaintHeight = rawInputPaintFontMetrics.bottom - rawInputPaintFontMetrics.top + rawInputPaintFontMetrics.leading;
 
+        mSuggestionsMainFirstLomajiPaint = new Paint();
+        mSuggestionsMainFirstLomajiPaint.setColor(mColorRecommended);
+        mSuggestionsMainFirstLomajiPaint.setAntiAlias(true);
+        mSuggestionsMainFirstLomajiPaint.setTextSize(resources.getDimensionPixelSize(R.dimen.candidate_main_font_height));
+        mSuggestionsMainFirstLomajiPaint.setStrokeWidth(0);
+        mSuggestionsMainFirstLomajiPaint.setTypeface(mLomajiTypeface);
+        final Paint.FontMetrics suggestionsMainFirstLomajiPaintFontMetrics = mSuggestionsMainFirstLomajiPaint.getFontMetrics();
+        mMainSuggestionFirstLomajiHeightForPaint = mRawInputPaintHeight - suggestionsMainFirstLomajiPaintFontMetrics.top + Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION;
+
+        mWordSeperatorLinePaint = new Paint();
+        mWordSeperatorLinePaint.setColor(mColorNormal);
+        mWordSeperatorLinePaint.setAntiAlias(true);
+        mWordSeperatorLinePaint.setStrokeWidth(0);
+
+        updateTextPaintAndTextHeightCalculation();
+    }
+
+    private void updateTextPaintAndTextHeightCalculation() {
         mSuggestionsMainPaint = new Paint();
         mSuggestionsMainPaint.setColor(mColorRecommended);
         mSuggestionsMainPaint.setAntiAlias(true);
-        mSuggestionsMainPaint.setTextSize(resources.getDimensionPixelSize(R.dimen.candidate_main_font_height));
+        mSuggestionsMainPaint.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.candidate_main_font_height));
         mSuggestionsMainPaint.setStrokeWidth(0);
+        if (mIsMainCandidateLomaji) {
+            mSuggestionsMainPaint.setTypeface(mLomajiTypeface);
+        } else {
+            mSuggestionsMainPaint.setTypeface(mHanjiTypeface);
+        }
         final Paint.FontMetrics suggestionsMainPaintFontMetrics = mSuggestionsMainPaint.getFontMetrics();
         mSuggestionsMainTextHeight = suggestionsMainPaintFontMetrics.bottom - suggestionsMainPaintFontMetrics.top + suggestionsMainPaintFontMetrics.leading;
 
-        mMainSuggestionHeightForPaint = mRawInputPaintHeight - suggestionsMainPaintFontMetrics.top + Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION;
+        mMainSuggestionHeightForPaint = mRawInputPaintHeight - suggestionsMainPaintFontMetrics.top + Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION + suggestionsMainPaintFontMetrics.leading;
 
         mSuggestionsHintPaint = new Paint();
         mSuggestionsHintPaint.setColor(mColorRecommended);
         mSuggestionsHintPaint.setAntiAlias(true);
-        mSuggestionsHintPaint.setTextSize(resources.getDimensionPixelSize(R.dimen.candidate_hint_font_height));
+        mSuggestionsHintPaint.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.candidate_hint_font_height));
         mSuggestionsHintPaint.setStrokeWidth(0);
+        if (mIsMainCandidateLomaji) {
+            mSuggestionsHintPaint.setTypeface(mHanjiTypeface);
+        } else {
+            mSuggestionsHintPaint.setTypeface(mLomajiTypeface);
+        }
         final Paint.FontMetrics suggestionsHintPaintFontMetrics = mSuggestionsHintPaint.getFontMetrics();
         mSuggestionsHintTextHeight = suggestionsHintPaintFontMetrics.bottom - suggestionsHintPaintFontMetrics.top + suggestionsHintPaintFontMetrics.leading;
 
         mHintSuggestionHeightForPaint = mRawInputPaintHeight + Y_GAP_BETWEEN_RAW_INPUT_AND_SUGGESTIONS + mSuggestionsMainTextHeight
-                - suggestionsHintPaintFontMetrics.top + Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION;
+                - suggestionsHintPaintFontMetrics.top + Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION + suggestionsHintPaintFontMetrics.leading;
 
         mWordSeperatorLineYForPaint = mRawInputPaintHeight + Y_GAP_BETWEEN_RAW_INPUT_AND_SUGGESTIONS + suggestionsHintPaintFontMetrics.bottom;
 
@@ -165,15 +207,13 @@ public class TaigiCandidateView extends View {
                 + mSuggestionsHintTextHeight
                 + mVerticalPadding + mPadding.top + mPadding.bottom);
 
-        mWordSeperatorLinePaint = new Paint();
-        mWordSeperatorLinePaint.setColor(mColorNormal);
-        mWordSeperatorLinePaint.setAntiAlias(true);
-        mWordSeperatorLinePaint.setStrokeWidth(0);
+        invalidate();
     }
 
     public void setIsMainCandidateLomaji(boolean isMainCandidateLomaji) {
         mIsMainCandidateLomaji = isMainCandidateLomaji;
-        invalidate();
+
+        updateTextPaintAndTextHeightCalculation();
     }
 
     /**
@@ -282,22 +322,28 @@ public class TaigiCandidateView extends View {
             if (canvas != null) {
                 if (i == 0) {
                     // draw parsed raw input
-                    canvas.drawText(mainCandidate, x + X_GAP, mMainSuggestionHeightForPaint, mSuggestionsMainPaint);
+                    canvas.drawText(mainCandidate, x + X_GAP, mMainSuggestionFirstLomajiHeightForPaint, mSuggestionsMainFirstLomajiPaint);
+
+                    // draw line between words
+                    final float fullFirstLomajiWidth = mSuggestionsMainFirstLomajiPaint.measureText(taigiWord.getLomaji()) + X_GAP * 2;
+                    canvas.drawLine(x + fullFirstLomajiWidth, mWordSeperatorLineYForPaint,
+                            x + fullFirstLomajiWidth, mWordSeperatorLineYForPaint + fullWordHeight, mWordSeperatorLinePaint);
+
+                    x += fullFirstLomajiWidth;
                 } else {
                     // draw main candidate
                     canvas.drawText(mainCandidate, x + X_GAP, mMainSuggestionHeightForPaint, mSuggestionsMainPaint);
 
                     // draw hint candidate
                     canvas.drawText(hintCandidate, x + X_GAP, mHintSuggestionHeightForPaint, mSuggestionsHintPaint);
+
+                    // draw line between words
+                    canvas.drawLine(x + fullWordWidth, mWordSeperatorLineYForPaint,
+                            x + fullWordWidth, mWordSeperatorLineYForPaint + fullWordHeight, mWordSeperatorLinePaint);
+
+                    x += fullWordWidth;
                 }
-
-                // draw line between words
-                canvas.drawLine(x + fullWordWidth, mWordSeperatorLineYForPaint,
-                        x + fullWordWidth, mWordSeperatorLineYForPaint + fullWordHeight, mWordSeperatorLinePaint);
             }
-
-            // next loop
-            x += fullWordWidth;
         }
 
         mTotalWidth = x;

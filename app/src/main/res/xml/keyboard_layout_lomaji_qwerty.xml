@@ -35,9 +35,9 @@
             android:codes="57"
             android:keyLabel="9"/>
         <Key
-            android:codes="33"
+            android:codes="45"
             android:keyEdgeFlags="right"
-            android:keyLabel="!"
+            android:keyLabel="-"
             android:keyWidth="10%p"/>
     </Row>
 
@@ -160,8 +160,8 @@
             android:keyLabel="LMJ"
             android:keyWidth="15%p"/>
         <Key
-            android:codes="45"
-            android:keyLabel="-"
+            android:codes="33"
+            android:keyLabel="!"
             android:keyWidth="10%p"/>
         <Key
             android:codes="32"
@@ -176,7 +176,6 @@
             android:codes="46"
             android:keyLabel="."
             android:keyWidth="10%p"/>
-
         <Key
             android:codes="10"
             android:keyEdgeFlags="right"

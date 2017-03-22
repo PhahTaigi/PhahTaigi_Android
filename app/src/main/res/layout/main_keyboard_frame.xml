@@ -26,27 +26,24 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/keyboardSettingLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#0fff"
-        android:gravity="right"
-        android:orientation="horizontal">
+        android:background="@drawable/keyboard_background_lxx_dark"
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <LinearLayout
-            android:id="@+id/keyboardSettingLayout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/keyboard_background_lxx_dark"
             android:gravity="left"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:orientation="horizontal">
 
             <RadioGroup
                 android:id="@+id/lomajiSelectionRadioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:checkedButton="@+id/tailoRadioButton"
                 android:orientation="horizontal">
 
                 <RadioButton
@@ -70,6 +67,23 @@
             </RadioGroup>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right|center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/keyboardSettingCloseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:backgroundTint="#4d6570"
+                android:src="@drawable/sym_keyboard_settings"/>
+        </LinearLayout>
     </LinearLayout>
 
     <com.taccotap.phahtaigi.ime.keyboard.TaigiKeyboardView

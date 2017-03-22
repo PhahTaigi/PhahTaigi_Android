@@ -35,9 +35,9 @@
             android:codes="57"
             android:keyLabel="9"/>
         <Key
-            android:codes="65281"
+            android:codes="45"
             android:keyEdgeFlags="right"
-            android:keyLabel="！"
+            android:keyLabel="-"
             android:keyWidth="10%p"/>
     </Row>
 
@@ -167,8 +167,8 @@
             android:keyLabel="漢"
             android:keyWidth="15%p"/>
         <Key
-            android:codes="45"
-            android:keyLabel="-"
+            android:codes="65281"
+            android:keyLabel="！"
             android:keyWidth="10%p"/>
         <Key
             android:codes="32"
@@ -176,11 +176,11 @@
             android:keyIcon="@drawable/btn_keyboard_spacebar_lxx_dark"
             android:keyWidth="25%p"/>
         <Key
-            android:codes="44"
+            android:codes="65292"
             android:keyLabel="，"
             android:keyWidth="10%p"/>
         <Key
-            android:codes="46"
+            android:codes="12290"
             android:keyLabel="。"
             android:keyWidth="10%p"/>
         <Key

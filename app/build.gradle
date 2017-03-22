@@ -12,12 +12,35 @@ android {
         versionCode 1
         versionName "1.0.0"
     }
+
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    project.ext { appName = 'MyAppName' }
+                    def formattedDate = new Date().format('yyyyMMdd-HHmmss')
+                    def newName = output.outputFile.name
+                    newName = newName.replace("app-", "$rootProject.name-")
+                    newName = newName.replace("-release", "-release-v" + versionName + "(" + versionCode + ")-" + formattedDate)
+                    //noinspection GroovyAssignabilityCheck
+                    output.outputFile = new File(output.outputFile.parent, newName)
+                }
+            }
+
+            buildConfigField "boolean", "DEBUG_LOG", "false"
+        }
+
+        debug {
+            buildConfigField "boolean", "DEBUG_LOG", "true"
         }
     }
+}
+
+repositories {
+    maven { url "http://dl.bintray.com/pixplicity/maven" }
 }
 
 dependencies {
@@ -26,6 +49,8 @@ dependencies {
 
     compile project(':tailo_realm_model')
 
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support:support-v4:25.2.0'
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support:support-v4:25.3.0'
+
+    compile 'com.pixplicity.easyprefs:library:1.8.1@aar'
 }

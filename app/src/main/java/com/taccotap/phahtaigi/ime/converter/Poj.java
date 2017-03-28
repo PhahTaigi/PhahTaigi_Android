@@ -111,6 +111,62 @@ public class Poj {
         sPojUnicodeToPojNumberHashMap.put("o̍\u0358", "o\u03588");
         sPojUnicodeToPojNumberHashMap.put("ŏ\u0358", "o\u03589");
 
+        // M
+        sPojUnicodeToPojNumberHashMap.put("Ḿ", "M2");
+        sPojUnicodeToPojNumberHashMap.put("M̀", "M3");
+        sPojUnicodeToPojNumberHashMap.put("M̂", "M5");
+        sPojUnicodeToPojNumberHashMap.put("M̄", "M7");
+        sPojUnicodeToPojNumberHashMap.put("M̍", "M8");
+        sPojUnicodeToPojNumberHashMap.put("M̋", "M9");
+
+        // m
+        sPojUnicodeToPojNumberHashMap.put("ḿ", "m2");
+        sPojUnicodeToPojNumberHashMap.put("m̀", "m3");
+        sPojUnicodeToPojNumberHashMap.put("m̂", "m5");
+        sPojUnicodeToPojNumberHashMap.put("m̄", "m7");
+        sPojUnicodeToPojNumberHashMap.put("m̍", "m8");
+        sPojUnicodeToPojNumberHashMap.put("m̋", "m9");
+
+        // N
+        sPojUnicodeToPojNumberHashMap.put("Ń", "N2");
+        sPojUnicodeToPojNumberHashMap.put("Ǹ", "N3");
+        sPojUnicodeToPojNumberHashMap.put("N̂", "N5");
+        sPojUnicodeToPojNumberHashMap.put("N̄", "N7");
+        sPojUnicodeToPojNumberHashMap.put("N̍", "N8");
+        sPojUnicodeToPojNumberHashMap.put("N̋", "N9");
+
+        // n
+        sPojUnicodeToPojNumberHashMap.put("ń", "n2");
+        sPojUnicodeToPojNumberHashMap.put("ǹ", "n3");
+        sPojUnicodeToPojNumberHashMap.put("n̂", "n5");
+        sPojUnicodeToPojNumberHashMap.put("n̄", "n7");
+        sPojUnicodeToPojNumberHashMap.put("n̍", "n8");
+        sPojUnicodeToPojNumberHashMap.put("n̋", "n9");
+
+        // Ng
+        sPojUnicodeToPojNumberHashMap.put("Ńg", "Ng2");
+        sPojUnicodeToPojNumberHashMap.put("Ǹg", "Ng3");
+        sPojUnicodeToPojNumberHashMap.put("N̂g", "Ng5");
+        sPojUnicodeToPojNumberHashMap.put("N̄g", "Ng7");
+        sPojUnicodeToPojNumberHashMap.put("N̍g", "Ng8");
+        sPojUnicodeToPojNumberHashMap.put("N̋g", "Ng9");
+
+        // NG
+        sPojUnicodeToPojNumberHashMap.put("ŃG", "NG2");
+        sPojUnicodeToPojNumberHashMap.put("ǸG", "NG3");
+        sPojUnicodeToPojNumberHashMap.put("N̂G", "NG5");
+        sPojUnicodeToPojNumberHashMap.put("N̄G", "NG7");
+        sPojUnicodeToPojNumberHashMap.put("N̍G", "NG8");
+        sPojUnicodeToPojNumberHashMap.put("N̋G", "NG9");
+
+        // ng
+        sPojUnicodeToPojNumberHashMap.put("ńg", "ng2");
+        sPojUnicodeToPojNumberHashMap.put("ǹg", "ng3");
+        sPojUnicodeToPojNumberHashMap.put("n̂g", "ng5");
+        sPojUnicodeToPojNumberHashMap.put("n̄g", "ng7");
+        sPojUnicodeToPojNumberHashMap.put("n̍g", "ng8");
+        sPojUnicodeToPojNumberHashMap.put("n̋g", "ng9");
+
         final Set<String> keys = sPojUnicodeToPojNumberHashMap.keySet();
         for (String key : keys) {
             String value = sPojUnicodeToPojNumberHashMap.get(key);

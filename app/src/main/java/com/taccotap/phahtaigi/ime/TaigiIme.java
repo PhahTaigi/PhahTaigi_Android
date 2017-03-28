@@ -33,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
 import com.pixplicity.easyprefs.library.Prefs;
+import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.R;
 import com.taccotap.phahtaigi.ime.candidate.TaigiCandidateController;
 import com.taccotap.phahtaigi.ime.candidate.TaigiCandidateView;
@@ -291,6 +292,10 @@ public class TaigiIme extends InputMethodService
 //            }
 //        }
 
+        if (BuildConfig.DEBUG_LOG) {
+            Log.d(TAG, "onUpdateSelection: candidatesStart=" + candidatesStart + ", candidatesEnd=" + candidatesEnd);
+        }
+
         handleAutoCaps();
     }
 
@@ -352,6 +357,7 @@ public class TaigiIme extends InputMethodService
         } else if (primaryCode == CustomKeycode.KEYCODE_SETTINGS) {
             handleOpenSettings();
         } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE && mTaigiKeyboardView != null) {
+            commitRawInputSuggestion();
             mKeyboardSwitcher.switchKeyboard();
         } else if (primaryCode == Keyboard.KEYCODE_CANCEL) {
             handleClose();
@@ -580,9 +586,11 @@ public class TaigiIme extends InputMethodService
 
     public void commitRawInputSuggestion() {
         final String rawInputSuggestion = mTaigiCandidateController.getRawInputSuggestion();
-        getCurrentInputConnection().commitText(rawInputSuggestion, rawInputSuggestion.length());
-        mComposing.setLength(0);
-        updateInputForCandidate();
+        if (!TextUtils.isEmpty(rawInputSuggestion)) {
+            getCurrentInputConnection().commitText(rawInputSuggestion, rawInputSuggestion.length());
+            mComposing.setLength(0);
+            updateInputForCandidate();
+        }
     }
 
     public void commitPickedSuggestion(String pickedSuggestion) {

@@ -18,3 +18,4 @@
 
 # Realm Models
 -keep class com.taccotap.taigidictmodel.** {*;}
+-keep class com.taccotap.phahtaigi.dictmodel.** {*;}

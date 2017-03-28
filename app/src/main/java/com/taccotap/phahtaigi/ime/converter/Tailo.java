@@ -119,6 +119,62 @@ public class Tailo {
         sTailoUnicodeToTailoNumberHashMap.put("o̍o", "oo8");
         sTailoUnicodeToTailoNumberHashMap.put("őo", "oo9");
 
+        // M
+        sTailoUnicodeToTailoNumberHashMap.put("Ḿ", "M2");
+        sTailoUnicodeToTailoNumberHashMap.put("M̀", "M3");
+        sTailoUnicodeToTailoNumberHashMap.put("M̂", "M5");
+        sTailoUnicodeToTailoNumberHashMap.put("M̄", "M7");
+        sTailoUnicodeToTailoNumberHashMap.put("M̍", "M8");
+        sTailoUnicodeToTailoNumberHashMap.put("M̋", "M9");
+
+        // m
+        sTailoUnicodeToTailoNumberHashMap.put("ḿ", "m2");
+        sTailoUnicodeToTailoNumberHashMap.put("m̀", "m3");
+        sTailoUnicodeToTailoNumberHashMap.put("m̂", "m5");
+        sTailoUnicodeToTailoNumberHashMap.put("m̄", "m7");
+        sTailoUnicodeToTailoNumberHashMap.put("m̍", "m8");
+        sTailoUnicodeToTailoNumberHashMap.put("m̋", "m9");
+
+        // N
+        sTailoUnicodeToTailoNumberHashMap.put("Ń", "N2");
+        sTailoUnicodeToTailoNumberHashMap.put("Ǹ", "N3");
+        sTailoUnicodeToTailoNumberHashMap.put("N̂", "N5");
+        sTailoUnicodeToTailoNumberHashMap.put("N̄", "N7");
+        sTailoUnicodeToTailoNumberHashMap.put("N̍", "N8");
+        sTailoUnicodeToTailoNumberHashMap.put("N̋", "N9");
+
+        // n
+        sTailoUnicodeToTailoNumberHashMap.put("ń", "n2");
+        sTailoUnicodeToTailoNumberHashMap.put("ǹ", "n3");
+        sTailoUnicodeToTailoNumberHashMap.put("n̂", "n5");
+        sTailoUnicodeToTailoNumberHashMap.put("n̄", "n7");
+        sTailoUnicodeToTailoNumberHashMap.put("n̍", "n8");
+        sTailoUnicodeToTailoNumberHashMap.put("n̋", "n9");
+
+        // Ng
+        sTailoUnicodeToTailoNumberHashMap.put("Ńg", "Ng2");
+        sTailoUnicodeToTailoNumberHashMap.put("Ǹg", "Ng3");
+        sTailoUnicodeToTailoNumberHashMap.put("N̂g", "Ng5");
+        sTailoUnicodeToTailoNumberHashMap.put("N̄g", "Ng7");
+        sTailoUnicodeToTailoNumberHashMap.put("N̍g", "Ng8");
+        sTailoUnicodeToTailoNumberHashMap.put("N̋g", "Ng9");
+
+        // NG
+        sTailoUnicodeToTailoNumberHashMap.put("ŃG", "NG2");
+        sTailoUnicodeToTailoNumberHashMap.put("ǸG", "NG3");
+        sTailoUnicodeToTailoNumberHashMap.put("N̂G", "NG5");
+        sTailoUnicodeToTailoNumberHashMap.put("N̄G", "NG7");
+        sTailoUnicodeToTailoNumberHashMap.put("N̍G", "NG8");
+        sTailoUnicodeToTailoNumberHashMap.put("N̋G", "NG9");
+
+        // ng
+        sTailoUnicodeToTailoNumberHashMap.put("ńg", "ng2");
+        sTailoUnicodeToTailoNumberHashMap.put("ǹg", "ng3");
+        sTailoUnicodeToTailoNumberHashMap.put("n̂g", "ng5");
+        sTailoUnicodeToTailoNumberHashMap.put("n̄g", "ng7");
+        sTailoUnicodeToTailoNumberHashMap.put("n̍g", "ng8");
+        sTailoUnicodeToTailoNumberHashMap.put("n̋g", "ng9");
+
         final Set<String> keys = sTailoUnicodeToTailoNumberHashMap.keySet();
         for (String key : keys) {
             String value = sTailoUnicodeToTailoNumberHashMap.get(key);

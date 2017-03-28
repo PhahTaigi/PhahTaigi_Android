@@ -86,7 +86,6 @@
         <!--android:keyWidth="10%p"/>-->
         <Key
             android:codes="97"
-            android:horizontalGap="5%p"
             android:keyEdgeFlags="left"
             android:keyLabel="a"/>
         <Key
@@ -112,8 +111,11 @@
             android:keyLabel="k"/>
         <Key
             android:codes="108"
-            android:keyEdgeFlags="right"
             android:keyLabel="l"/>
+        <Key
+            android:codes="65311"
+            android:keyEdgeFlags="right"
+            android:keyLabel="？"/>
     </Row>
 
     <Row>

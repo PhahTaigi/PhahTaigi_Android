@@ -9,24 +9,31 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.taccotap.phahtaigi.R;
+import com.taccotap.phahtaigi.dictmodel.ImeDict;
 import com.taccotap.phahtaigi.ime.TaigiIme;
-import com.taccotap.taigidictmodel.tailo.TlTaigiWord;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class TaigiCandidateView extends View {
     private static final int OUT_OF_BOUNDS = -1;
 
+    private static final int SCROLL_PIXELS = 20;
+    private static final int X_GAP = 20;
+    private static final int Y_GAP_BETWEEN_RAW_INPUT_AND_SUGGESTIONS = 5;
+    private static final int Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION = 2;
+
     private final Context mContext;
 
     private TaigiIme mService;
-    private List<TlTaigiWord> mSuggestions;
+    private ArrayList<ImeDict> mSuggestions = new ArrayList<>();
 
     private boolean mIsMainCandidateLomaji = true;
 
@@ -36,12 +43,6 @@ public class TaigiCandidateView extends View {
 
     private Rect mPadding = new Rect(10, 10, 10, 10);
     private Rect mBgPadding;
-    private static final int SCROLL_PIXELS = 20;
-    private static final int X_GAP = 20;
-    private static final int Y_GAP_BETWEEN_RAW_INPUT_AND_SUGGESTIONS = 5;
-    private static final int Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION = 2;
-
-    private static final List<TlTaigiWord> EMPTY_LIST = new ArrayList<>();
 
     private int mMeasuredWidth;
     private int mMeasuredHeight;
@@ -75,6 +76,7 @@ public class TaigiCandidateView extends View {
     private int mDesiredHeight;
     private Typeface mLomajiTypeface;
     private Typeface mHanjiTypeface;
+    private int mCurrentInputLomajiMode;
 
     public TaigiCandidateView(Context context) {
         super(context);
@@ -283,23 +285,42 @@ public class TaigiCandidateView extends View {
         final boolean scrolled = mScrolled;
 
         for (int i = 0; i < count; i++) {
-            TlTaigiWord taigiWord = mSuggestions.get(i);
+            ImeDict imeDict = mSuggestions.get(i);
+            Log.e(TAG, "hanji=" + imeDict.getHanji() + ", tailo=" + imeDict.getTailo() + ", poj=" + imeDict.getPoj());
+        }
 
-            String mainCandidate;
-            String hintCandidate;
+        for (int i = 0; i < count; i++) {
+            ImeDict imeDict = mSuggestions.get(i);
+
+            String mainCandidate = "";
+            String hintCandidate = "";
 
             if (i == 0) {
-                mainCandidate = taigiWord.getLomaji();
-                hintCandidate = taigiWord.getHanji();
+                if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
+                    mainCandidate = imeDict.getTailo();
+                } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
+                    mainCandidate = imeDict.getPoj();
+                }
+                hintCandidate = imeDict.getHanji();
             } else {
                 if (mIsMainCandidateLomaji) {
-                    mainCandidate = taigiWord.getLomaji();
-                    hintCandidate = taigiWord.getHanji();
+                    if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
+                        mainCandidate = imeDict.getTailo();
+                    } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
+                        mainCandidate = imeDict.getPoj();
+                    }
+                    hintCandidate = imeDict.getHanji();
                 } else {
-                    mainCandidate = taigiWord.getHanji();
-                    hintCandidate = taigiWord.getLomaji();
+                    mainCandidate = imeDict.getHanji();
+                    if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
+                        hintCandidate = imeDict.getTailo();
+                    } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
+                        hintCandidate = imeDict.getPoj();
+                    }
                 }
             }
+
+            Log.d(TAG, "mainCandidate=" + mainCandidate + ", hintCandidate=" + hintCandidate);
 
             final float mainTextWidth = mSuggestionsMainPaint.measureText(mainCandidate);
             final float hintTextWidth = mSuggestionsHintPaint.measureText(hintCandidate);
@@ -325,7 +346,13 @@ public class TaigiCandidateView extends View {
                     canvas.drawText(mainCandidate, x + X_GAP, mMainSuggestionFirstLomajiHeightForPaint, mSuggestionsMainFirstLomajiPaint);
 
                     // draw line between words
-                    final float fullFirstLomajiWidth = mSuggestionsMainFirstLomajiPaint.measureText(taigiWord.getLomaji()) + X_GAP * 2;
+                    String lomaji = "";
+                    if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
+                        lomaji = imeDict.getTailo();
+                    } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
+                        lomaji = imeDict.getPoj();
+                    }
+                    final float fullFirstLomajiWidth = mSuggestionsMainFirstLomajiPaint.measureText(lomaji) + X_GAP * 2;
                     canvas.drawLine(x + fullFirstLomajiWidth, mWordSeperatorLineYForPaint,
                             x + fullFirstLomajiWidth, mWordSeperatorLineYForPaint + fullWordHeight, mWordSeperatorLinePaint);
 
@@ -374,12 +401,15 @@ public class TaigiCandidateView extends View {
         invalidate();
     }
 
-    protected void setSuggestions(String rawInput, List<TlTaigiWord> suggestions) {
+    protected void setSuggestions(String rawInput, ArrayList<ImeDict> suggestions, int currentInputLomajiMode) {
         clear();
         mRawInput = rawInput;
         if (suggestions != null) {
-            mSuggestions = new ArrayList<>(suggestions);
+            mSuggestions.clear();
+            mSuggestions.addAll(suggestions);
         }
+        mCurrentInputLomajiMode = currentInputLomajiMode;
+
         scrollTo(0, 0);
         mTargetScrollX = 0;
         invalidate();
@@ -388,7 +418,7 @@ public class TaigiCandidateView extends View {
 
     public void clear() {
         mRawInput = null;
-        mSuggestions = EMPTY_LIST;
+        mSuggestions.clear();
         mTouchX = OUT_OF_BOUNDS;
         mSelectedIndex = -1;
         invalidate();
@@ -424,11 +454,15 @@ public class TaigiCandidateView extends View {
             case MotionEvent.ACTION_UP:
                 if (!mScrolled) {
                     if (mSelectedIndex >= 0) {
-                        final TlTaigiWord taigiWord = mSuggestions.get(mSelectedIndex);
+                        final ImeDict imeDict = mSuggestions.get(mSelectedIndex);
                         if (mIsMainCandidateLomaji) {
-                            mService.commitPickedSuggestion(taigiWord.getLomaji());
+                            if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
+                                mService.commitPickedSuggestion(imeDict.getTailo());
+                            } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
+                                mService.commitPickedSuggestion(imeDict.getPoj());
+                            }
                         } else {
-                            mService.commitPickedSuggestion(taigiWord.getHanji());
+                            mService.commitPickedSuggestion(imeDict.getHanji());
                         }
                     }
                 }

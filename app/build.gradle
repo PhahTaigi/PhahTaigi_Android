@@ -49,8 +49,10 @@ dependencies {
 
     compile project(':tailo_realm_model')
 
-    compile 'com.android.support:appcompat-v7:25.3.0'
-    compile 'com.android.support:support-v4:25.3.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:support-v4:25.3.1'
 
     compile 'com.pixplicity.easyprefs:library:1.8.1@aar'
+
+    compile 'com.github.eggheadgames:android-realm-asset-helper:2.0.0'
 }

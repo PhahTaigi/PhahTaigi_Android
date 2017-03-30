@@ -100,12 +100,14 @@ public class TaigiCandidateController {
 
         mTaigiCandidateView.setSuggestions(mRawInput, mCandidateImeDicts, mCurrentInputLomajiMode);
 
-        if (!TextUtils.isEmpty(mRawInput)) {
-            getSuggestionsFromDict();
-        }
+        getSuggestionsFromDict();
     }
 
     private void getSuggestionsFromDict() {
+        if (TextUtils.isEmpty(mRawInput)) {
+            return;
+        }
+
         if (mImeDicts != null) {
             mImeDicts.removeAllChangeListeners();
         }
@@ -137,6 +139,10 @@ public class TaigiCandidateController {
         mImeDicts.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<ImeDict>>() {
             @Override
             public void onChange(RealmResults<ImeDict> imeDicts, OrderedCollectionChangeSet orderedCollectionChangeSet) {
+                if (TextUtils.isEmpty(mRawInput)) {
+                    return;
+                }
+
                 ArrayList<ImeDict> suggestions = new ArrayList<>();
 
                 for (ImeDict imeDict : imeDicts) {

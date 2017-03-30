@@ -202,4 +202,17 @@ public class LomajiConverter {
 
         return pojInputWord;
     }
+
+    public static final int getLomajiWordToneNumber(String lomajiNumberWord) {
+        String lastCharString = lomajiNumberWord.substring(lomajiNumberWord.length() - 1);
+        if (TextUtils.isDigitsOnly(lastCharString)) {
+            return Integer.valueOf(lastCharString);
+        } else {
+            if (lastCharString.matches("p|t|k|h")) {
+                return 4;
+            } else {
+                return 1;
+            }
+        }
+    }
 }

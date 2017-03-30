@@ -240,6 +240,7 @@ public class TlParseIntentService extends IntentService {
         LomajiPhraseSplitter lomajiPhraseSplitter = new LomajiPhraseSplitter();
         final LomajiPhraseSplitter.LomajiPhraseSplitterResult lomajiPhraseSplitterResult = lomajiPhraseSplitter.split(tailoPhrase);
 
+        int lomajiWordToneNumber = 10;
         if (lomajiPhraseSplitterResult.getSplitSperators().size() > 0) {
             final ArrayList<String> tailoWords = lomajiPhraseSplitterResult.getSplitStrings();
 
@@ -272,10 +273,17 @@ public class TlParseIntentService extends IntentService {
                     final String pojNumberWord = LomajiConverter.convertTailoNumberWordToPojNumberWord(tailoInputWithNumberTone);
                     final String pojWord = PojInputConverter.convertPojNumberToPoj(pojNumberWord);
 
+                    if (i == 0) {
+                        lomajiWordToneNumber = LomajiConverter.getLomajiWordToneNumber(tailoInputWithNumberTone);
+                    }
+
                     if (isStorePerWord) {
                         final String tailoInputWithoutTone = LomajiConverter.removeToneNumberAndHyphens(tailoInputWithNumberTone.toLowerCase());
                         final String pojInputWithoutTone = LomajiConverter.removeToneNumberAndHyphens(pojInputWithNumberTone.toLowerCase());
-                        prepareImeDict(taigiWord, tailoWord, tailoInputWithNumberTone.toLowerCase(), tailoInputWithoutTone, pojWord, pojInputWithNumberTone.toLowerCase(), pojInputWithoutTone, hanjiWord);
+
+                        int toneNumber = LomajiConverter.getLomajiWordToneNumber(tailoInputWithNumberTone);
+
+                        prepareImeDict(taigiWord, tailoWord, tailoInputWithNumberTone.toLowerCase(), tailoInputWithoutTone, pojWord, pojInputWithNumberTone.toLowerCase(), pojInputWithoutTone, hanjiWord, toneNumber);
                     }
 
                     tailoNumberWordsStringBuilder.append(tailoInputWithNumberTone);
@@ -295,6 +303,8 @@ public class TlParseIntentService extends IntentService {
             final String pojNumberWord = LomajiConverter.convertTailoNumberWordToPojNumberWord(tailoNumberWord);
             final String pojWord = PojInputConverter.convertPojNumberToPoj(pojNumberWord);
 
+            lomajiWordToneNumber = LomajiConverter.getLomajiWordToneNumber(tailoNumberWord);
+
             tailoNumberWordsStringBuilder.append(tailoNumberWord);
             pojNumberWordsStringBuilder.append(pojInputWord);
             pojPhraseStringBuilder.append(pojWord);
@@ -308,10 +318,10 @@ public class TlParseIntentService extends IntentService {
         final String pojInputWithNumberTone = pojNumberWordsStringBuilder.toString().toLowerCase();
         final String pojInputWithoutTone = LomajiConverter.removeToneNumberAndHyphens(pojInputWithNumberTone);
 
-        prepareImeDict(taigiWord, tailoPhrase, tailoInputWithNumberTone, tailoInputWithoutTone, pojPhrase, pojInputWithNumberTone, pojInputWithoutTone, taigiWord.getHanji());
+        prepareImeDict(taigiWord, tailoPhrase, tailoInputWithNumberTone, tailoInputWithoutTone, pojPhrase, pojInputWithNumberTone, pojInputWithoutTone, taigiWord.getHanji(), lomajiWordToneNumber);
     }
 
-    private void prepareImeDict(TlTaigiWord taigiWord, String lomajiPhrase, String lomajiInputWithNumberTone, String lomajiInputWithoutTone, String pojPhrase, String pojInputWithNumberTone, String pojInputWithoutTone, String hanji) {
+    private void prepareImeDict(TlTaigiWord taigiWord, String lomajiPhrase, String lomajiInputWithNumberTone, String lomajiInputWithoutTone, String pojPhrase, String pojInputWithNumberTone, String pojInputWithoutTone, String hanji, int firstWordToneNumber) {
         ImeDict newImeDict = new ImeDict();
 
         newImeDict.setMainCode(taigiWord.getMainCode());
@@ -323,6 +333,7 @@ public class TlParseIntentService extends IntentService {
         newImeDict.setPojInputWithNumberTone(pojInputWithNumberTone);
         newImeDict.setPojInputWithoutTone(pojInputWithoutTone);
         newImeDict.setHanji(hanji);
+        newImeDict.setFirstWordToneNumber(firstWordToneNumber);
 
         for (ImeDict imeDict : mImeDictArrayList) {
             if (newImeDict.getTailo().equals(imeDict.getTailo()) && newImeDict.getHanji().equals(imeDict.getHanji())) {

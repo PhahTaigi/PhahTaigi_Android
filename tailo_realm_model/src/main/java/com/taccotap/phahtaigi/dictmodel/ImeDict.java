@@ -37,6 +37,8 @@ public class ImeDict extends RealmObject {
     @Required
     private String pojInputWithoutTone;
 
+    private int firstWordToneNumber;
+
     @Index
     @Required
     private String hanji;
@@ -111,6 +113,14 @@ public class ImeDict extends RealmObject {
 
     public void setPojInputWithoutTone(String pojInputWithoutTone) {
         this.pojInputWithoutTone = pojInputWithoutTone;
+    }
+
+    public int getFirstWordToneNumber() {
+        return firstWordToneNumber;
+    }
+
+    public void setFirstWordToneNumber(int firstWordToneNumber) {
+        this.firstWordToneNumber = firstWordToneNumber;
     }
 
     public String getHanji() {

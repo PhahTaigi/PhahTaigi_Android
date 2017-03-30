@@ -13,6 +13,7 @@ import io.realm.OrderedCollectionChangeSet;
 import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class TaigiCandidateController {
 
@@ -115,21 +116,21 @@ public class TaigiCandidateController {
             if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .equalTo("tailoInputWithoutTone", search)
-                        .findAllAsync();
+                        .findAllSortedAsync("firstWordToneNumber", Sort.ASCENDING);
             } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .equalTo("pojInputWithoutTone", search)
-                        .findAllAsync();
+                        .findAllSortedAsync("firstWordToneNumber", Sort.ASCENDING);
             }
         } else {
             if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .equalTo("tailoInputWithNumberTone", search)
-                        .findAllAsync();
+                        .findAllSortedAsync("firstWordToneNumber", Sort.ASCENDING);
             } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .equalTo("pojInputWithNumberTone", search)
-                        .findAllAsync();
+                        .findAllSortedAsync("firstWordToneNumber", Sort.ASCENDING);
             }
         }
 

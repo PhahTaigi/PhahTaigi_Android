@@ -61,7 +61,7 @@ public class TaigiKeyboard extends Keyboard {
     private Bitmap getSpaceBarBitmap(Context context) {
         final Resources resources = context.getResources();
         final DisplayMetrics displayMetrics = resources.getDisplayMetrics();
-        Log.d(TAG, "screen density: " + displayMetrics.density);
+        Log.i(TAG, "screen density: " + displayMetrics.density);
 
         mSpaceIcon = resources.getDrawable(R.drawable.btn_keyboard_spacebar_lxx_dark);
 

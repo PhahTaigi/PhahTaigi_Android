@@ -3,11 +3,14 @@ package com.taccotap.phahtaigi;
 import android.app.Application;
 import android.content.ContextWrapper;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.eggheadgames.realmassethelper.IRealmAssetHelperStorageListener;
 import com.eggheadgames.realmassethelper.RealmAssetHelper;
 import com.eggheadgames.realmassethelper.RealmAssetHelperStatus;
 import com.pixplicity.easyprefs.library.Prefs;
 
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -19,6 +22,18 @@ public class PhahTaigiApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (BuildConfig.DEBUG) {
+            // Set up Crashlytics, disabled for debug builds
+            Crashlytics crashlyticsKit = new Crashlytics.Builder()
+                    .core(new CrashlyticsCore.Builder().disabled(true).build())
+                    .build();
+
+            // Initialize Fabric with the debug-disabled crashlytics.
+            Fabric.with(this, crashlyticsKit);
+        } else {
+            Fabric.with(this, new Crashlytics());
+        }
 
         new Prefs.Builder()
                 .setContext(this)

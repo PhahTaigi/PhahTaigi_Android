@@ -1,4 +1,14 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 apply plugin: 'realm-android'
 
 android {
@@ -41,6 +51,7 @@ android {
 
 repositories {
     maven { url "http://dl.bintray.com/pixplicity/maven" }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 dependencies {
@@ -55,4 +66,7 @@ dependencies {
     compile 'com.pixplicity.easyprefs:library:1.8.1@aar'
 
     compile 'com.github.eggheadgames:android-realm-asset-helper:2.0.0'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
+        transitive = true;
+    }
 }

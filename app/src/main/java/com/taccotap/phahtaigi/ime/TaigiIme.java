@@ -433,7 +433,10 @@ public class TaigiIme extends InputMethodService
 
         if (mTaigiCandidateController != null) {
             mTaigiCandidateController.setRawInput(rawInput);
-            Log.d(TAG, "setRawInputForCandidate: " + rawInput);
+
+            if (BuildConfig.DEBUG_LOG) {
+                Log.d(TAG, "setRawInputForCandidate: " + rawInput);
+            }
         }
     }
 
@@ -492,12 +495,16 @@ public class TaigiIme extends InputMethodService
     }
 
     private void handleCharacter(int primaryCode, int[] keyCodes) {
-        Log.d(TAG, "handleCharacter: " + primaryCode + ", keyCodes: " + keyCodes);
+        if (BuildConfig.DEBUG_LOG) {
+            Log.d(TAG, "handleCharacter: " + primaryCode + ", keyCodes: " + keyCodes);
+        }
 
         if (isInputViewShown()) {
             if (mTaigiKeyboardView.isShifted()) {
-                Log.d(TAG, "mTaigiKeyboardView.isShifted() = " + mTaigiKeyboardView.isShifted());
-                Log.d(TAG, "mIsCapsLock = " + mIsCapsLock);
+                if (BuildConfig.DEBUG_LOG) {
+                    Log.d(TAG, "mTaigiKeyboardView.isShifted() = " + mTaigiKeyboardView.isShifted());
+                    Log.d(TAG, "mIsCapsLock = " + mIsCapsLock);
+                }
 
                 primaryCode = Character.toUpperCase(primaryCode);
 
@@ -535,13 +542,19 @@ public class TaigiIme extends InputMethodService
                 }
             }
 
-            Log.d(TAG, "handleAutoCaps(): inputText = " + inputText);
+            if (BuildConfig.DEBUG_LOG) {
+                Log.d(TAG, "handleAutoCaps(): inputText = " + inputText);
+            }
 
             if (TextUtils.isEmpty(inputText)) {
                 mTaigiKeyboardView.setShifted(true);
             } else {
                 final String lastChar = inputText.substring(inputText.length() - 1);
-                Log.d(TAG, "handleAutoCaps(): lastChar = " + lastChar);
+
+                if (BuildConfig.DEBUG_LOG) {
+                    Log.d(TAG, "handleAutoCaps(): lastChar = " + lastChar);
+                }
+
                 if (mWordEndingSentence.contains(lastChar)) {
                     mTaigiKeyboardView.setShifted(true);
                 } else {

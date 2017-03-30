@@ -14,15 +14,16 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.R;
 import com.taccotap.phahtaigi.dictmodel.ImeDict;
 import com.taccotap.phahtaigi.ime.TaigiIme;
 
 import java.util.ArrayList;
 
-import static android.content.ContentValues.TAG;
-
 public class TaigiCandidateView extends View {
+    private static final String TAG = TaigiCandidateView.class.getSimpleName();
+
     private static final int OUT_OF_BOUNDS = -1;
 
     private static final int SCROLL_PIXELS = 20;
@@ -284,10 +285,10 @@ public class TaigiCandidateView extends View {
         final int scrollX = getScrollX();
         final boolean scrolled = mScrolled;
 
-        for (int i = 0; i < count; i++) {
-            ImeDict imeDict = mSuggestions.get(i);
-            Log.e(TAG, "hanji=" + imeDict.getHanji() + ", tailo=" + imeDict.getTailo() + ", poj=" + imeDict.getPoj());
-        }
+//        for (int i = 0; i < count; i++) {
+//            ImeDict imeDict = mSuggestions.get(i);
+//            Log.e(TAG, "hanji=" + imeDict.getHanji() + ", tailo=" + imeDict.getTailo() + ", poj=" + imeDict.getPoj());
+//        }
 
         for (int i = 0; i < count; i++) {
             ImeDict imeDict = mSuggestions.get(i);
@@ -320,7 +321,9 @@ public class TaigiCandidateView extends View {
                 }
             }
 
-            Log.d(TAG, "mainCandidate=" + mainCandidate + ", hintCandidate=" + hintCandidate);
+            if (BuildConfig.DEBUG_LOG) {
+                Log.d(TAG, "mainCandidate=" + mainCandidate + ", hintCandidate=" + hintCandidate);
+            }
 
             final float mainTextWidth = mSuggestionsMainPaint.measureText(mainCandidate);
             final float hintTextWidth = mSuggestionsHintPaint.measureText(hintCandidate);

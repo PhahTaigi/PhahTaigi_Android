@@ -2,6 +2,7 @@ package com.taccotap.phahtaigi.ime.converter;
 
 import android.util.Log;
 
+import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.ime.TaigiIme;
 
 import java.util.regex.Matcher;
@@ -91,13 +92,17 @@ public class RawInputParserUtils {
     }
 
     private static String parseInputToPoj(String lomaji) {
-        Log.d(TAG, "parseInputToPoj: lomaji = " + lomaji);
+        if (BuildConfig.DEBUG_LOG) {
+            Log.d(TAG, "parseInputToPoj: lomaji = " + lomaji);
+        }
 
         String poj = lomaji.replace("OO", "O͘")
                 .replace("Oo", "O͘")
                 .replace("oo", "o͘");
 
-        Log.d(TAG, "parseInputToPoj: poj = " + poj);
+        if (BuildConfig.DEBUG_LOG) {
+            Log.d(TAG, "parseInputToPoj: poj = " + poj);
+        }
 
         if (poj.indexOf("nn") > 0) {
             poj = poj.replace("nn", "ⁿ");
@@ -111,26 +116,39 @@ public class RawInputParserUtils {
                 .replace("o̍͘h", "o̍͘ h")
                 .replace("O̍͘h", "O̍͘ h");
 
-        Log.d(TAG, "parseInputToPoj: final poj = " + poj);
+        if (BuildConfig.DEBUG_LOG) {
+            Log.d(TAG, "parseInputToPoj: final poj = " + poj);
+        }
 
         return poj;
     }
 
     private static String parseNumberToneWordToLomaji(String numberToneWord, int inputLomajiMode) {
-        Log.d(TAG, "parseNumberToneWordToLomaji: numberToneWord = " + numberToneWord);
+        if (BuildConfig.DEBUG_LOG) {
+            Log.d(TAG, "parseNumberToneWordToLomaji: numberToneWord = " + numberToneWord);
+        }
 
         final int numberToneIndex = findCorrectNumberToneIndex(numberToneWord);
-        Log.d(TAG, "findCorrectNumberToneIndex: numberToneIndex = " + numberToneIndex);
+
+        if (BuildConfig.DEBUG_LOG) {
+            Log.d(TAG, "findCorrectNumberToneIndex: numberToneIndex = " + numberToneIndex);
+        }
+
         if (numberToneIndex == -1) {
             return numberToneWord;
         }
 
         char foundNumberChar = numberToneWord.charAt(numberToneIndex);
         int numberTone = Character.getNumericValue(foundNumberChar);
-        Log.d(TAG, "numberTone = " + numberTone);
+
+        if (BuildConfig.DEBUG_LOG) {
+            Log.d(TAG, "numberTone = " + numberTone);
+        }
 
         String correctNumberToneWord = numberToneWord.substring(0, numberToneIndex + 1);
-        Log.d(TAG, "correctNumberToneWord = " + correctNumberToneWord);
+        if (BuildConfig.DEBUG_LOG) {
+            Log.d(TAG, "correctNumberToneWord = " + correctNumberToneWord);
+        }
 
         resetTempArray();
 
@@ -180,7 +198,10 @@ public class RawInputParserUtils {
             }
         }
 
-        Log.d(TAG, "foundToneCharPosition = " + foundToneCharPosition);
+        if (BuildConfig.DEBUG_LOG) {
+            Log.d(TAG, "foundToneCharPosition = " + foundToneCharPosition);
+        }
+
         if (foundToneCharPosition != -1) {
             foundToneCharPosition = findCorrectToneCharPosition(correctNumberToneWord, foundToneCharPosition);
             char toneChar = correctNumberToneWord.charAt(foundToneCharPosition);

@@ -28,6 +28,10 @@
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="56f6c59e6d2df1c57f30da94fa521346a381b383" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

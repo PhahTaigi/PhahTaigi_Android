@@ -9,12 +9,10 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.R;
 import com.taccotap.phahtaigi.dictmodel.ImeDict;
 import com.taccotap.phahtaigi.ime.TaigiIme;
@@ -321,9 +319,9 @@ public class TaigiCandidateView extends View {
                 }
             }
 
-            if (BuildConfig.DEBUG_LOG) {
-                Log.d(TAG, "mainCandidate=" + mainCandidate + ", hintCandidate=" + hintCandidate);
-            }
+//            if (BuildConfig.DEBUG_LOG) {
+//                Log.d(TAG, "mainCandidate=" + mainCandidate + ", hintCandidate=" + hintCandidate);
+//            }
 
             final float mainTextWidth = mSuggestionsMainPaint.measureText(mainCandidate);
             final float hintTextWidth = mSuggestionsHintPaint.measureText(hintCandidate);
@@ -458,7 +456,7 @@ public class TaigiCandidateView extends View {
                 if (!mScrolled) {
                     if (mSelectedIndex >= 0) {
                         final ImeDict imeDict = mSuggestions.get(mSelectedIndex);
-                        if (mIsMainCandidateLomaji) {
+                        if (mSelectedIndex == 0 || mIsMainCandidateLomaji) {
                             if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
                                 mService.commitPickedSuggestion(imeDict.getTailo());
                             } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {

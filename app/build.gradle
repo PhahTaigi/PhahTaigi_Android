@@ -60,9 +60,12 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
 
     compile project(':tailo_realm_model')
+
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
+        transitive = true;
+    }
 
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
@@ -71,7 +74,11 @@ dependencies {
 
     compile 'com.github.eggheadgames:android-realm-asset-helper:2.0.0'
 
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
-        transitive = true;
-    }
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    // ButterKnife
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
+    testCompile 'junit:junit:4.12'
 }

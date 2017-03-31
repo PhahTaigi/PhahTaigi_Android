@@ -16,6 +16,7 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 public class TaigiCandidateController {
+    private static final String TAG = TaigiCandidateController.class.getSimpleName();
 
     private TaigiCandidateView mTaigiCandidateView;
     private int mCurrentInputLomajiMode = TaigiIme.INPUT_LOMAJI_MODE_TAILO;
@@ -118,21 +119,21 @@ public class TaigiCandidateController {
             if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .equalTo("tailoInputWithoutTone", search)
-                        .findAllSortedAsync("firstWordToneNumber", Sort.ASCENDING);
+                        .findAllSortedAsync("priority", Sort.ASCENDING);
             } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .equalTo("pojInputWithoutTone", search)
-                        .findAllSortedAsync("firstWordToneNumber", Sort.ASCENDING);
+                        .findAllSortedAsync("priority", Sort.ASCENDING);
             }
         } else {
             if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
                 mImeDicts = mRealm.where(ImeDict.class)
-                        .equalTo("tailoInputWithNumberTone", search)
-                        .findAllSortedAsync("firstWordToneNumber", Sort.ASCENDING);
+                        .beginsWith("tailoInputWithNumberTone", search)
+                        .findAllSortedAsync("priority", Sort.ASCENDING);
             } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
-                        .equalTo("pojInputWithNumberTone", search)
-                        .findAllSortedAsync("firstWordToneNumber", Sort.ASCENDING);
+                        .beginsWith("pojInputWithNumberTone", search)
+                        .findAllSortedAsync("priority", Sort.ASCENDING);
             }
         }
 
@@ -146,27 +147,21 @@ public class TaigiCandidateController {
                 ArrayList<ImeDict> suggestions = new ArrayList<>();
 
                 for (ImeDict imeDict : imeDicts) {
-                    ImeDict newImeDict = new ImeDict();
+                    ImeDict newImeDict = new ImeDict(imeDict);
 
                     if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
                         if (mRawInput.toUpperCase().equals(mRawInput)) {
                             newImeDict.setTailo(imeDict.getTailo().toUpperCase());
                         } else if (mRawInput.substring(0, 1).toUpperCase().equals(mRawInput.substring(0, 1))) {
                             newImeDict.setTailo(imeDict.getTailo().substring(0, 1).toUpperCase() + imeDict.getTailo().substring(1));
-                        } else {
-                            newImeDict.setTailo(imeDict.getTailo());
                         }
                     } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
                         if (mRawInput.toUpperCase().equals(mRawInput)) {
                             newImeDict.setPoj(imeDict.getPoj().toUpperCase());
                         } else if (mRawInput.substring(0, 1).toUpperCase().equals(mRawInput.substring(0, 1))) {
                             newImeDict.setPoj(imeDict.getPoj().substring(0, 1).toUpperCase() + imeDict.getPoj().substring(1));
-                        } else {
-                            newImeDict.setPoj(imeDict.getPoj());
                         }
                     }
-
-                    newImeDict.setHanji(imeDict.getHanji());
 
                     suggestions.add(newImeDict);
                 }
@@ -174,6 +169,25 @@ public class TaigiCandidateController {
                 mCandidateImeDicts.clear();
                 mCandidateImeDicts.add(mInputImeDict);
                 mCandidateImeDicts.addAll(suggestions);
+
+//                // why Realm sorting failed?
+//                Collections.sort(mCandidateImeDicts, new Comparator<ImeDict>() {
+//                    @Override
+//                    public int compare(ImeDict o1, ImeDict o2) {
+//                        if (o1.getPriority() < o2.getPriority()) {
+//                            return 1;
+//                        } else if (o1.getPriority() > o2.getPriority()) {
+//                            return -1;
+//                        } else {
+//                            return 0;
+//                        }
+//                    }
+//                });
+
+//                for (ImeDict imeDict : mCandidateImeDicts) {
+//                    Log.d(TAG, "tailo=" + imeDict.getTailo() + ", priority=" + imeDict.getPriority());
+//                }
+
                 mTaigiCandidateView.setSuggestions(mRawInput, mCandidateImeDicts, mCurrentInputLomajiMode);
             }
         });

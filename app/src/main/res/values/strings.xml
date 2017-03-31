@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Phah Taigi 臺語輸入法</string>
+    <string name="app_name">Phah Tâi-gí 臺語輸入法</string>
+    <string name="app_start_title">設定輸入法 - Phah Tâi-gí</string>
 
     <!-- Titles for ImePreference -->
     <string name="settings_name">Phah Taigi Keyboard Settings</string>
@@ -19,4 +20,15 @@
     <!-- Labels for subtype -->
     <string name="label_subtype_taigi">Tâi-gí 臺語</string>
     <string name="spacekey_text">Phah Tâi-gí</string>
+
+    <string name="activity_start_step_one">第一步：</string>
+    <string name="activity_start_step_one_desc">佇「語言與輸入設定」內底，kā「Phah Tâi-gí 臺語輸入法」phah予開。</string>
+    <string name="activity_start_step_one_button">Kā輸入法phah開</string>
+    <string name="activity_start_step_two">第二步：</string>
+    <string name="activity_start_step_two_desc">選「Phah Tâi-gí 臺語輸入法」做 tsit-má 欲用 ê 輸入法。</string>
+    <string name="activity_start_step_two_button">選Phah Tâi-gí輸入法</string>
+    <string name="activity_start_step_three">第三步：</string>
+    <string name="activity_start_step_three_desc">開始 phah 字！</string>
+    <string name="activity_start_feedback_button">問題kap建議</string>
+    <string name="activity_start_button_finish">完成！</string>
 </resources>

@@ -240,7 +240,7 @@ public class TlParseIntentService extends IntentService {
         LomajiPhraseSplitter lomajiPhraseSplitter = new LomajiPhraseSplitter();
         final LomajiPhraseSplitter.LomajiPhraseSplitterResult lomajiPhraseSplitterResult = lomajiPhraseSplitter.split(tailoPhrase);
 
-        int lomajiWordToneNumber = 10;
+        long priority = 0;
         if (lomajiPhraseSplitterResult.getSplitSperators().size() > 0) {
             final ArrayList<String> tailoWords = lomajiPhraseSplitterResult.getSplitStrings();
 
@@ -273,17 +273,20 @@ public class TlParseIntentService extends IntentService {
                     final String pojNumberWord = LomajiConverter.convertTailoNumberWordToPojNumberWord(tailoInputWithNumberTone);
                     final String pojWord = PojInputConverter.convertPojNumberToPoj(pojNumberWord);
 
-                    if (i == 0) {
-                        lomajiWordToneNumber = LomajiConverter.getLomajiWordToneNumber(tailoInputWithNumberTone);
+                    int thisLomajiWordToneNumber = LomajiConverter.getLomajiWordToneNumber(tailoInputWithNumberTone);
+
+                    priority += thisLomajiWordToneNumber * (int) (Math.pow(10, i));
+                    if (priority < 0) {
+                        priority = Long.MAX_VALUE;
                     }
 
                     if (isStorePerWord) {
                         final String tailoInputWithoutTone = LomajiConverter.removeToneNumberAndHyphens(tailoInputWithNumberTone.toLowerCase());
                         final String pojInputWithoutTone = LomajiConverter.removeToneNumberAndHyphens(pojInputWithNumberTone.toLowerCase());
 
-                        int toneNumber = LomajiConverter.getLomajiWordToneNumber(tailoInputWithNumberTone);
+                        int thisPriority = LomajiConverter.getLomajiWordToneNumber(tailoInputWithNumberTone);
 
-                        prepareImeDict(taigiWord, tailoWord, tailoInputWithNumberTone.toLowerCase(), tailoInputWithoutTone, pojWord, pojInputWithNumberTone.toLowerCase(), pojInputWithoutTone, hanjiWord, toneNumber);
+                        prepareImeDict(taigiWord, tailoWord, tailoInputWithNumberTone.toLowerCase(), tailoInputWithoutTone, pojWord, pojInputWithNumberTone.toLowerCase(), pojInputWithoutTone, hanjiWord, thisPriority);
                     }
 
                     tailoNumberWordsStringBuilder.append(tailoInputWithNumberTone);
@@ -303,7 +306,7 @@ public class TlParseIntentService extends IntentService {
             final String pojNumberWord = LomajiConverter.convertTailoNumberWordToPojNumberWord(tailoNumberWord);
             final String pojWord = PojInputConverter.convertPojNumberToPoj(pojNumberWord);
 
-            lomajiWordToneNumber = LomajiConverter.getLomajiWordToneNumber(tailoNumberWord);
+            priority = LomajiConverter.getLomajiWordToneNumber(tailoNumberWord);
 
             tailoNumberWordsStringBuilder.append(tailoNumberWord);
             pojNumberWordsStringBuilder.append(pojInputWord);
@@ -318,10 +321,10 @@ public class TlParseIntentService extends IntentService {
         final String pojInputWithNumberTone = pojNumberWordsStringBuilder.toString().toLowerCase();
         final String pojInputWithoutTone = LomajiConverter.removeToneNumberAndHyphens(pojInputWithNumberTone);
 
-        prepareImeDict(taigiWord, tailoPhrase, tailoInputWithNumberTone, tailoInputWithoutTone, pojPhrase, pojInputWithNumberTone, pojInputWithoutTone, taigiWord.getHanji(), lomajiWordToneNumber);
+        prepareImeDict(taigiWord, tailoPhrase, tailoInputWithNumberTone, tailoInputWithoutTone, pojPhrase, pojInputWithNumberTone, pojInputWithoutTone, taigiWord.getHanji(), priority);
     }
 
-    private void prepareImeDict(TlTaigiWord taigiWord, String lomajiPhrase, String lomajiInputWithNumberTone, String lomajiInputWithoutTone, String pojPhrase, String pojInputWithNumberTone, String pojInputWithoutTone, String hanji, int firstWordToneNumber) {
+    private void prepareImeDict(TlTaigiWord taigiWord, String lomajiPhrase, String lomajiInputWithNumberTone, String lomajiInputWithoutTone, String pojPhrase, String pojInputWithNumberTone, String pojInputWithoutTone, String hanji, long priority) {
         ImeDict newImeDict = new ImeDict();
 
         newImeDict.setMainCode(taigiWord.getMainCode());
@@ -333,7 +336,7 @@ public class TlParseIntentService extends IntentService {
         newImeDict.setPojInputWithNumberTone(pojInputWithNumberTone);
         newImeDict.setPojInputWithoutTone(pojInputWithoutTone);
         newImeDict.setHanji(hanji);
-        newImeDict.setFirstWordToneNumber(firstWordToneNumber);
+        newImeDict.setPriority(priority);
 
         for (ImeDict imeDict : mImeDictArrayList) {
             if (newImeDict.getTailo().equals(imeDict.getTailo()) && newImeDict.getHanji().equals(imeDict.getHanji())) {

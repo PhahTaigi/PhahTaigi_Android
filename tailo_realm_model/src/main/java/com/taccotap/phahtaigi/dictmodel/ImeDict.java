@@ -37,11 +37,28 @@ public class ImeDict extends RealmObject {
     @Required
     private String pojInputWithoutTone;
 
-    private int firstWordToneNumber;
+    private long priority;
 
     @Index
     @Required
     private String hanji;
+
+    public ImeDict() {
+    }
+
+    public ImeDict(ImeDict imeDict) {
+        this.wordId = imeDict.getWordId();
+        this.mainCode = imeDict.getMainCode();
+        this.wordPropertyCode = imeDict.getWordPropertyCode();
+        this.tailo = imeDict.getTailo();
+        this.tailoInputWithNumberTone = imeDict.getTailoInputWithNumberTone();
+        this.tailoInputWithoutTone = imeDict.getTailoInputWithoutTone();
+        this.poj = imeDict.getPoj();
+        this.pojInputWithNumberTone = imeDict.getPojInputWithNumberTone();
+        this.pojInputWithoutTone = imeDict.getPojInputWithoutTone();
+        this.hanji = imeDict.getHanji();
+        this.priority = imeDict.getPriority();
+    }
 
     public int getWordId() {
         return wordId;
@@ -115,19 +132,19 @@ public class ImeDict extends RealmObject {
         this.pojInputWithoutTone = pojInputWithoutTone;
     }
 
-    public int getFirstWordToneNumber() {
-        return firstWordToneNumber;
-    }
-
-    public void setFirstWordToneNumber(int firstWordToneNumber) {
-        this.firstWordToneNumber = firstWordToneNumber;
-    }
-
     public String getHanji() {
         return hanji;
     }
 
     public void setHanji(String hanji) {
         this.hanji = hanji;
+    }
+
+    public long getPriority() {
+        return priority;
+    }
+
+    public void setPriority(long priority) {
+        this.priority = priority;
     }
 }

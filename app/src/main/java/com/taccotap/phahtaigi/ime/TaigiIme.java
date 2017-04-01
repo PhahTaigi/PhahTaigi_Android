@@ -16,15 +16,18 @@
 
 package com.taccotap.phahtaigi.ime;
 
+import android.app.Dialog;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.os.IBinder;
 import android.support.annotation.IdRes;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
@@ -600,22 +603,28 @@ public class TaigiIme extends InputMethodService
     public void commitRawInputSuggestion() {
         final String rawInputSuggestion = mTaigiCandidateController.getRawInputSuggestion();
         if (!TextUtils.isEmpty(rawInputSuggestion)) {
-            getCurrentInputConnection().commitText(rawInputSuggestion, rawInputSuggestion.length());
+            getCurrentInputConnection().commitText(rawInputSuggestion, 0);
             mComposing.setLength(0);
             updateInputForCandidate();
         }
     }
 
     public void commitPickedSuggestion(String pickedSuggestion) {
-        getCurrentInputConnection().commitText(pickedSuggestion, pickedSuggestion.length());
+        getCurrentInputConnection().commitText(pickedSuggestion, 0);
         mComposing.setLength(0);
         updateInputForCandidate();
     }
 
+//    private int getCurrentCursorPosition() {
+//        return getCurrentInputConnection().getExtractedText(new ExtractedTextRequest(), 0).selectionEnd;
+//    }
+
     public void swipeRight() {
+        switchToNextIme();
     }
 
     public void swipeLeft() {
+        showImePicker();
     }
 
     public void swipeDown() {
@@ -630,5 +639,25 @@ public class TaigiIme extends InputMethodService
     }
 
     public void onRelease(int primaryCode) {
+    }
+
+    private void switchToNextIme() {
+        mInputMethodManager.switchToNextInputMethod(getToken(), false);
+    }
+
+    private void showImePicker() {
+        mInputMethodManager.showInputMethodPicker();
+    }
+
+    private IBinder getToken() {
+        final Dialog dialog = getWindow();
+        if (dialog == null) {
+            return null;
+        }
+        final Window window = dialog.getWindow();
+        if (window == null) {
+            return null;
+        }
+        return window.getAttributes().token;
     }
 }

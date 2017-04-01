@@ -51,9 +51,9 @@ public class TaigiCandidateController {
     public void setCurrentInputLomajiMode(int currentInputLomajiMode) {
         mCurrentInputLomajiMode = currentInputLomajiMode;
 
-        // TODO parse current raw input first?
-
-        updateCandidateView();
+        if (mCurrentInputLomajiMode != TaigiIme.INPUT_LOMAJI_MODE_NONE) {
+            updateCandidateView();
+        }
     }
 
     public int getCurrentInputLomajiMode() {

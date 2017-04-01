@@ -69,16 +69,19 @@ dependencies {
 
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
-
-    compile 'com.pixplicity.easyprefs:library:1.8.1@aar'
-
-    compile 'com.github.eggheadgames:android-realm-asset-helper:2.0.0'
-
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    // Icon
+    compile 'com.mikepenz:iconics-core:2.8.2@aar'
+    compile 'com.mikepenz:community-material-typeface:1.7.22.1@aar'
 
     // ButterKnife
     compile 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
+    compile 'com.pixplicity.easyprefs:library:1.8.1@aar'
+    compile 'com.github.eggheadgames:android-realm-asset-helper:2.0.0'
+    compile 'com.github.daniel-stoneuk:material-about-library:1.8.2'
 
     testCompile 'junit:junit:4.12'
 }

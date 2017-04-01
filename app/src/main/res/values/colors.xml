@@ -21,4 +21,6 @@
     <color name="candidate_recommended">#afd4b3</color>
     <color name="candidate_other">#ff808080</color>
     <color name="candidate_background">#324048</color>
+
+    <color name="mal_color_primary">#4b8308</color>
 </resources>

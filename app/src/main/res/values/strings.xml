@@ -31,4 +31,17 @@
     <string name="activity_start_step_three_desc">開始 phah 字！</string>
     <string name="activity_start_feedback_button">問題kap建議</string>
     <string name="activity_start_button_finish">完成！</string>
+    <string name="title_activity_about">AboutActivity</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="about_version_item_text">版本</string>
+    <string name="about_feedback_card_title_text">問題 kap 建議</string>
+    <string name="about_facebook_group_item_text">面冊 ê 社團</string>
+    <string name="about_facebook_group_url">https://www.facebook.com/groups/PhahTaigiApp/</string>
+    <string name="about_author_card_title_text">作者</string>
+    <string name="about_author_item_text">Hê-bí</string>
+    <string name="about_author_item_subtext">Tánn-káu, Tâi-oân</string>
+    <string name="about_email_me_item_text">寫批予我</string>
+    <string name="about_feedback_email">taccotap@gmail.com</string>
+    <string name="about_email_me_mail_title">臺語辭典APP ê 建議 kap 指教</string>
 </resources>

@@ -34,6 +34,14 @@
         </activity>
 
         <activity
+            android:name=".about.AboutActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".preferences.ImePreferencesActivity"
             android:label="@string/app_name">
             <intent-filter>
@@ -44,6 +52,7 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="56f6c59e6d2df1c57f30da94fa521346a381b383"/>
+
     </application>
 
 </manifest>

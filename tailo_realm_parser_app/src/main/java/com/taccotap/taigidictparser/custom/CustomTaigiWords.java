@@ -29,5 +29,19 @@ public class CustomTaigiWords {
         taigiWord2.setLomaji("Pe̍h-uē-jī");
         taigiWord2.setHanji("白話字");
         sTaigiWordArrayList.add(taigiWord2);
+
+        TlTaigiWord taigiWord3 = new TlTaigiWord();
+        taigiWord3.setMainCode(100003);
+        taigiWord3.setWordPropertyCode(1);
+        taigiWord3.setLomaji("POJ");
+        taigiWord3.setHanji("白話字");
+        sTaigiWordArrayList.add(taigiWord3);
+
+        TlTaigiWord taigiWord4 = new TlTaigiWord();
+        taigiWord4.setMainCode(100004);
+        taigiWord4.setWordPropertyCode(1);
+        taigiWord4.setLomaji("LMJ");
+        taigiWord4.setHanji("羅馬字");
+        sTaigiWordArrayList.add(taigiWord4);
     }
 }

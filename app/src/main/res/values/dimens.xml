@@ -19,10 +19,11 @@
 -->
 
 <resources>
-    <dimen name="taigi_key_height">50dip</dimen>
+    <dimen name="taigi_key_height">52dip</dimen>
 
     <dimen name="candidate_raw_input_font_height">20sp</dimen>
     <dimen name="candidate_main_font_height">28sp</dimen>
     <dimen name="candidate_hint_font_height">14sp</dimen>
     <dimen name="candidate_vertical_padding">6sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

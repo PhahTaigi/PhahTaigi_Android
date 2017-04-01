@@ -30,20 +30,69 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/keyboard_background_lxx_dark"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:visibility="gone">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:text="提醒：佇鍵盤對下底撇去頂面會使叫出設定，抑是符號鍵盤(:;0)內底。"
+                    android:textColor="#faaa"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/aboutButton"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:backgroundTint="#325261"
+                android:text="？"
+                android:textColor="#feee"
+                android:textSize="14sp"/>
+
+            <Button
+                android:id="@+id/keyboardSettingCloseButton"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:backgroundTint="#325261"
+                android:text="Ｘ"
+                android:textColor="#feee"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <RadioGroup
                 android:id="@+id/lomajiSelectionRadioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <RadioButton
@@ -53,7 +102,7 @@
                     android:buttonTint="#fccc"
                     android:text="Tâi-lô 臺羅"
                     android:textColor="#fccc"
-                    android:textSize="16sp"/>
+                    android:textSize="15sp"/>
 
                 <RadioButton
                     android:id="@+id/pojRadioButton"
@@ -61,28 +110,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:buttonTint="#fccc"
-                    android:text="Pe̍h-ōe-jī 白話字"
+                    android:text="POJ 白話字"
                     android:textColor="#fccc"
-                    android:textSize="16sp"/>
+                    android:textSize="15sp"/>
+
+                <RadioButton
+                    android:id="@+id/englishRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:buttonTint="#fccc"
+                    android:text="EN 英文"
+                    android:textColor="#fccc"
+                    android:textSize="15sp"/>
             </RadioGroup>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right|center_vertical"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/keyboardSettingCloseButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:backgroundTint="#4d6570"
-                android:src="@drawable/sym_keyboard_settings"/>
         </LinearLayout>
     </LinearLayout>
 

@@ -128,23 +128,23 @@
             android:codes="-2"
             android:keyEdgeFlags="left"
             android:keyLabel="返回"
-            android:keyWidth="15%p"/>
+            android:keyWidth="13%p"/>
+        <Key
+            android:codes="65307"
+            android:keyLabel="；"
+            android:keyWidth="10%p"/>
         <!--
             android:codes: -2000 is not a framework-defined key code
         -->
         <Key
             android:codes="-2000"
-            android:keyIcon="@drawable/sym_keyboard_settings"
-            android:keyWidth="15%p"/>
-        <Key
-            android:codes="65307"
-            android:keyLabel="；"
-            android:keyWidth="10%p"/>
+            android:keyLabel="設定"
+            android:keyWidth="12%p"/>
         <Key
             android:codes="32"
             android:isRepeatable="true"
             android:keyIcon="@drawable/btn_keyboard_spacebar_lxx_dark"
-            android:keyWidth="25%p"/>
+            android:keyWidth="30%p"/>
         <Key
             android:codes="65292"
             android:keyLabel="，"

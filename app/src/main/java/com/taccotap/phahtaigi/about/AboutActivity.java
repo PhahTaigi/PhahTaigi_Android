@@ -46,25 +46,35 @@ public class AboutActivity extends MaterialAboutActivity {
             e.printStackTrace();
         }
 
-        // feedback
-        MaterialAboutCard.Builder hintCardBuilder = new MaterialAboutCard.Builder();
-        hintCardBuilder.title("鍵盤 ê 手勢");
+        // gesture
+        MaterialAboutCard.Builder gestureCardBuilder = new MaterialAboutCard.Builder();
+        gestureCardBuilder.title("鍵盤 ê 手勢");
 
-        hintCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+        gestureCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text("撇去倒爿：選輸入法")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_arrow_left).sizeDp(48))
                 .build());
-        hintCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+        gestureCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text("撇去正爿：跳去下一个輸入法")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_arrow_right).sizeDp(48))
                 .build());
-        hintCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+        gestureCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text("撇去頂面：叫出設定")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_arrow_up).sizeDp(48))
                 .build());
-        hintCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text("撇去下底：kā輸入法關--起-來")
+        gestureCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text("撇去下底：Kā輸入法關--起-來")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_arrow_down).sizeDp(48))
+                .build());
+
+        // function key
+        MaterialAboutCard.Builder functionCardBuilder = new MaterialAboutCard.Builder();
+        functionCardBuilder.title("特殊 ê KEY");
+
+        functionCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text("連紲phah兩擺空白KEY：選輸入法")
+                .subText("干焦佇主要ê鍵盤有效，符號鍵盤無影響。")
+                .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_crop_landscape).sizeDp(48))
                 .build());
 
         // feedback
@@ -110,7 +120,7 @@ public class AboutActivity extends MaterialAboutActivity {
                 getString(R.string.about_feedback_email),
                 getString(R.string.about_email_me_mail_title)));
 
-        return new MaterialAboutList(appCardBuilder.build(), hintCardBuilder.build(), helpCardBuilder.build(), feedbackCardBuilder.build(), authorCardBuilder.build());
+        return new MaterialAboutList(appCardBuilder.build(), gestureCardBuilder.build(), functionCardBuilder.build(), helpCardBuilder.build(), feedbackCardBuilder.build(), authorCardBuilder.build());
     }
 
     @Nullable

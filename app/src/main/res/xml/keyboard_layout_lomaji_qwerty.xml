@@ -202,8 +202,8 @@
             android:keyLabel="LMJ"
             android:keyWidth="12%p"/>
         <Key
-            android:codes="32"
-            android:isRepeatable="true"
+            android:codes="32,-2001"
+            android:isRepeatable="false"
             android:keyIcon="@drawable/btn_keyboard_spacebar_lxx_dark"
             android:keyWidth="30%p"/>
         <Key

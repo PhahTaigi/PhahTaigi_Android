@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Vibrator;
 import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextUtils;
 import android.view.GestureDetector;
@@ -30,6 +31,7 @@ public class TaigiCandidateView extends View {
     private static final int Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION = 2;
 
     private final Context mContext;
+    private final Vibrator mVibrator;
 
     private TaigiIme mService;
     private ArrayList<ImeDict> mSuggestions = new ArrayList<>();
@@ -77,9 +79,10 @@ public class TaigiCandidateView extends View {
     private Typeface mHanjiTypeface;
     private int mCurrentInputLomajiMode;
 
-    public TaigiCandidateView(Context context) {
+    public TaigiCandidateView(Context context, Vibrator vibrator) {
         super(context);
         mContext = context;
+        mVibrator = vibrator;
         init();
     }
 
@@ -139,7 +142,7 @@ public class TaigiCandidateView extends View {
         mColorOther = resources.getColor(R.color.candidate_other);
 
         mLomajiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/twu3.ttf");
-        mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/mingliub.ttc");
+        mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/mingliub.ttf");
 
         mRawInputPaint = new Paint();
         mRawInputPaint.setColor(mColorNormal);
@@ -455,6 +458,8 @@ public class TaigiCandidateView extends View {
             case MotionEvent.ACTION_UP:
                 if (!mScrolled) {
                     if (mSelectedIndex >= 0) {
+                        mVibrator.vibrate(TaigiIme.KEY_VIBRATION_MILLISECONDS);
+
                         final ImeDict imeDict = mSuggestions.get(mSelectedIndex);
                         if (mSelectedIndex == 0 || mIsMainCandidateLomaji) {
                             if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {

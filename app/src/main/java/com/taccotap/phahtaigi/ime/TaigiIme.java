@@ -17,17 +17,20 @@
 package com.taccotap.phahtaigi.ime;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.annotation.IdRes;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -63,6 +66,8 @@ public class TaigiIme extends InputMethodService
     public static final int INPUT_LOMAJI_MODE_TAILO = 0;
     public static final int INPUT_LOMAJI_MODE_POJ = 1;
 
+    public static final int KEY_VIBRATION_MILLISECONDS = 5;
+
     private static final String PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE = "PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE";
     private static final String PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME = "PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME";
 
@@ -70,6 +75,7 @@ public class TaigiIme extends InputMethodService
     private String mWordEndingSentence;
 
     private InputMethodManager mInputMethodManager;
+    private Vibrator mVibrator;
     private TaigiKeyboardView mTaigiKeyboardView;
     private TaigiCandidateView mTaigiCandidateView;
 
@@ -87,6 +93,9 @@ public class TaigiIme extends InputMethodService
     private boolean mIsCapsLock;
     private long mLastShiftTime;
 
+    private int mLastPrimaryKey = -9999;
+    private long mLastPrimaryKeyTime = 0;
+
     /**
      * Main initialization of the input method component.  Be sure to call
      * to super class.
@@ -95,6 +104,7 @@ public class TaigiIme extends InputMethodService
     public void onCreate() {
         super.onCreate();
         mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         mWordSeparators = getResources().getString(R.string.word_separators);
         mWordEndingSentence = getResources().getString(R.string.word_ending_sentence);
@@ -111,6 +121,12 @@ public class TaigiIme extends InputMethodService
     @Override
     public View onCreateInputView() {
         initUiComponents();
+
+        final ViewGroup viewGroup = (ViewGroup) mInputView.getParent();
+        if (viewGroup != null) {
+            viewGroup.removeView(mInputView);
+        }
+
         return mInputView;
     }
 
@@ -156,7 +172,7 @@ public class TaigiIme extends InputMethodService
         }
 
         if (mTaigiCandidateView == null) {
-            mTaigiCandidateView = new TaigiCandidateView(this);
+            mTaigiCandidateView = new TaigiCandidateView(this, mVibrator);
             mTaigiCandidateView.setService(this);
 
             mKeyboardSwitcher.setTaigiCandidateView(mTaigiCandidateView);
@@ -393,6 +409,8 @@ public class TaigiIme extends InputMethodService
         } else if (primaryCode == Keyboard.KEYCODE_CANCEL) {
             handleClose();
             return;
+        } else if (primaryCode == CustomKeycode.KEYCODE_SHOW_IME_PICKER) {
+            showImePicker();
         } else {
             handleCharacter(primaryCode, keyCodes);
         }
@@ -400,6 +418,25 @@ public class TaigiIme extends InputMethodService
         if (!isShiftKey) {
             handleAutoCaps();
         }
+
+        if (isNeedVibration(primaryCode)) {
+            mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+        }
+    }
+
+    private boolean isNeedVibration(int primaryCode) {
+        boolean isNeedVibration = true;
+
+        final long now = System.currentTimeMillis();
+        final long time = now - mLastPrimaryKeyTime;
+        if (primaryCode == mLastPrimaryKey && time < 100) {
+            isNeedVibration = false;
+        }
+
+        mLastPrimaryKey = primaryCode;
+        mLastPrimaryKeyTime = now;
+
+        return isNeedVibration;
     }
 
     private void handleOpenSettings() {
@@ -649,18 +686,22 @@ public class TaigiIme extends InputMethodService
 //    }
 
     public void swipeRight() {
+        mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
         switchToNextIme();
     }
 
     public void swipeLeft() {
+        mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
         showImePicker();
     }
 
     public void swipeDown() {
+        mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
         handleClose();
     }
 
     public void swipeUp() {
+        mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
         handleOpenSettings();
     }
 

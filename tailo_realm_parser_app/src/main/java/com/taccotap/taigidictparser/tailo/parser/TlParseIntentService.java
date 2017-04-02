@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.taccotap.phahtaigi.dictmodel.ImeDict;
 import com.taccotap.taigidictmodel.tailo.TlTaigiWord;
+import com.taccotap.taigidictmodel.tailo.TlTaigiWordOtherPronounce;
 import com.taccotap.taigidictparser.custom.CustomTaigiWords;
 import com.taccotap.taigidictparser.utils.ExcelUtils;
 import com.taccotap.taigidictparser.utils.LomajiPhraseSplitter;
@@ -18,7 +19,9 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -27,6 +30,7 @@ public class TlParseIntentService extends IntentService {
     private static final String TAG = TlParseIntentService.class.getSimpleName();
 
     private static final String ASSETS_PATH_TAILO_DICT_TAIGI_WORDS = "tailo/詞目總檔(含俗諺).xls";
+    private static final String ASSETS_PATH_TAILO_DICT_TAIGI_WORDS_ANOTHER_PRONOUNCE = "tailo/又音(又唸作).xls";
 
     private Realm mRealm;
     private ArrayList<ImeDict> mImeDictArrayList = new ArrayList<>();
@@ -51,8 +55,28 @@ public class TlParseIntentService extends IntentService {
 
         parseDictTaigiWord();
         injectCustomTaigiWords();
-        handleTaigiWords();
+        parseDictTaigiWordAnotherPronounce();
 
+        mImeDictArrayList.clear();
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                mRealm.delete(ImeDict.class);
+            }
+        });
+
+        handleDefaultTaigiWords();
+        handleAnotherPronounceTaigiWords();
+
+        storeImeDicts();
+
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                mRealm.delete(TlTaigiWord.class);
+                mRealm.delete(TlTaigiWordOtherPronounce.class);
+            }
+        });
         mRealm.close();
 
         Log.d(TAG, "finish ALL");
@@ -121,6 +145,65 @@ public class TlParseIntentService extends IntentService {
         Log.d(TAG, "finish: parseDictTaigiWord()");
     }
 
+    private void parseDictTaigiWordAnotherPronounce() {
+        Log.d(TAG, "start: parseDictTaigiWordAnotherPronounce()");
+
+        final HSSFWorkbook workbook = ExcelUtils.readExcelWorkbookFromAssetsFile(this, ASSETS_PATH_TAILO_DICT_TAIGI_WORDS_ANOTHER_PRONOUNCE);
+        if (workbook != null) {
+            final HSSFSheet firstSheet = workbook.getSheetAt(0);
+
+            Iterator rowIterator = firstSheet.rowIterator();
+            final ArrayList<TlTaigiWordOtherPronounce> taigiWordOtherPronounces = new ArrayList<>();
+
+            int rowNum = 1;
+            while (rowIterator.hasNext()) {
+                HSSFRow currentRow = (HSSFRow) rowIterator.next();
+                if (rowNum == 1) {
+                    rowNum++;
+                    continue;
+                }
+
+                Iterator cellIterator = currentRow.cellIterator();
+
+                final TlTaigiWordOtherPronounce currentTaigiWordOtherPronounce = new TlTaigiWordOtherPronounce();
+
+                int colNum = 1;
+                while (cellIterator.hasNext()) {
+                    HSSFCell currentCell = (HSSFCell) cellIterator.next();
+
+                    if (colNum == 1) {
+                        final String stringCellValue = currentCell.getStringCellValue();
+                        currentTaigiWordOtherPronounce.setIndex(Integer.valueOf(stringCellValue));
+                    } else if (colNum == 2) {
+                        final String stringCellValue = currentCell.getStringCellValue();
+                        currentTaigiWordOtherPronounce.setMainCode(Integer.valueOf(stringCellValue));
+                    } else if (colNum == 3) {
+                        currentTaigiWordOtherPronounce.setLomaji(currentCell.getStringCellValue());
+                    } else {
+                        break;
+                    }
+
+                    colNum++;
+                }
+
+                taigiWordOtherPronounces.add(currentTaigiWordOtherPronounce);
+
+                rowNum++;
+            }
+
+            mRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    for (TlTaigiWordOtherPronounce taigiWordOtherPronounce : taigiWordOtherPronounces) {
+                        realm.copyToRealmOrUpdate(taigiWordOtherPronounce);
+                    }
+                }
+            });
+
+            Log.d(TAG, "finish: parseDictTaigiWordAnotherPronounce()");
+        }
+    }
+
     private void injectCustomTaigiWords() {
         Log.d(TAG, "start: injectCustomTaigiWords()");
 
@@ -136,19 +219,47 @@ public class TlParseIntentService extends IntentService {
         Log.d(TAG, "finish: injectCustomTaigiWords()");
     }
 
-    private void handleTaigiWords() {
-        Log.d(TAG, "start: handleTaigiWords()");
-
-        mImeDictArrayList.clear();
-        mRealm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                mRealm.delete(ImeDict.class);
-            }
-        });
+    private void handleDefaultTaigiWords() {
+        Log.d(TAG, "start: handleDefaultTaigiWords()");
 
         final RealmResults<TlTaigiWord> taigiWords = mRealm.where(TlTaigiWord.class).findAll();
 
+        final ArrayList<TlTaigiWord> taigiWordArrayList = new ArrayList<>(taigiWords);
+        handleEachTaigiWord(taigiWordArrayList);
+
+        Log.d(TAG, "finish: handleDefaultTaigiWords()");
+    }
+
+    private void handleAnotherPronounceTaigiWords() {
+        Log.d(TAG, "start: handleDefaultTaigiWords()");
+
+        final RealmResults<TlTaigiWord> taigiWordRealmResults = mRealm.where(TlTaigiWord.class).findAll();
+        List<TlTaigiWord> taigiWords = mRealm.copyFromRealm(taigiWordRealmResults);
+
+        HashMap<Integer, TlTaigiWord> taigiWordsMainCodeMap = new HashMap<>();
+        for (TlTaigiWord taigiWord : taigiWords) {
+            taigiWordsMainCodeMap.put(taigiWord.getMainCode(), taigiWord);
+        }
+
+        final RealmResults<TlTaigiWordOtherPronounce> taigiWordOtherPronounces = mRealm.where(TlTaigiWordOtherPronounce.class).findAll();
+
+        final ArrayList<TlTaigiWord> taigiWordArrayList = new ArrayList<>();
+
+        for (TlTaigiWordOtherPronounce taigiWordOtherPronounce : taigiWordOtherPronounces) {
+            final TlTaigiWord taigiWord = taigiWordsMainCodeMap.get(taigiWordOtherPronounce.getMainCode());
+            if (taigiWord != null) {
+                taigiWord.setLomaji(taigiWordOtherPronounce.getLomaji());
+
+                taigiWordArrayList.add(taigiWord);
+            }
+        }
+
+        handleEachTaigiWord(taigiWordArrayList);
+
+        Log.d(TAG, "finish: handleDefaultTaigiWords()");
+    }
+
+    private void handleEachTaigiWord(ArrayList<TlTaigiWord> taigiWords) {
         int count = taigiWords.size();
         for (int i = 0; i < count; i++) {
             TlTaigiWord taigiWord = taigiWords.get(i);
@@ -185,39 +296,6 @@ public class TlParseIntentService extends IntentService {
                 handleTailoPhrase(taigiWord, tailo.trim(), hanji, isStorePerWord);
             }
         }
-
-        mRealm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                Log.d(TAG, "start: store mImeDictArrayList");
-
-                int count = mImeDictArrayList.size();
-                for (int i = 0; i < count; i++) {
-                    ImeDict imeDict = mImeDictArrayList.get(i);
-
-                    Log.d(TAG, "tailoWord=" + imeDict.getTailo() + ", tailoNumberTone=" + imeDict.getTailoInputWithNumberTone() + ", tailoWithoutTone=" + imeDict.getTailoInputWithoutTone() + ", hanjiWord=" + imeDict.getHanji() + ", poj=" + imeDict.getPoj() + ", getPojInputWithNumberTone=" + imeDict.getPojInputWithNumberTone() + ", getPojInputWithoutTone=" + imeDict.getPojInputWithoutTone());
-
-                    imeDict.setWordId(i);
-
-                    try {
-                        realm.copyToRealmOrUpdate(imeDict);
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                Log.d(TAG, "finish: store mImeDictArrayList");
-            }
-        });
-
-        mRealm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                mRealm.delete(TlTaigiWord.class);
-            }
-        });
-
-        Log.d(TAG, "finish: handleTaigiWords()");
     }
 
     private void handleTailoPhrase(TlTaigiWord taigiWord, String tailoPhrase, String hanji, boolean isStorePerWord) {
@@ -345,6 +423,32 @@ public class TlParseIntentService extends IntentService {
         }
 
         mImeDictArrayList.add(newImeDict);
+    }
+
+    private void storeImeDicts() {
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Log.d(TAG, "start: store mImeDictArrayList");
+
+                int count = mImeDictArrayList.size();
+                for (int i = 0; i < count; i++) {
+                    ImeDict imeDict = mImeDictArrayList.get(i);
+
+                    Log.d(TAG, "tailoWord=" + imeDict.getTailo() + ", tailoNumberTone=" + imeDict.getTailoInputWithNumberTone() + ", tailoWithoutTone=" + imeDict.getTailoInputWithoutTone() + ", hanjiWord=" + imeDict.getHanji() + ", poj=" + imeDict.getPoj() + ", getPojInputWithNumberTone=" + imeDict.getPojInputWithNumberTone() + ", getPojInputWithoutTone=" + imeDict.getPojInputWithoutTone());
+
+                    imeDict.setWordId(i);
+
+                    try {
+                        realm.copyToRealmOrUpdate(imeDict);
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                Log.d(TAG, "finish: store mImeDictArrayList");
+            }
+        });
     }
 
     private boolean isLomajiLengthMatchHanjiLength(int lomajiLength, String hanji) {

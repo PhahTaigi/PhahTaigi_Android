@@ -100,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:buttonTint="#fccc"
-                    android:text="Tâi-lô 臺羅"
+                    android:text="T/L 臺羅"
                     android:textColor="#fccc"
                     android:textSize="15sp"/>
 

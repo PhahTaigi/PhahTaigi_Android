@@ -30,7 +30,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -43,6 +42,7 @@ import com.pixplicity.easyprefs.library.Prefs;
 import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.R;
 import com.taccotap.phahtaigi.about.AboutActivity;
+import com.taccotap.phahtaigi.about.SponsorActivity;
 import com.taccotap.phahtaigi.ime.candidate.TaigiCandidateController;
 import com.taccotap.phahtaigi.ime.candidate.TaigiCandidateView;
 import com.taccotap.phahtaigi.ime.keyboard.CustomKeycode;
@@ -86,6 +86,8 @@ public class TaigiIme extends InputMethodService
     private View mInputView;
     private LinearLayout mKeyboardSettingLayout;
     private RadioGroup mLomajiSelectionRadioGroup;
+
+    private Button mSponsorButton;
     private Button mSettingCloseButton;
     private Button mAboutButton;
 
@@ -125,6 +127,84 @@ public class TaigiIme extends InputMethodService
         if (BuildConfig.DEBUG_LOG) {
             Log.i(TAG, "onInitializeInterface");
         }
+
+        if (mTaigiCandidateController == null) {
+            mTaigiCandidateController = new TaigiCandidateController();
+        }
+
+        if (mKeyboardSwitcher == null) {
+            mKeyboardSwitcher = new KeyboardSwitcher(this, mInputMethodManager);
+        }
+    }
+
+    /**
+     * This is the main point where we do our initialization of the input method
+     * to begin operating on an application.  At this point we have been
+     * bound to the client, and are now receiving all of the detailed information
+     * about the target of our edits.
+     */
+    @Override
+    public void onStartInput(EditorInfo attribute, boolean restarting) {
+        super.onStartInput(attribute, restarting);
+
+        if (BuildConfig.DEBUG_LOG) {
+            Log.i(TAG, "onStartInput(): restarting = " + restarting);
+        }
+
+        // We are now going to initialize our state based on the type of
+        // text being edited.
+        switch (attribute.inputType & InputType.TYPE_MASK_CLASS) {
+            case InputType.TYPE_CLASS_NUMBER:
+            case InputType.TYPE_CLASS_DATETIME:
+                // Numbers and dates default to the symbols keyboard, with
+                // no extra features.
+                mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_SYMBOL);
+                break;
+
+            case InputType.TYPE_CLASS_PHONE:
+                // Phones will also default to the symbols keyboard, though
+                // often you will want to have a dedicated phone keyboard.
+                mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_SYMBOL);
+                break;
+
+//            case InputType.TYPE_CLASS_TEXT:
+//                // This is general text editing.  We will default to the
+//                // normal alphabetic keyboard, and assume that we should
+//                // be doing predictive text (showing candidates as the
+//                // user types).
+//                if (mCurrentInputMode == INPUT_MODE_LOMAJI) {
+//                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
+//                } else if (mCurrentInputMode == INPUT_MODE_HANJI) {
+//                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_HANJI_QWERTY);
+//                } else {
+//                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
+//                }
+//                updateShiftKeyState(attribute);
+//                break;
+
+            default:
+                // For all unknown input types, default to the alphabetic
+                // keyboard with no special features.
+                if (mCurrentInputMode == INPUT_MODE_LOMAJI) {
+                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
+                } else if (mCurrentInputMode == INPUT_MODE_HANJI) {
+                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_HANJI_QWERTY);
+                } else {
+                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
+                }
+
+                if (mTaigiKeyboardView != null) {
+                    updateShiftIcon();
+                }
+        }
+
+        if (mTaigiKeyboardView != null) {
+            // Update the label on the enter key, depending on what the application
+            // says it will do.
+            mKeyboardSwitcher.setImeOptions(getResources(), attribute.imeOptions);
+
+            handleAutoCaps();
+        }
     }
 
     @Override
@@ -133,54 +213,67 @@ public class TaigiIme extends InputMethodService
             Log.i(TAG, "onCreateInputView");
         }
 
-        initUiComponents();
+        if (mInputView == null) {
+            mInputView = getLayoutInflater().inflate(R.layout.input_view, null);
+            initSettingLayout();
+        }
 
-        final ViewGroup viewGroup = (ViewGroup) mInputView.getParent();
-        if (viewGroup != null) {
-            viewGroup.removeView(mInputView);
+//        final ViewGroup viewGroup1 = (ViewGroup) mInputView.getParent();
+//        if (viewGroup1 != null) {
+//            viewGroup1.removeView(mInputView);
+//        }
+
+        if (mTaigiKeyboardView == null) {
+            mTaigiKeyboardView = (TaigiKeyboardView) mInputView.findViewById(R.id.taigi_keyboard);
+            mTaigiKeyboardView.setOnKeyboardActionListener(this);
+            mTaigiKeyboardView.setPreviewEnabled(true);
         }
 
         return mInputView;
     }
 
-    private void initUiComponents() {
-        if (mInputView == null) {
-            mInputView = getLayoutInflater().inflate(R.layout.input_view, null);
-            mTaigiKeyboardView = (TaigiKeyboardView) mInputView.findViewById(R.id.taigi_keyboard);
-            mTaigiKeyboardView.setOnKeyboardActionListener(this);
-
-            mKeyboardSettingLayout = (LinearLayout) mInputView.findViewById(R.id.keyboardSettingLayout);
-            mSettingCloseButton = (Button) mInputView.findViewById(R.id.keyboardSettingCloseButton);
-            mSettingCloseButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mKeyboardSettingLayout.setVisibility(View.GONE);
-                    Prefs.putBoolean(PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME, true);
-                }
-            });
-            mAboutButton = (Button) mInputView.findViewById(R.id.aboutButton);
-            mAboutButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final Intent intent = new Intent(TaigiIme.this, AboutActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
-            });
-        }
-
-        if (mKeyboardSwitcher == null) {
-            mKeyboardSwitcher = new KeyboardSwitcher(this, mInputMethodManager, mTaigiKeyboardView);
-        }
-
-        if (mTaigiCandidateController == null) {
-            mTaigiCandidateController = new TaigiCandidateController();
-        }
-
-        setCurrentInputMode();
-
+    private void initSettingLayout() {
+        mKeyboardSettingLayout = (LinearLayout) mInputView.findViewById(R.id.keyboardSettingLayout);
         if (!Prefs.getBoolean(PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME, false)) {
             mKeyboardSettingLayout.setVisibility(View.VISIBLE);
+        }
+
+        mSettingCloseButton = (Button) mInputView.findViewById(R.id.keyboardSettingCloseButton);
+        mSettingCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mKeyboardSettingLayout.setVisibility(View.GONE);
+                Prefs.putBoolean(PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME, true);
+            }
+        });
+        mAboutButton = (Button) mInputView.findViewById(R.id.aboutButton);
+        mAboutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent = new Intent(TaigiIme.this, AboutActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+        mSponsorButton = (Button) mInputView.findViewById(R.id.sponsorButton);
+        mSponsorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent = new Intent(TaigiIme.this, SponsorActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+    }
+
+    /**
+     * Called by the framework when your view for showing candidates needs to
+     * be generated, like {@link #onCreateInputView}.
+     */
+    @Override
+    public View onCreateCandidatesView() {
+        if (BuildConfig.DEBUG_LOG) {
+            Log.i(TAG, "onCreateCandidatesView");
         }
 
         if (mTaigiCandidateView == null) {
@@ -190,6 +283,28 @@ public class TaigiIme extends InputMethodService
             mKeyboardSwitcher.setTaigiCandidateView(mTaigiCandidateView);
             mTaigiCandidateController.setTaigiCandidateView(mTaigiCandidateView);
         }
+
+//        final ViewGroup viewGroup = (ViewGroup) mTaigiCandidateView.getParent();
+//        if (viewGroup != null) {
+//            viewGroup.removeView(mTaigiCandidateView);
+//        }
+
+        return mTaigiCandidateView;
+    }
+
+    @Override
+    public void onStartInputView(EditorInfo attribute, boolean restarting) {
+        super.onStartInputView(attribute, restarting);
+
+        if (BuildConfig.DEBUG_LOG) {
+            Log.i(TAG, "onStartInputView(): restarting = " + restarting);
+        }
+
+        mKeyboardSwitcher.resetKeyboard(mTaigiKeyboardView);
+
+        setCurrentInputMode();
+
+//        mTaigiKeyboardView.closing();
     }
 
     private void setCurrentInputMode() {
@@ -234,87 +349,6 @@ public class TaigiIme extends InputMethodService
     }
 
     /**
-     * Called by the framework when your view for showing candidates needs to
-     * be generated, like {@link #onCreateInputView}.
-     */
-    @Override
-    public View onCreateCandidatesView() {
-        if (BuildConfig.DEBUG_LOG) {
-            Log.i(TAG, "onCreateCandidatesView");
-        }
-
-        initUiComponents();
-        return mTaigiCandidateView;
-    }
-
-    /**
-     * This is the main point where we do our initialization of the input method
-     * to begin operating on an application.  At this point we have been
-     * bound to the client, and are now receiving all of the detailed information
-     * about the target of our edits.
-     */
-    @Override
-    public void onStartInput(EditorInfo attribute, boolean restarting) {
-        super.onStartInput(attribute, restarting);
-
-        if (BuildConfig.DEBUG_LOG) {
-            Log.i(TAG, "onStartInput");
-        }
-
-        initUiComponents();
-
-        // We are now going to initialize our state based on the type of
-        // text being edited.
-        switch (attribute.inputType & InputType.TYPE_MASK_CLASS) {
-            case InputType.TYPE_CLASS_NUMBER:
-            case InputType.TYPE_CLASS_DATETIME:
-                // Numbers and dates default to the symbols keyboard, with
-                // no extra features.
-                mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_SYMBOL);
-                break;
-
-            case InputType.TYPE_CLASS_PHONE:
-                // Phones will also default to the symbols keyboard, though
-                // often you will want to have a dedicated phone keyboard.
-                mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_SYMBOL);
-                break;
-
-//            case InputType.TYPE_CLASS_TEXT:
-//                // This is general text editing.  We will default to the
-//                // normal alphabetic keyboard, and assume that we should
-//                // be doing predictive text (showing candidates as the
-//                // user types).
-//                if (mCurrentInputMode == INPUT_MODE_LOMAJI) {
-//                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
-//                } else if (mCurrentInputMode == INPUT_MODE_HANJI) {
-//                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_HANJI_QWERTY);
-//                } else {
-//                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
-//                }
-//                updateShiftKeyState(attribute);
-//                break;
-
-            default:
-                // For all unknown input types, default to the alphabetic
-                // keyboard with no special features.
-                if (mCurrentInputMode == INPUT_MODE_LOMAJI) {
-                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
-                } else if (mCurrentInputMode == INPUT_MODE_HANJI) {
-                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_HANJI_QWERTY);
-                } else {
-                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
-                }
-                updateShiftKeyState(attribute);
-        }
-
-        // Update the label on the enter key, depending on what the application
-        // says it will do.
-        mKeyboardSwitcher.setImeOptions(getResources(), attribute.imeOptions);
-
-        handleAutoCaps();
-    }
-
-    /**
      * This is called when the user is done editing a field.  We can use
      * this to reset our state.
      */
@@ -325,21 +359,6 @@ public class TaigiIme extends InputMethodService
         if (BuildConfig.DEBUG_LOG) {
             Log.i(TAG, "onFinishInput");
         }
-    }
-
-    @Override
-    public void onStartInputView(EditorInfo attribute, boolean restarting) {
-        super.onStartInputView(attribute, restarting);
-
-        if (BuildConfig.DEBUG_LOG) {
-            Log.i(TAG, "onStartInputView");
-        }
-
-//        if (restarting) {
-//            // Apply the selected keyboard to the input view.
-//            mKeyboardSwitcher.resetKeyboard();
-//            mTaigiKeyboardView.closing();
-//        }
     }
 
 //    /**
@@ -380,25 +399,6 @@ public class TaigiIme extends InputMethodService
             mComposing.setLength(0);
             updateInputForCandidate();
         }
-    }
-
-    /**
-     * Helper to update the shift state of our keyboard based on the initial
-     * editor state.
-     */
-    private void updateShiftKeyState(EditorInfo attr) {
-//        if (attr != null && mTaigiKeyboardView != null && mKeyboardSwitcher.isCurrentKeyboardViewUseQwertyKeyboard()) {
-//            int caps = 0;
-//            EditorInfo ei = getCurrentInputEditorInfo();
-//            if (ei != null && ei.inputType != InputType.TYPE_NULL) {
-//                caps = getCurrentInputConnection().getCursorCapsMode(attr.inputType);
-//            }
-//
-//            final boolean isShifted = mIsCapsLock || caps != 0;
-//
-//            mTaigiKeyboardView.setShifted(isShifted);
-        updateShiftIcon();
-//        }
     }
 
     /**
@@ -481,7 +481,7 @@ public class TaigiIme extends InputMethodService
         }
         sendKey(primaryCode);
 
-        updateShiftKeyState(getCurrentInputEditorInfo());
+        updateShiftIcon();
     }
 
     /**
@@ -514,9 +514,6 @@ public class TaigiIme extends InputMethodService
         if (mComposing.length() > 0) {
             setRawInputForCandidate(mComposing.toString());
         } else {
-            if (BuildConfig.DEBUG_LOG) {
-                Log.e(TAG, "updateInputForCandidate(): mComposing.length()=" + mComposing.length());
-            }
             setRawInputForCandidate(null);
         }
     }
@@ -552,14 +549,10 @@ public class TaigiIme extends InputMethodService
         } else {
             keyDownUp(KeyEvent.KEYCODE_DEL);
         }
-        updateShiftKeyState(getCurrentInputEditorInfo());
+        updateShiftIcon();
     }
 
     private void handleShiftForSwitchKeyboard() {
-        if (mTaigiKeyboardView == null) {
-            return;
-        }
-
         if (mKeyboardSwitcher.isCurrentKeyboardViewUseQwertyKeyboard()) {
             // Alphabet keyboard
             checkToggleCapsLock();
@@ -609,7 +602,7 @@ public class TaigiIme extends InputMethodService
 
                 if (!mIsCapsLock) {
                     mTaigiKeyboardView.setShifted(false);
-                    updateShiftKeyState(getCurrentInputEditorInfo());
+                    updateShiftIcon();
                 }
             }
         }
@@ -641,18 +634,18 @@ public class TaigiIme extends InputMethodService
                 }
             }
 
-            if (BuildConfig.DEBUG_LOG) {
-                Log.d(TAG, "handleAutoCaps(): inputText = " + inputText);
-            }
+//            if (BuildConfig.DEBUG_LOG) {
+//                Log.d(TAG, "handleAutoCaps(): inputText = " + inputText);
+//            }
 
             if (TextUtils.isEmpty(inputText)) {
                 mTaigiKeyboardView.setShifted(true);
             } else {
                 final String lastChar = inputText.substring(inputText.length() - 1);
 
-                if (BuildConfig.DEBUG_LOG) {
-                    Log.d(TAG, "handleAutoCaps(): lastChar = " + lastChar);
-                }
+//                if (BuildConfig.DEBUG_LOG) {
+//                    Log.d(TAG, "handleAutoCaps(): lastChar = " + lastChar);
+//                }
 
                 if (mWordEndingSentence.contains(lastChar)) {
                     mTaigiKeyboardView.setShifted(true);
@@ -661,7 +654,7 @@ public class TaigiIme extends InputMethodService
                 }
             }
 
-            updateShiftKeyState(getCurrentInputEditorInfo());
+            updateShiftIcon();
         }
     }
 

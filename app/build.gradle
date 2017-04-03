@@ -19,8 +19,8 @@ android {
         applicationId "com.taccotap.phahtaigi"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 6
-        versionName "1.2.1"
+        versionCode 12
+        versionName "1.2.7"
     }
 
     dataBinding {
@@ -44,10 +44,20 @@ android {
                 }
             }
 
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+            def publicKey = properties.getProperty('publickey')
+            buildConfigField "String", "PUBLIC_KEY", publicKey
+
             buildConfigField "boolean", "DEBUG_LOG", "false"
         }
 
         debug {
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+            def publicKey = properties.getProperty('publickey')
+            buildConfigField "String", "PUBLIC_KEY", publicKey
+
             buildConfigField "boolean", "DEBUG_LOG", "true"
         }
     }
@@ -67,10 +77,6 @@ dependencies {
         transitive = true;
     }
 
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-
     // Icon
     compile 'com.mikepenz:iconics-core:2.8.2@aar'
     compile 'com.mikepenz:community-material-typeface:1.7.22.1@aar'
@@ -78,6 +84,10 @@ dependencies {
     // ButterKnife
     compile 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
     compile 'com.pixplicity.easyprefs:library:1.8.1@aar'
     compile 'com.github.eggheadgames:android-realm-asset-helper:2.0.0'

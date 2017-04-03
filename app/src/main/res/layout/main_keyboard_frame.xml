@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -50,34 +50,60 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:text="提醒：佇鍵盤對下底撇去頂面會使叫出設定，抑是符號鍵盤(:;0)內底。"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginRight="7dp"
+                    android:text="「提醒」：\n佇鍵盤對下底撇去頂面會使叫出設定，抑是符號鍵盤(:;0)內底嘛會使。"
                     android:textColor="#faaa"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:gravity="right"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/aboutButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:backgroundTint="#325261"
+                        android:text="？"
+                        android:textColor="#feee"
+                        android:textSize="14sp"/>
+
+                    <Button
+                        android:id="@+id/keyboardSettingCloseButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#325261"
+                        android:text="Ｘ"
+                        android:textColor="#feee"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/sponsorButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:backgroundTint="#325261"
+                    android:text="贊助"
+                    android:textColor="#feee"
                     android:textSize="14sp"/>
             </LinearLayout>
 
-            <Button
-                android:id="@+id/aboutButton"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp"
-                android:backgroundTint="#325261"
-                android:text="？"
-                android:textColor="#feee"
-                android:textSize="14sp"/>
-
-            <Button
-                android:id="@+id/keyboardSettingCloseButton"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp"
-                android:backgroundTint="#325261"
-                android:text="Ｘ"
-                android:textColor="#feee"
-                android:textSize="14sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -89,10 +115,10 @@
                 android:id="@+id/lomajiSelectionRadioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <RadioButton

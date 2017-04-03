@@ -19,7 +19,8 @@ public class KeyboardSwitcher {
 
     private final TaigiIme mTaigiIme;
     private final InputMethodManager mInputMethodManager;
-    private final TaigiKeyboardView mTaigiKeyboardView;
+
+    private TaigiKeyboardView mTaigiKeyboardView;
     private TaigiCandidateView mTaigiCandidateView;
 
     private TaigiKeyboard mLomajiQwertyKeyboard;
@@ -29,12 +30,13 @@ public class KeyboardSwitcher {
     private TaigiKeyboard mHanjiSymbolsKeyboard;
     private TaigiKeyboard mHanjiSymbolsShiftedKeyboard;
 
+    private TaigiKeyboard mCurrentKeyboard;
+
     private int mImeOptions;
 
-    public KeyboardSwitcher(TaigiIme taigiIme, InputMethodManager inputMethodManager, TaigiKeyboardView taigiKeyboardView) {
+    public KeyboardSwitcher(TaigiIme taigiIme, InputMethodManager inputMethodManager) {
         mTaigiIme = taigiIme;
         mInputMethodManager = inputMethodManager;
-        mTaigiKeyboardView = taigiKeyboardView;
 
         mLomajiQwertyKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_lomaji_qwerty);
         mHanjiQwertyKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_hanji_qwerty);
@@ -42,6 +44,8 @@ public class KeyboardSwitcher {
         mLomajiSymbolsShiftedKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_lomaji_symbols_shift);
         mHanjiSymbolsKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_hanji_symbols);
         mHanjiSymbolsShiftedKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_hanji_symbols_shift);
+
+        mCurrentKeyboard = mLomajiQwertyKeyboard;
     }
 
     public void setTaigiCandidateView(TaigiCandidateView taigiCandidateView) {
@@ -71,12 +75,14 @@ public class KeyboardSwitcher {
             nextKeyboard = mLomajiQwertyKeyboard;
         }
 
+        mCurrentKeyboard = nextKeyboard;
+
         setKeyboard(nextKeyboard);
     }
 
-    public void resetKeyboard() {
-        TaigiKeyboard currentKeyboard = (TaigiKeyboard) mTaigiKeyboardView.getKeyboard();
-        mTaigiKeyboardView.setKeyboard(currentKeyboard);
+    public void resetKeyboard(TaigiKeyboardView taigiKeyboardView) {
+        mTaigiKeyboardView = taigiKeyboardView;
+        setKeyboard(mCurrentKeyboard);
     }
 
     public boolean isCurrentKeyboardViewUseQwertyKeyboard() {
@@ -120,7 +126,10 @@ public class KeyboardSwitcher {
 
     private void setKeyboard(TaigiKeyboard nextKeyboard) {
         nextKeyboard.setImeOptions(mTaigiIme.getResources(), mImeOptions);
-        mTaigiKeyboardView.setKeyboard(nextKeyboard);
+
+        if (mTaigiKeyboardView != null) {
+            mTaigiKeyboardView.setKeyboard(nextKeyboard);
+        }
 
         if (mTaigiCandidateView != null) {
             if (nextKeyboard == mLomajiQwertyKeyboard

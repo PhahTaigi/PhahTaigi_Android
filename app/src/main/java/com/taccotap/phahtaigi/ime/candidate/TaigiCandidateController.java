@@ -1,7 +1,9 @@
 package com.taccotap.phahtaigi.ime.candidate;
 
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.dictmodel.ImeDict;
 import com.taccotap.phahtaigi.ime.TaigiIme;
 import com.taccotap.phahtaigi.ime.converter.PojInputConverter;
@@ -34,6 +36,10 @@ public class TaigiCandidateController {
     }
 
     public void setRawInput(String rawInput) {
+        if (BuildConfig.DEBUG_LOG) {
+            Log.i(TAG, "setRawInput(): " + rawInput);
+        }
+
         mRawInput = rawInput;
         mRealm = Realm.getDefaultInstance();
 

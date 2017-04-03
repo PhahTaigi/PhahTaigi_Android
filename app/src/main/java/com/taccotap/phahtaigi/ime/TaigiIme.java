@@ -62,12 +62,16 @@ public class TaigiIme extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
     private static final String TAG = TaigiIme.class.getSimpleName();
 
+    public static final int INPUT_MODE_LOMAJI = 0;
+    public static final int INPUT_MODE_HANJI = 1;
+
     public static final int INPUT_LOMAJI_MODE_NONE = -1;
     public static final int INPUT_LOMAJI_MODE_TAILO = 0;
     public static final int INPUT_LOMAJI_MODE_POJ = 1;
 
     public static final int KEY_VIBRATION_MILLISECONDS = 5;
 
+    private static final String PREFS_KEY_CURRENT_INPUT_MODE = "PREFS_KEY_CURRENT_INPUT_MODE";
     private static final String PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE = "PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE";
     private static final String PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME = "PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME";
 
@@ -88,7 +92,9 @@ public class TaigiIme extends InputMethodService
     private KeyboardSwitcher mKeyboardSwitcher;
     private TaigiCandidateController mTaigiCandidateController;
 
+    private int mCurrentInputMode;
     private int mCurrentInputLomajiMode;
+
     private StringBuilder mComposing = new StringBuilder();
     private boolean mIsCapsLock;
     private long mLastShiftTime;
@@ -116,10 +122,17 @@ public class TaigiIme extends InputMethodService
      */
     @Override
     public void onInitializeInterface() {
+        if (BuildConfig.DEBUG_LOG) {
+            Log.i(TAG, "onInitializeInterface");
+        }
     }
 
     @Override
     public View onCreateInputView() {
+        if (BuildConfig.DEBUG_LOG) {
+            Log.i(TAG, "onCreateInputView");
+        }
+
         initUiComponents();
 
         final ViewGroup viewGroup = (ViewGroup) mInputView.getParent();
@@ -158,14 +171,13 @@ public class TaigiIme extends InputMethodService
 
         if (mKeyboardSwitcher == null) {
             mKeyboardSwitcher = new KeyboardSwitcher(this, mInputMethodManager, mTaigiKeyboardView);
-            mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
         }
 
         if (mTaigiCandidateController == null) {
             mTaigiCandidateController = new TaigiCandidateController();
         }
 
-        setCurrentLomajiInputMode();
+        setCurrentInputMode();
 
         if (!Prefs.getBoolean(PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME, false)) {
             mKeyboardSettingLayout.setVisibility(View.VISIBLE);
@@ -180,7 +192,9 @@ public class TaigiIme extends InputMethodService
         }
     }
 
-    private void setCurrentLomajiInputMode() {
+    private void setCurrentInputMode() {
+        mCurrentInputMode = Prefs.getInt(PREFS_KEY_CURRENT_INPUT_MODE, INPUT_MODE_LOMAJI);
+
         mLomajiSelectionRadioGroup = (RadioGroup) mInputView.findViewById(R.id.lomajiSelectionRadioGroup);
         mCurrentInputLomajiMode = Prefs.getInt(PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE, INPUT_LOMAJI_MODE_TAILO);
         setCurrentInputLomajiMode(mCurrentInputLomajiMode);
@@ -225,6 +239,10 @@ public class TaigiIme extends InputMethodService
      */
     @Override
     public View onCreateCandidatesView() {
+        if (BuildConfig.DEBUG_LOG) {
+            Log.i(TAG, "onCreateCandidatesView");
+        }
+
         initUiComponents();
         return mTaigiCandidateView;
     }
@@ -239,12 +257,11 @@ public class TaigiIme extends InputMethodService
     public void onStartInput(EditorInfo attribute, boolean restarting) {
         super.onStartInput(attribute, restarting);
 
-        initUiComponents();
+        if (BuildConfig.DEBUG_LOG) {
+            Log.i(TAG, "onStartInput");
+        }
 
-        // Reset our state.  We want to do this even if restarting, because
-        // the underlying state of the text editor could have changed in any way.
-        mComposing.setLength(0);
-        updateInputForCandidate();
+        initUiComponents();
 
         // We are now going to initialize our state based on the type of
         // text being edited.
@@ -262,19 +279,31 @@ public class TaigiIme extends InputMethodService
                 mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_SYMBOL);
                 break;
 
-            case InputType.TYPE_CLASS_TEXT:
-                // This is general text editing.  We will default to the
-                // normal alphabetic keyboard, and assume that we should
-                // be doing predictive text (showing candidates as the
-                // user types).
-                mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
-                updateShiftKeyState(attribute);
-                break;
+//            case InputType.TYPE_CLASS_TEXT:
+//                // This is general text editing.  We will default to the
+//                // normal alphabetic keyboard, and assume that we should
+//                // be doing predictive text (showing candidates as the
+//                // user types).
+//                if (mCurrentInputMode == INPUT_MODE_LOMAJI) {
+//                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
+//                } else if (mCurrentInputMode == INPUT_MODE_HANJI) {
+//                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_HANJI_QWERTY);
+//                } else {
+//                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
+//                }
+//                updateShiftKeyState(attribute);
+//                break;
 
             default:
                 // For all unknown input types, default to the alphabetic
                 // keyboard with no special features.
-                mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
+                if (mCurrentInputMode == INPUT_MODE_LOMAJI) {
+                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
+                } else if (mCurrentInputMode == INPUT_MODE_HANJI) {
+                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_HANJI_QWERTY);
+                } else {
+                    mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
+                }
                 updateShiftKeyState(attribute);
         }
 
@@ -293,58 +322,54 @@ public class TaigiIme extends InputMethodService
     public void onFinishInput() {
         super.onFinishInput();
 
-        // Clear current composing text and candidates.
-        mComposing.setLength(0);
-        updateInputForCandidate();
-
-        // We only hide the candidates window when finishing input on
-        // a particular editor, to avoid popping the underlying application
-        // up and down if the user is entering text into the bottom of
-        // its window.
-        setCandidatesViewShown(false);
-
-        mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
-        if (mTaigiKeyboardView != null) {
-            mTaigiKeyboardView.closing();
+        if (BuildConfig.DEBUG_LOG) {
+            Log.i(TAG, "onFinishInput");
         }
     }
 
     @Override
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
         super.onStartInputView(attribute, restarting);
-        // Apply the selected keyboard to the input view.
-        mKeyboardSwitcher.resetKeyboard();
-        mTaigiKeyboardView.closing();
-    }
-
-    /**
-     * Deal with the editor reporting movement of its cursor.
-     */
-    @Override
-    public void onUpdateSelection(int oldSelStart, int oldSelEnd,
-                                  int newSelStart, int newSelEnd,
-                                  int candidatesStart, int candidatesEnd) {
-        super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
-                candidatesStart, candidatesEnd);
-
-//        // If the current selection in the text view changes, we should
-//        // clear whatever candidate text we have.
-//        if (mComposing.length() > 0 && (newSelStart != candidatesEnd
-//                || newSelEnd != candidatesEnd)) {
-//            mComposing.setLength(0);
-//            updateInputForCandidate();
-//            InputConnection ic = getCurrentInputConnection();
-//            if (ic != null) {
-//                ic.finishComposingText();
-//            }
-//        }
 
         if (BuildConfig.DEBUG_LOG) {
-            Log.d(TAG, "onUpdateSelection: candidatesStart=" + candidatesStart + ", candidatesEnd=" + candidatesEnd);
+            Log.i(TAG, "onStartInputView");
         }
 
-        handleAutoCaps();
+//        if (restarting) {
+//            // Apply the selected keyboard to the input view.
+//            mKeyboardSwitcher.resetKeyboard();
+//            mTaigiKeyboardView.closing();
+//        }
     }
+
+//    /**
+//     * Deal with the editor reporting movement of its cursor.
+//     */
+//    @Override
+//    public void onUpdateSelection(int oldSelStart, int oldSelEnd,
+//                                  int newSelStart, int newSelEnd,
+//                                  int candidatesStart, int candidatesEnd) {
+//        super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
+//                candidatesStart, candidatesEnd);
+//
+////        // If the current selection in the text view changes, we should
+////        // clear whatever candidate text we have.
+////        if (mComposing.length() > 0 && (newSelStart != candidatesEnd
+////                || newSelEnd != candidatesEnd)) {
+////            mComposing.setLength(0);
+////            updateInputForCandidate();
+////            InputConnection ic = getCurrentInputConnection();
+////            if (ic != null) {
+////                ic.finishComposingText();
+////            }
+////        }
+//
+//        if (BuildConfig.DEBUG_LOG) {
+//            Log.d(TAG, "onUpdateSelection: candidatesStart=" + candidatesStart + ", candidatesEnd=" + candidatesEnd);
+//        }
+//
+//        handleAutoCaps();
+//    }
 
     /**
      * Helper function to commit any text being composed in to the editor.
@@ -398,8 +423,10 @@ public class TaigiIme extends InputMethodService
             isShiftKey = true;
             handleShiftForSwitchKeyboard();
         } else if (primaryCode == CustomKeycode.KEYCODE_SWITCH_TO_HANJI) {
+            Prefs.putInt(PREFS_KEY_CURRENT_INPUT_MODE, INPUT_MODE_HANJI);
             mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_HANJI_QWERTY);
         } else if (primaryCode == CustomKeycode.KEYCODE_SWITCH_TO_LOMAJI) {
+            Prefs.putInt(PREFS_KEY_CURRENT_INPUT_MODE, INPUT_MODE_LOMAJI);
             mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
         } else if (primaryCode == CustomKeycode.KEYCODE_SETTINGS) {
             handleOpenSettings();
@@ -487,6 +514,9 @@ public class TaigiIme extends InputMethodService
         if (mComposing.length() > 0) {
             setRawInputForCandidate(mComposing.toString());
         } else {
+            if (BuildConfig.DEBUG_LOG) {
+                Log.e(TAG, "updateInputForCandidate(): mComposing.length()=" + mComposing.length());
+            }
             setRawInputForCandidate(null);
         }
     }
@@ -636,9 +666,20 @@ public class TaigiIme extends InputMethodService
     }
 
     private void handleClose() {
-        commitTyped();
+        commitRawInputSuggestion();
         requestHideSelf(0);
-        mTaigiKeyboardView.closing();
+
+//        // We only hide the candidates window when finishing input on
+//        // a particular editor, to avoid popping the underlying application
+//        // up and down if the user is entering text into the bottom of
+//        // its window.
+//        setCandidatesViewShown(false);
+//
+//        mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
+
+        if (mTaigiKeyboardView != null) {
+            mTaigiKeyboardView.closing();
+        }
     }
 
     private void checkToggleCapsLock() {

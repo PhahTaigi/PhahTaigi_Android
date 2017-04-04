@@ -30,6 +30,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -73,7 +74,7 @@ public class TaigiIme extends InputMethodService
 
     private static final String PREFS_KEY_CURRENT_INPUT_MODE = "PREFS_KEY_CURRENT_INPUT_MODE";
     private static final String PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE = "PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE";
-    private static final String PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME = "PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME";
+    private static final String PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_2_8 = "PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_2_8";
 
     private String mWordSeparators;
     private String mWordEndingSentence;
@@ -83,7 +84,7 @@ public class TaigiIme extends InputMethodService
     private TaigiKeyboardView mTaigiKeyboardView;
     private TaigiCandidateView mTaigiCandidateView;
 
-    private View mInputView;
+    private LinearLayout mInputView;
     private LinearLayout mKeyboardSettingLayout;
     private RadioGroup mLomajiSelectionRadioGroup;
 
@@ -192,19 +193,11 @@ public class TaigiIme extends InputMethodService
                 } else {
                     mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
                 }
-
-                if (mTaigiKeyboardView != null) {
-                    updateShiftIcon();
-                }
         }
 
-        if (mTaigiKeyboardView != null) {
-            // Update the label on the enter key, depending on what the application
-            // says it will do.
-            mKeyboardSwitcher.setImeOptions(getResources(), attribute.imeOptions);
-
-            handleAutoCaps();
-        }
+        // Update the label on the enter key, depending on what the application
+        // says it will do.
+        mKeyboardSwitcher.setImeOptions(getResources(), attribute.imeOptions);
     }
 
     @Override
@@ -214,39 +207,43 @@ public class TaigiIme extends InputMethodService
         }
 
         if (mInputView == null) {
-            mInputView = getLayoutInflater().inflate(R.layout.input_view, null);
-            initSettingLayout();
-        }
+            mInputView = (LinearLayout) getLayoutInflater().inflate(R.layout.input_view, null);
+        } else {
+            mInputView.removeAllViews();
 
-//        final ViewGroup viewGroup1 = (ViewGroup) mInputView.getParent();
-//        if (viewGroup1 != null) {
-//            viewGroup1.removeView(mInputView);
-//        }
+            final ViewGroup viewGroup1 = (ViewGroup) mInputView.getParent();
+            if (viewGroup1 != null) {
+                viewGroup1.removeView(mInputView);
+            }
+        }
+        initSettingLayout();
 
         if (mTaigiKeyboardView == null) {
-            mTaigiKeyboardView = (TaigiKeyboardView) mInputView.findViewById(R.id.taigi_keyboard);
+            mTaigiKeyboardView = (TaigiKeyboardView) getLayoutInflater().inflate(R.layout.taigi_keyboard_view, null);
             mTaigiKeyboardView.setOnKeyboardActionListener(this);
-            mTaigiKeyboardView.setPreviewEnabled(true);
         }
+        mInputView.addView(mTaigiKeyboardView);
 
         return mInputView;
     }
 
     private void initSettingLayout() {
-        mKeyboardSettingLayout = (LinearLayout) mInputView.findViewById(R.id.keyboardSettingLayout);
-        if (!Prefs.getBoolean(PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME, false)) {
+        mKeyboardSettingLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.keyboard_settings, null);
+        mInputView.addView(mKeyboardSettingLayout);
+
+        if (!Prefs.getBoolean(PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_2_8, false)) {
             mKeyboardSettingLayout.setVisibility(View.VISIBLE);
         }
 
-        mSettingCloseButton = (Button) mInputView.findViewById(R.id.keyboardSettingCloseButton);
+        mSettingCloseButton = (Button) mKeyboardSettingLayout.findViewById(R.id.keyboardSettingCloseButton);
         mSettingCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mKeyboardSettingLayout.setVisibility(View.GONE);
-                Prefs.putBoolean(PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME, true);
+                Prefs.putBoolean(PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_2_8, true);
             }
         });
-        mAboutButton = (Button) mInputView.findViewById(R.id.aboutButton);
+        mAboutButton = (Button) mKeyboardSettingLayout.findViewById(R.id.aboutButton);
         mAboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -255,7 +252,7 @@ public class TaigiIme extends InputMethodService
                 startActivity(intent);
             }
         });
-        mSponsorButton = (Button) mInputView.findViewById(R.id.sponsorButton);
+        mSponsorButton = (Button) mKeyboardSettingLayout.findViewById(R.id.sponsorButton);
         mSponsorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -284,15 +281,44 @@ public class TaigiIme extends InputMethodService
             mTaigiCandidateController.setTaigiCandidateView(mTaigiCandidateView);
         }
 
-//        final ViewGroup viewGroup = (ViewGroup) mTaigiCandidateView.getParent();
-//        if (viewGroup != null) {
-//            viewGroup.removeView(mTaigiCandidateView);
-//        }
+        final ViewGroup viewGroup = (ViewGroup) mTaigiCandidateView.getParent();
+        if (viewGroup != null) {
+            viewGroup.removeView(mTaigiCandidateView);
+        }
 
         return mTaigiCandidateView;
     }
 
     @Override
+    public void setInputView(View view) {
+        if (BuildConfig.DEBUG_LOG) {
+            Log.i(TAG, "setInputView");
+        }
+
+        final ViewGroup viewGroup = (ViewGroup) view.getParent();
+        if (viewGroup != null) {
+            viewGroup.removeView(view);
+        }
+
+        super.setInputView(view);
+    }
+
+    @Override
+    public void setCandidatesView(View view) {
+        if (BuildConfig.DEBUG_LOG) {
+            Log.i(TAG, "setCandidatesView");
+        }
+
+        final ViewGroup viewGroup = (ViewGroup) view.getParent();
+        if (viewGroup != null) {
+            viewGroup.removeView(view);
+        }
+
+        super.setCandidatesView(view);
+    }
+
+    @Override
+
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
         super.onStartInputView(attribute, restarting);
 
@@ -303,6 +329,7 @@ public class TaigiIme extends InputMethodService
         mKeyboardSwitcher.resetKeyboard(mTaigiKeyboardView);
 
         setCurrentInputMode();
+        handleKeyboardViewAutoCaps();
 
 //        mTaigiKeyboardView.closing();
     }
@@ -387,7 +414,7 @@ public class TaigiIme extends InputMethodService
 //            Log.d(TAG, "onUpdateSelection: candidatesStart=" + candidatesStart + ", candidatesEnd=" + candidatesEnd);
 //        }
 //
-//        handleAutoCaps();
+//        handleKeyboardViewAutoCaps();
 //    }
 
     /**
@@ -443,7 +470,7 @@ public class TaigiIme extends InputMethodService
         }
 
         if (!isShiftKey) {
-            handleAutoCaps();
+            handleKeyboardViewAutoCaps();
         }
 
         if (isNeedVibration(primaryCode)) {
@@ -469,7 +496,7 @@ public class TaigiIme extends InputMethodService
     private void handleOpenSettings() {
         if (mKeyboardSettingLayout.getVisibility() == View.VISIBLE) {
             mKeyboardSettingLayout.setVisibility(View.GONE);
-            Prefs.putBoolean(PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME, true);
+            Prefs.putBoolean(PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_2_8, true);
         } else {
             mKeyboardSettingLayout.setVisibility(View.VISIBLE);
         }
@@ -481,7 +508,7 @@ public class TaigiIme extends InputMethodService
         }
         sendKey(primaryCode);
 
-        updateShiftIcon();
+        updateKeyboardViewShiftIcon();
     }
 
     /**
@@ -549,7 +576,7 @@ public class TaigiIme extends InputMethodService
         } else {
             keyDownUp(KeyEvent.KEYCODE_DEL);
         }
-        updateShiftIcon();
+        updateKeyboardViewShiftIcon();
     }
 
     private void handleShiftForSwitchKeyboard() {
@@ -563,10 +590,10 @@ public class TaigiIme extends InputMethodService
         }
 
         // update icon
-        updateShiftIcon();
+        updateKeyboardViewShiftIcon();
     }
 
-    private void updateShiftIcon() {
+    private void updateKeyboardViewShiftIcon() {
         final List<Keyboard.Key> keys = mTaigiKeyboardView.getKeyboard().getKeys();
         final int shiftKeyIndex = mTaigiKeyboardView.getKeyboard().getShiftKeyIndex();
         final Keyboard.Key shiftkey = keys.get(shiftKeyIndex);
@@ -602,7 +629,7 @@ public class TaigiIme extends InputMethodService
 
                 if (!mIsCapsLock) {
                     mTaigiKeyboardView.setShifted(false);
-                    updateShiftIcon();
+                    updateKeyboardViewShiftIcon();
                 }
             }
         }
@@ -615,7 +642,7 @@ public class TaigiIme extends InputMethodService
         }
     }
 
-    private void handleAutoCaps() {
+    private void handleKeyboardViewAutoCaps() {
         if (mKeyboardSwitcher.isCurrentKeyboardViewUseQwertyKeyboard() && !mIsCapsLock) {
             String inputText;
             if (!TextUtils.isEmpty(mComposing.toString())) {
@@ -635,7 +662,7 @@ public class TaigiIme extends InputMethodService
             }
 
 //            if (BuildConfig.DEBUG_LOG) {
-//                Log.d(TAG, "handleAutoCaps(): inputText = " + inputText);
+//                Log.d(TAG, "handleKeyboardViewAutoCaps(): inputText = " + inputText);
 //            }
 
             if (TextUtils.isEmpty(inputText)) {
@@ -644,7 +671,7 @@ public class TaigiIme extends InputMethodService
                 final String lastChar = inputText.substring(inputText.length() - 1);
 
 //                if (BuildConfig.DEBUG_LOG) {
-//                    Log.d(TAG, "handleAutoCaps(): lastChar = " + lastChar);
+//                    Log.d(TAG, "handleKeyboardViewAutoCaps(): lastChar = " + lastChar);
 //                }
 
                 if (mWordEndingSentence.contains(lastChar)) {
@@ -654,7 +681,7 @@ public class TaigiIme extends InputMethodService
                 }
             }
 
-            updateShiftIcon();
+            updateKeyboardViewShiftIcon();
         }
     }
 

@@ -52,9 +52,9 @@ public class KeyboardSwitcher {
         mTaigiCandidateView = taigiCandidateView;
     }
 
-    public TaigiKeyboard getCurrentKeyboard() {
-        return (TaigiKeyboard) mTaigiKeyboardView.getKeyboard();
-    }
+//    public TaigiKeyboard getCurrentKeyboard() {
+//        return (TaigiKeyboard) mTaigiKeyboardView.getKeyboard();
+//    }
 
     public void setKeyboardByType(int keyboardType) {
         TaigiKeyboard nextKeyboard;
@@ -86,8 +86,8 @@ public class KeyboardSwitcher {
     }
 
     public boolean isCurrentKeyboardViewUseQwertyKeyboard() {
-        return mTaigiKeyboardView.getKeyboard() == mLomajiQwertyKeyboard
-                || mTaigiKeyboardView.getKeyboard() == mHanjiQwertyKeyboard;
+        return mCurrentKeyboard == mLomajiQwertyKeyboard
+                || mCurrentKeyboard == mHanjiQwertyKeyboard;
     }
 
     public void switchKeyboard() {
@@ -103,6 +103,8 @@ public class KeyboardSwitcher {
         } else if (currentKeyboard == mHanjiSymbolsKeyboard || currentKeyboard == mHanjiSymbolsShiftedKeyboard) {
             nextKeyboard = mHanjiQwertyKeyboard;
         }
+
+        mCurrentKeyboard = nextKeyboard;
 
         setKeyboard(nextKeyboard);
     }
@@ -120,6 +122,8 @@ public class KeyboardSwitcher {
         } else if (currentKeyboard == mHanjiSymbolsShiftedKeyboard) {
             nextKeyboard = mHanjiSymbolsKeyboard;
         }
+
+        mCurrentKeyboard = nextKeyboard;
 
         setKeyboard(nextKeyboard);
     }
@@ -144,6 +148,6 @@ public class KeyboardSwitcher {
 
     public void setImeOptions(Resources resources, int imeOptions) {
         mImeOptions = imeOptions;
-        getCurrentKeyboard().setImeOptions(resources, imeOptions);
+        mCurrentKeyboard.setImeOptions(resources, imeOptions);
     }
 }

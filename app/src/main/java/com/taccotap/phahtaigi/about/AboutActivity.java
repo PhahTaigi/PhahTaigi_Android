@@ -72,7 +72,7 @@ public class AboutActivity extends MaterialAboutActivity {
         functionCardBuilder.title("特殊 ê KEY");
 
         functionCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text("連紲phah兩擺空白KEY：選輸入法")
+                .text("Kā空白KEY揤牢咧：選輸入法")
                 .subText("干焦佇主要ê鍵盤有效，符號鍵盤無影響。")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_crop_landscape).sizeDp(48))
                 .build());

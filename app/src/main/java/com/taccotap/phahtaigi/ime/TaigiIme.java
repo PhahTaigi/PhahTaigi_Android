@@ -730,14 +730,14 @@ public class TaigiIme extends InputMethodService
     public void commitRawInputSuggestion() {
         final String rawInputSuggestion = mTaigiCandidateController.getRawInputSuggestion();
         if (!TextUtils.isEmpty(rawInputSuggestion)) {
-            getCurrentInputConnection().commitText(rawInputSuggestion, 0);
+            getCurrentInputConnection().commitText(rawInputSuggestion, 1);
             mComposing.setLength(0);
             updateInputForCandidate();
         }
     }
 
     public void commitPickedSuggestion(String pickedSuggestion) {
-        getCurrentInputConnection().commitText(pickedSuggestion, 0);
+        getCurrentInputConnection().commitText(pickedSuggestion, 1);
         mComposing.setLength(0);
         updateInputForCandidate();
     }

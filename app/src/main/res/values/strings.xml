@@ -3,7 +3,7 @@
     <string name="app_start_title">設定輸入法 - Phah Tâi-gí</string>
 
     <!-- Titles for ImePreference -->
-    <string name="settings_name">Phah Taigi Keyboard Settings</string>
+    <string name="settings_name">Phah Tâi-gí 設定</string>
     <string name="language_selection_title">Input languages</string>
     <string name="select_language">Select input languages</string>
     <string name="general_category">General</string>

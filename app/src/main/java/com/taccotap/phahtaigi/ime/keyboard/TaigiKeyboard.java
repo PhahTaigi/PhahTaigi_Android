@@ -27,7 +27,6 @@ public class TaigiKeyboard extends Keyboard {
 
     private Key mEnterKey;
     private Key mSpaceKey;
-    private Drawable mSpaceIcon;
 
     public TaigiKeyboard(Context context, int xmlLayoutResId) {
         super(context, xmlLayoutResId);
@@ -35,12 +34,12 @@ public class TaigiKeyboard extends Keyboard {
         drawSpaceBarImeText(context);
     }
 
-    public TaigiKeyboard(Context context, int layoutTemplateResId,
-                         CharSequence characters, int columns, int horizontalPadding) {
-        super(context, layoutTemplateResId, characters, columns, horizontalPadding);
-
-        drawSpaceBarImeText(context);
-    }
+//    public TaigiKeyboard(Context context, int layoutTemplateResId,
+//                         CharSequence characters, int columns, int horizontalPadding) {
+//        super(context, layoutTemplateResId, characters, columns, horizontalPadding);
+//
+//        drawSpaceBarImeText(context);
+//    }
 
     @Override
     protected Key createKeyFromXml(Resources res, Row parent, int x, int y,
@@ -63,12 +62,14 @@ public class TaigiKeyboard extends Keyboard {
         final DisplayMetrics displayMetrics = resources.getDisplayMetrics();
         Log.i(TAG, "screen density: " + displayMetrics.density);
 
-        mSpaceIcon = resources.getDrawable(R.drawable.btn_keyboard_spacebar_lxx_dark);
+        Drawable spaceIcon = resources.getDrawable(R.drawable.btn_keyboard_spacebar_lxx_dark);
 
         final int width = mSpaceKey.width;
-        final int height = mSpaceIcon.getIntrinsicHeight();
+        final int height = spaceIcon.getIntrinsicHeight();
         final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(buffer);
+
+        //noinspection deprecation
         canvas.drawColor(resources.getColor(android.R.color.transparent), PorterDuff.Mode.CLEAR);
 
         final Paint paint = new Paint();
@@ -81,17 +82,19 @@ public class TaigiKeyboard extends Keyboard {
 
         final float baseline = height * SPACEKEY_LANGUAGE_BASELINE;
         final float descent = paint.descent();
+
+        //noinspection deprecation
         paint.setColor(resources.getColor(R.color.spacekey_text_color));
 
         canvas.drawText(language, width / 2, baseline - descent, paint);
 
         // Draw the spacebar icon at the bottom
         final int iconWidth = mSpaceKey.width - (int) (SPACEKEY_ICON_MARGIN_SIZE * displayMetrics.density);
-        final int iconHeight = mSpaceIcon.getIntrinsicHeight();
+        final int iconHeight = spaceIcon.getIntrinsicHeight();
         int x = (width - iconWidth) / 2;
         int y = height - iconHeight;
-        mSpaceIcon.setBounds(x, y, x + iconWidth, y + iconHeight);
-        mSpaceIcon.draw(canvas);
+        spaceIcon.setBounds(x, y, x + iconWidth, y + iconHeight);
+        spaceIcon.draw(canvas);
 
         return buffer;
     }
@@ -116,6 +119,7 @@ public class TaigiKeyboard extends Keyboard {
                 mEnterKey.label = res.getText(R.string.label_next_key);
                 break;
             case EditorInfo.IME_ACTION_SEARCH:
+                //noinspection deprecation
                 mEnterKey.icon = res.getDrawable(R.drawable.sym_keyboard_search);
                 mEnterKey.label = null;
                 break;
@@ -125,23 +129,24 @@ public class TaigiKeyboard extends Keyboard {
                 mEnterKey.label = res.getText(R.string.label_send_key);
                 break;
             default:
+                //noinspection deprecation
                 mEnterKey.icon = res.getDrawable(R.drawable.sym_keyboard_return);
                 mEnterKey.label = null;
                 break;
         }
     }
 
-    public void setSpaceIcon(final Drawable icon) {
-        if (mSpaceKey != null) {
-            mSpaceKey.icon = icon;
-        }
-    }
+//    public void setSpaceIcon(final Drawable icon) {
+//        if (mSpaceKey != null) {
+//            mSpaceKey.icon = icon;
+//        }
+//    }
 
     static class TaigiKey extends Key {
 
-        public TaigiKey(Row parent) {
-            super(parent);
-        }
+//        public TaigiKey(Row parent) {
+//            super(parent);
+//        }
 
         public TaigiKey(Resources res, Row parent, int x, int y, XmlResourceParser parser) {
             super(res, parent, x, y, parser);

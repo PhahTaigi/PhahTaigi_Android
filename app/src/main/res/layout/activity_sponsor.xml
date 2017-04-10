@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:text="我想欲贊助"
+                android:text="逐工贊助5箍"
                 android:textColor="#f222"
                 android:textSize="26sp"/>
 

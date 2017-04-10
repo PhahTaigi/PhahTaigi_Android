@@ -15,9 +15,9 @@ public class PojInputConverter {
     private static Pattern sPojWordExtractPattern = Pattern.compile("(?:(ph|p|m|b|th|t|n|l|kh|k|ng|g|h|chh|ch|s|j)?([aiueo+]+(?:nn)?|ng|m)(?:(ng|m|n)|(p|t|h|k))?([1-9])?|(ph|p|m|b|th|t|n|l|kh|k|ng|g|h|chh|ch|s|j)-?-?)", Pattern.CASE_INSENSITIVE);
 
     // [o, a ,e ,u, i, n, m]
-    public static int[] sLomajiNumberToWordTempArray = {0, 0, 0, 0, 0, 0, 0};
+    private static int[] sLomajiNumberToWordTempArray = {0, 0, 0, 0, 0, 0, 0};
 
-    public static void resetTempArray() {
+    private static void resetTempArray() {
         int count = sLomajiNumberToWordTempArray.length;
         for (int i = 0; i < count; i++) {
             sLomajiNumberToWordTempArray[i] = 0;
@@ -30,7 +30,7 @@ public class PojInputConverter {
         }
 
         if (input == null) {
-            return input;
+            return null;
         }
 
         final Matcher matcher = sPojWordExtractPattern.matcher(input);

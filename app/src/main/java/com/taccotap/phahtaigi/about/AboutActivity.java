@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.danielstone.materialaboutlibrary.ConvenienceBuilder;
@@ -25,8 +26,9 @@ public class AboutActivity extends MaterialAboutActivity {
         super.onCreate(savedInstanceState);
     }
 
+    @NonNull
     @Override
-    protected MaterialAboutList getMaterialAboutList(Context context) {
+    protected MaterialAboutList getMaterialAboutList(@NonNull Context context) {
         MaterialAboutCard.Builder appCardBuilder = new MaterialAboutCard.Builder();
 
         // Add items to card

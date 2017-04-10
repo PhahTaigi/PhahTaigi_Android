@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/keyboard_background_lxx_dark"
+    android:scrollbars="vertical"
+    tools:context="com.taccotap.phahtaigi.preferences.MoreSettingsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/keyboard_background_lxx_dark"
+            android:gravity="left"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="輸入ê方式："
+                android:textColor="#ffff"
+                android:textSize="18sp"/>
+
+            <RadioGroup
+                android:id="@+id/lomajiSelectionRadioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/tailoRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/radio_button_setting_custom_color"
+                    android:text="T/L 臺羅"
+                    android:textColor="#fccc"
+                    android:textSize="15sp"/>
+
+                <RadioButton
+                    android:id="@+id/pojRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:button="@drawable/radio_button_setting_custom_color"
+                    android:text="POJ 白話字"
+                    android:textColor="#fccc"
+                    android:textSize="15sp"/>
+
+                <RadioButton
+                    android:id="@+id/englishRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:button="@drawable/radio_button_setting_custom_color"
+                    android:text="EN 英文"
+                    android:textColor="#fccc"
+                    android:textSize="15sp"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/keyboard_background_lxx_dark"
+            android:gravity="left"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="漢字ê字型："
+                android:textColor="#ffff"
+                android:textSize="18sp"/>
+
+            <RadioGroup
+                android:id="@+id/fontSelectionRadioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/mingliuFontRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/radio_button_setting_custom_color"
+                    android:text="教育部"
+                    android:textColor="#fccc"
+                    android:textSize="15sp"/>
+
+                <RadioButton
+                    android:id="@+id/moedictFontRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:button="@drawable/radio_button_setting_custom_color"
+                    android:text="萌典"
+                    android:textColor="#fccc"
+                    android:textSize="15sp"/>
+
+                <RadioButton
+                    android:id="@+id/systemFontRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:button="@drawable/radio_button_setting_custom_color"
+                    android:text="系統預設"
+                    android:textColor="#fccc"
+                    android:textSize="15sp"/>
+            </RadioGroup>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

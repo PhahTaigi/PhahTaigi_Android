@@ -231,6 +231,8 @@ public class TaigiIme extends InputMethodService
         moreSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+
                 final Intent intent = new Intent(TaigiIme.this, MoreSettingsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -240,6 +242,8 @@ public class TaigiIme extends InputMethodService
         sponsorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+
                 final Intent intent = new Intent(TaigiIme.this, SponsorActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -249,6 +253,8 @@ public class TaigiIme extends InputMethodService
         aboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+
                 final Intent intent = new Intent(TaigiIme.this, AboutActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -258,8 +264,8 @@ public class TaigiIme extends InputMethodService
         settingCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mKeyboardSettingLayout.setVisibility(View.GONE);
-                Prefs.putBoolean(AppPrefs.PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_3_2, true);
+                mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+                handleOpenCloseSettingLayout();
             }
         });
     }
@@ -350,6 +356,8 @@ public class TaigiIme extends InputMethodService
         mLomajiSelectionRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+                
                 if (checkedId == R.id.tailoRadioButton) {
                     setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_TAILO);
                 } else if (checkedId == R.id.pojRadioButton) {
@@ -462,7 +470,7 @@ public class TaigiIme extends InputMethodService
             Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_MODE, AppPrefs.INPUT_MODE_LOMAJI);
             mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
         } else if (primaryCode == CustomKeycode.KEYCODE_SETTINGS) {
-            handleOpenSettings();
+            handleOpenCloseSettingLayout();
         } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE && mTaigiKeyboardView != null) {
             commitRawInputSuggestion();
             mKeyboardSwitcher.switchKeyboard();
@@ -499,7 +507,7 @@ public class TaigiIme extends InputMethodService
         return isNeedVibration;
     }
 
-    private void handleOpenSettings() {
+    private void handleOpenCloseSettingLayout() {
         if (mKeyboardSettingLayout.getVisibility() == View.VISIBLE) {
             mKeyboardSettingLayout.setVisibility(View.GONE);
 
@@ -773,7 +781,7 @@ public class TaigiIme extends InputMethodService
 
     public void swipeUp() {
         mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
-        handleOpenSettings();
+        handleOpenCloseSettingLayout();
     }
 
     public void onPress(int primaryCode) {

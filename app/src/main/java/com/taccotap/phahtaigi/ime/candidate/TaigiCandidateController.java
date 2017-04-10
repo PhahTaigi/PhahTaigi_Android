@@ -3,9 +3,9 @@ package com.taccotap.phahtaigi.ime.candidate;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.taccotap.phahtaigi.AppPrefs;
 import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.dictmodel.ImeDict;
-import com.taccotap.phahtaigi.ime.TaigiIme;
 import com.taccotap.phahtaigi.ime.converter.PojInputConverter;
 import com.taccotap.phahtaigi.ime.converter.TailoInputConverter;
 
@@ -21,7 +21,7 @@ public class TaigiCandidateController {
     private static final String TAG = TaigiCandidateController.class.getSimpleName();
 
     private TaigiCandidateView mTaigiCandidateView;
-    private int mCurrentInputLomajiMode = TaigiIme.INPUT_LOMAJI_MODE_TAILO;
+    private int mCurrentInputLomajiMode = AppPrefs.INPUT_LOMAJI_MODE_TAILO;
 
     private String mRawInput;
     private String mRawInputSuggestion;
@@ -57,14 +57,14 @@ public class TaigiCandidateController {
     public void setCurrentInputLomajiMode(int currentInputLomajiMode) {
         mCurrentInputLomajiMode = currentInputLomajiMode;
 
-        if (mCurrentInputLomajiMode != TaigiIme.INPUT_LOMAJI_MODE_NONE) {
+        if (mCurrentInputLomajiMode != AppPrefs.INPUT_LOMAJI_MODE_NONE) {
             updateCandidateView();
         }
     }
 
-    public int getCurrentInputLomajiMode() {
-        return mCurrentInputLomajiMode;
-    }
+//    public int getCurrentInputLomajiMode() {
+//        return mCurrentInputLomajiMode;
+//    }
 
     public void setTaigiCandidateView(TaigiCandidateView taigiCandidateView) {
         mTaigiCandidateView = taigiCandidateView;
@@ -79,11 +79,11 @@ public class TaigiCandidateController {
 
         mInputImeDict = new ImeDict();
 
-        if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
+        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
             mRawInputSuggestion = TailoInputConverter.convertTailoNumberRawInputToTailoWords(mRawInput);
             mInputImeDict.setTailo(mRawInputSuggestion);
             mInputImeDict.setPoj("");
-        } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
+        } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
             mRawInputSuggestion = PojInputConverter.convertPojNumberRawInputToPojWords(mRawInput);
             mInputImeDict.setPoj(mRawInputSuggestion);
             mInputImeDict.setTailo("");
@@ -122,21 +122,21 @@ public class TaigiCandidateController {
         String search = mRawInput.toLowerCase().replaceAll("1|4", "");
 
         if (!search.matches(".*\\d+.*")) {
-            if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
+            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .equalTo("tailoInputWithoutTone", search)
                         .findAllSortedAsync("priority", Sort.ASCENDING);
-            } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
+            } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .equalTo("pojInputWithoutTone", search)
                         .findAllSortedAsync("priority", Sort.ASCENDING);
             }
         } else {
-            if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
+            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .beginsWith("tailoInputWithNumberTone", search)
                         .findAllSortedAsync("priority", Sort.ASCENDING);
-            } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
+            } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .beginsWith("pojInputWithNumberTone", search)
                         .findAllSortedAsync("priority", Sort.ASCENDING);
@@ -155,13 +155,13 @@ public class TaigiCandidateController {
                 for (ImeDict imeDict : imeDicts) {
                     ImeDict newImeDict = new ImeDict(imeDict);
 
-                    if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
+                    if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
                         if (mRawInput.toUpperCase().equals(mRawInput)) {
                             newImeDict.setTailo(imeDict.getTailo().toUpperCase());
                         } else if (mRawInput.substring(0, 1).toUpperCase().equals(mRawInput.substring(0, 1))) {
                             newImeDict.setTailo(imeDict.getTailo().substring(0, 1).toUpperCase() + imeDict.getTailo().substring(1));
                         }
-                    } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
+                    } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                         if (mRawInput.toUpperCase().equals(mRawInput)) {
                             newImeDict.setPoj(imeDict.getPoj().toUpperCase());
                         } else if (mRawInput.substring(0, 1).toUpperCase().equals(mRawInput.substring(0, 1))) {

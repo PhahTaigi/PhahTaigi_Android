@@ -1,5 +1,6 @@
 package com.taccotap.phahtaigi.ime.candidate;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -10,16 +11,22 @@ import android.graphics.drawable.Drawable;
 import android.os.Vibrator;
 import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.pixplicity.easyprefs.library.Prefs;
+import com.taccotap.phahtaigi.AppPrefs;
 import com.taccotap.phahtaigi.R;
 import com.taccotap.phahtaigi.dictmodel.ImeDict;
 import com.taccotap.phahtaigi.ime.TaigiIme;
 
 import java.util.ArrayList;
 
+import static com.taccotap.phahtaigi.AppPrefs.HANJI_FONT_TYPE_APP_DEFAULT;
+
+@SuppressLint("ViewConstructor")
 public class TaigiCandidateView extends View {
     private static final String TAG = TaigiCandidateView.class.getSimpleName();
 
@@ -46,11 +53,9 @@ public class TaigiCandidateView extends View {
     private Rect mBgPadding;
 
     private int mMeasuredWidth;
-    private int mMeasuredHeight;
 
     private int mColorNormal;
     private int mColorRecommended;
-    private int mColorOther;
     private int mVerticalPadding;
 
     private Paint mRawInputPaint;
@@ -89,7 +94,9 @@ public class TaigiCandidateView extends View {
     private void init() {
         final Resources resources = mContext.getResources();
 
+        //noinspection deprecation
         mSelectionHighlightDrawable = resources.getDrawable(android.R.drawable.list_selector_background);
+
         mSelectionHighlightDrawable.setState(new int[]{
                 android.R.attr.state_enabled,
                 android.R.attr.state_focused,
@@ -101,6 +108,8 @@ public class TaigiCandidateView extends View {
         mSelectionHighlightDrawable.getPadding(mPadding);
 
         mVerticalPadding = resources.getDimensionPixelSize(R.dimen.candidate_vertical_padding);
+
+        //noinspection deprecation
         setBackgroundColor(resources.getColor(R.color.candidate_background));
 
         mGestureDetector = new GestureDetectorCompat(mContext, new GestureDetector.SimpleOnGestureListener() {
@@ -134,15 +143,31 @@ public class TaigiCandidateView extends View {
         initTextPaintAndTextHeightCalculation();
     }
 
+    public void resetTextSettings() {
+        initTextPaintAndTextHeightCalculation();
+    }
+
     private void initTextPaintAndTextHeightCalculation() {
         final Resources resources = mContext.getResources();
 
+        //noinspection deprecation
         mColorNormal = resources.getColor(R.color.candidate_normal);
+        //noinspection deprecation
         mColorRecommended = resources.getColor(R.color.candidate_recommended);
-        mColorOther = resources.getColor(R.color.candidate_other);
 
         mLomajiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/twu3.ttf");
-        mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/mingliub.ttf");
+
+        final int hanjiType = Prefs.getInt(AppPrefs.PREFS_KEY_HANJI_FONT_TYPE, HANJI_FONT_TYPE_APP_DEFAULT);
+        if (hanjiType == AppPrefs.HANJI_FONT_TYPE_MINGLIUB) {
+            mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/mingliub.ttf");
+            Log.i(TAG, "Hanji font: mingliub");
+        } else if (hanjiType == AppPrefs.HANJI_FONT_TYPE_MOEDICT) {
+            mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/moedict.ttf");
+            Log.i(TAG, "Hanji font: moedict");
+        } else {
+            mHanjiTypeface = Typeface.DEFAULT;
+            Log.i(TAG, "Hanji font: system default");
+        }
 
         mRawInputPaint = new Paint();
         mRawInputPaint.setColor(mColorNormal);
@@ -220,11 +245,6 @@ public class TaigiCandidateView extends View {
         updateTextPaintAndTextHeightCalculation();
     }
 
-    /**
-     * A connection back to the service to communicate with the text field
-     *
-     * @param listener
-     */
     public void setService(TaigiIme listener) {
         mService = listener;
     }
@@ -239,8 +259,8 @@ public class TaigiCandidateView extends View {
         mMeasuredWidth = resolveSize(50, widthMeasureSpec);
 
         // Maximum possible width and desired height
-        mMeasuredHeight = resolveSize(mDesiredHeight, heightMeasureSpec);
-        setMeasuredDimension(mMeasuredWidth, mMeasuredHeight);
+        int measuredHeight = resolveSize(mDesiredHeight, heightMeasureSpec);
+        setMeasuredDimension(mMeasuredWidth, measuredHeight);
     }
 
     /**
@@ -267,6 +287,10 @@ public class TaigiCandidateView extends View {
     }
 
     private void drawSuggestions(Canvas canvas) {
+        if (canvas == null) {
+            return;
+        }
+
         mTotalWidth = 0;
 
         if (TextUtils.isEmpty(mRawInput)) return;
@@ -298,25 +322,25 @@ public class TaigiCandidateView extends View {
             String hintCandidate = "";
 
             if (i == 0) {
-                if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
+                if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
                     mainCandidate = imeDict.getTailo();
-                } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
+                } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                     mainCandidate = imeDict.getPoj();
                 }
                 hintCandidate = imeDict.getHanji();
             } else {
                 if (mIsMainCandidateLomaji) {
-                    if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
+                    if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
                         mainCandidate = imeDict.getTailo();
-                    } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
+                    } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                         mainCandidate = imeDict.getPoj();
                     }
                     hintCandidate = imeDict.getHanji();
                 } else {
                     mainCandidate = imeDict.getHanji();
-                    if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
+                    if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
                         hintCandidate = imeDict.getTailo();
-                    } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
+                    } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                         hintCandidate = imeDict.getPoj();
                     }
                 }
@@ -334,7 +358,7 @@ public class TaigiCandidateView extends View {
 
             // draw touched effect
             if (touchX + scrollX >= x && touchX + scrollX < x + fullWordWidth && !scrolled) {
-                if (canvas != null && mTouchX != OUT_OF_BOUNDS) {
+                if (mTouchX != OUT_OF_BOUNDS) {
                     canvas.translate(x, 0);
                     mSelectionHighlightDrawable.setBounds(0, (int) mWordSeperatorLineYForPaint,
                             fullWordWidth, (int) (mWordSeperatorLineYForPaint + fullWordHeight));
@@ -344,36 +368,34 @@ public class TaigiCandidateView extends View {
                 mSelectedIndex = i;
             }
 
-            if (canvas != null) {
-                if (i == 0) {
-                    // draw parsed raw input
-                    canvas.drawText(mainCandidate, x + X_GAP, mMainSuggestionFirstLomajiHeightForPaint, mSuggestionsMainFirstLomajiPaint);
+            if (i == 0) {
+                // draw parsed raw input
+                canvas.drawText(mainCandidate, x + X_GAP, mMainSuggestionFirstLomajiHeightForPaint, mSuggestionsMainFirstLomajiPaint);
 
-                    // draw line between words
-                    String lomaji = "";
-                    if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
-                        lomaji = imeDict.getTailo();
-                    } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
-                        lomaji = imeDict.getPoj();
-                    }
-                    final float fullFirstLomajiWidth = mSuggestionsMainFirstLomajiPaint.measureText(lomaji) + X_GAP * 2;
-                    canvas.drawLine(x + fullFirstLomajiWidth, mWordSeperatorLineYForPaint,
-                            x + fullFirstLomajiWidth, mWordSeperatorLineYForPaint + fullWordHeight, mWordSeperatorLinePaint);
-
-                    x += fullFirstLomajiWidth;
-                } else {
-                    // draw main candidate
-                    canvas.drawText(mainCandidate, x + X_GAP, mMainSuggestionHeightForPaint, mSuggestionsMainPaint);
-
-                    // draw hint candidate
-                    canvas.drawText(hintCandidate, x + X_GAP, mHintSuggestionHeightForPaint, mSuggestionsHintPaint);
-
-                    // draw line between words
-                    canvas.drawLine(x + fullWordWidth, mWordSeperatorLineYForPaint,
-                            x + fullWordWidth, mWordSeperatorLineYForPaint + fullWordHeight, mWordSeperatorLinePaint);
-
-                    x += fullWordWidth;
+                // draw line between words
+                String lomaji = "";
+                if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
+                    lomaji = imeDict.getTailo();
+                } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
+                    lomaji = imeDict.getPoj();
                 }
+                final float fullFirstLomajiWidth = mSuggestionsMainFirstLomajiPaint.measureText(lomaji) + X_GAP * 2;
+                canvas.drawLine(x + fullFirstLomajiWidth, mWordSeperatorLineYForPaint,
+                        x + fullFirstLomajiWidth, mWordSeperatorLineYForPaint + fullWordHeight, mWordSeperatorLinePaint);
+
+                x += fullFirstLomajiWidth;
+            } else {
+                // draw main candidate
+                canvas.drawText(mainCandidate, x + X_GAP, mMainSuggestionHeightForPaint, mSuggestionsMainPaint);
+
+                // draw hint candidate
+                canvas.drawText(hintCandidate, x + X_GAP, mHintSuggestionHeightForPaint, mSuggestionsHintPaint);
+
+                // draw line between words
+                canvas.drawLine(x + fullWordWidth, mWordSeperatorLineYForPaint,
+                        x + fullWordWidth, mWordSeperatorLineYForPaint + fullWordHeight, mWordSeperatorLinePaint);
+
+                x += fullWordWidth;
             }
         }
 
@@ -435,10 +457,10 @@ public class TaigiCandidateView extends View {
         }
 
         int action = me.getAction();
-        int x = (int) me.getX();
-        int y = (int) me.getY();
+//        int x = (int) me.getX();
+//        int y = (int) me.getY();
 
-        mTouchX = x;
+        mTouchX = (int) me.getX();
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
@@ -462,9 +484,9 @@ public class TaigiCandidateView extends View {
 
                         final ImeDict imeDict = mSuggestions.get(mSelectedIndex);
                         if (mSelectedIndex == 0 || mIsMainCandidateLomaji) {
-                            if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_TAILO) {
+                            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
                                 mService.commitPickedSuggestion(imeDict.getTailo());
-                            } else if (mCurrentInputLomajiMode == TaigiIme.INPUT_LOMAJI_MODE_POJ) {
+                            } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                                 mService.commitPickedSuggestion(imeDict.getPoj());
                             }
                         } else {

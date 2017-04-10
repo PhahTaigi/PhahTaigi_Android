@@ -19,7 +19,7 @@ public class TailoInputConverter {
         }
 
         if (input == null) {
-            return input;
+            return null;
         }
 
         final Matcher matcher = sTailoWordExtractPattern.matcher(input);

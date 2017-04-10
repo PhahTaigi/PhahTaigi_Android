@@ -1,21 +1,7 @@
-/*
- * Copyright (C) 2008-2009 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.taccotap.phahtaigi.ime;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
 import com.pixplicity.easyprefs.library.Prefs;
+import com.taccotap.phahtaigi.AppPrefs;
 import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.R;
 import com.taccotap.phahtaigi.about.AboutActivity;
@@ -49,8 +36,14 @@ import com.taccotap.phahtaigi.ime.candidate.TaigiCandidateView;
 import com.taccotap.phahtaigi.ime.keyboard.CustomKeycode;
 import com.taccotap.phahtaigi.ime.keyboard.KeyboardSwitcher;
 import com.taccotap.phahtaigi.ime.keyboard.TaigiKeyboardView;
+import com.taccotap.phahtaigi.preferences.MoreSettingsActivity;
+import com.taccotap.phahtaigi.rxbus.RxBus;
+import com.taccotap.phahtaigi.rxbus.events.UpdateHanjiFontEvent;
 
 import java.util.List;
+
+import io.reactivex.functions.Consumer;
+
 
 /**
  * Example of writing an input method for a soft keyboard.  This code is
@@ -63,18 +56,7 @@ public class TaigiIme extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
     private static final String TAG = TaigiIme.class.getSimpleName();
 
-    public static final int INPUT_MODE_LOMAJI = 0;
-    public static final int INPUT_MODE_HANJI = 1;
-
-    public static final int INPUT_LOMAJI_MODE_NONE = -1;
-    public static final int INPUT_LOMAJI_MODE_TAILO = 0;
-    public static final int INPUT_LOMAJI_MODE_POJ = 1;
-
     public static final int KEY_VIBRATION_MILLISECONDS = 5;
-
-    private static final String PREFS_KEY_CURRENT_INPUT_MODE = "PREFS_KEY_CURRENT_INPUT_MODE";
-    private static final String PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE = "PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE";
-    private static final String PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_2_8 = "PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_2_8";
 
     private String mWordSeparators;
     private String mWordEndingSentence;
@@ -87,10 +69,6 @@ public class TaigiIme extends InputMethodService
     private LinearLayout mInputView;
     private LinearLayout mKeyboardSettingLayout;
     private RadioGroup mLomajiSelectionRadioGroup;
-
-    private Button mSponsorButton;
-    private Button mSettingCloseButton;
-    private Button mAboutButton;
 
     private KeyboardSwitcher mKeyboardSwitcher;
     private TaigiCandidateController mTaigiCandidateController;
@@ -105,6 +83,8 @@ public class TaigiIme extends InputMethodService
     private int mLastPrimaryKey = -9999;
     private long mLastPrimaryKeyTime = 0;
 
+    private volatile boolean mIsNeedToUpdateHanjiFont = false;
+
     /**
      * Main initialization of the input method component.  Be sure to call
      * to super class.
@@ -117,6 +97,15 @@ public class TaigiIme extends InputMethodService
 
         mWordSeparators = getResources().getString(R.string.word_separators);
         mWordEndingSentence = getResources().getString(R.string.word_ending_sentence);
+
+        RxBus.get().asFlowable().subscribe(new Consumer<Object>() {
+            @Override
+            public void accept(Object event) throws Exception {
+                if (event instanceof UpdateHanjiFontEvent) {
+                    mIsNeedToUpdateHanjiFont = true;
+                }
+            }
+        });
     }
 
     /**
@@ -186,9 +175,9 @@ public class TaigiIme extends InputMethodService
             default:
                 // For all unknown input types, default to the alphabetic
                 // keyboard with no special features.
-                if (mCurrentInputMode == INPUT_MODE_LOMAJI) {
+                if (mCurrentInputMode == AppPrefs.INPUT_MODE_LOMAJI) {
                     mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
-                } else if (mCurrentInputMode == INPUT_MODE_HANJI) {
+                } else if (mCurrentInputMode == AppPrefs.INPUT_MODE_HANJI) {
                     mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_HANJI_QWERTY);
                 } else {
                     mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
@@ -200,6 +189,7 @@ public class TaigiIme extends InputMethodService
         mKeyboardSwitcher.setImeOptions(getResources(), attribute.imeOptions);
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View onCreateInputView() {
         if (BuildConfig.DEBUG_LOG) {
@@ -227,24 +217,36 @@ public class TaigiIme extends InputMethodService
         return mInputView;
     }
 
+    @SuppressLint("InflateParams")
     private void initSettingLayout() {
         mKeyboardSettingLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.keyboard_settings, null);
         mInputView.addView(mKeyboardSettingLayout);
 
-        if (!Prefs.getBoolean(PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_2_8, false)) {
+        if (!Prefs.getBoolean(AppPrefs.PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_3_2, false)
+                || Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_SHOW_SETTING, true)) {
             mKeyboardSettingLayout.setVisibility(View.VISIBLE);
         }
 
-        mSettingCloseButton = (Button) mKeyboardSettingLayout.findViewById(R.id.keyboardSettingCloseButton);
-        mSettingCloseButton.setOnClickListener(new View.OnClickListener() {
+        Button moreSettingButton = (Button) mKeyboardSettingLayout.findViewById(R.id.moreSettingButton);
+        moreSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mKeyboardSettingLayout.setVisibility(View.GONE);
-                Prefs.putBoolean(PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_2_8, true);
+                final Intent intent = new Intent(TaigiIme.this, MoreSettingsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             }
         });
-        mAboutButton = (Button) mKeyboardSettingLayout.findViewById(R.id.aboutButton);
-        mAboutButton.setOnClickListener(new View.OnClickListener() {
+        Button sponsorButton = (Button) mKeyboardSettingLayout.findViewById(R.id.sponsorButton);
+        sponsorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent = new Intent(TaigiIme.this, SponsorActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+        Button aboutButton = (Button) mKeyboardSettingLayout.findViewById(R.id.aboutButton);
+        aboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Intent intent = new Intent(TaigiIme.this, AboutActivity.class);
@@ -252,13 +254,12 @@ public class TaigiIme extends InputMethodService
                 startActivity(intent);
             }
         });
-        mSponsorButton = (Button) mKeyboardSettingLayout.findViewById(R.id.sponsorButton);
-        mSponsorButton.setOnClickListener(new View.OnClickListener() {
+        Button settingCloseButton = (Button) mKeyboardSettingLayout.findViewById(R.id.keyboardSettingCloseButton);
+        settingCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Intent intent = new Intent(TaigiIme.this, SponsorActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                mKeyboardSettingLayout.setVisibility(View.GONE);
+                Prefs.putBoolean(AppPrefs.PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_3_2, true);
             }
         });
     }
@@ -328,6 +329,11 @@ public class TaigiIme extends InputMethodService
 
         mKeyboardSwitcher.resetKeyboard(mTaigiKeyboardView);
 
+        if (mIsNeedToUpdateHanjiFont) {
+            mTaigiCandidateView.resetTextSettings();
+            mIsNeedToUpdateHanjiFont = false;
+        }
+
         setCurrentInputMode();
         handleKeyboardViewAutoCaps();
 
@@ -335,21 +341,21 @@ public class TaigiIme extends InputMethodService
     }
 
     private void setCurrentInputMode() {
-        mCurrentInputMode = Prefs.getInt(PREFS_KEY_CURRENT_INPUT_MODE, INPUT_MODE_LOMAJI);
+        mCurrentInputMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_MODE, AppPrefs.INPUT_MODE_LOMAJI);
 
         mLomajiSelectionRadioGroup = (RadioGroup) mInputView.findViewById(R.id.lomajiSelectionRadioGroup);
-        mCurrentInputLomajiMode = Prefs.getInt(PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE, INPUT_LOMAJI_MODE_TAILO);
+        mCurrentInputLomajiMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE, AppPrefs.INPUT_LOMAJI_MODE_APP_DEFAULT);
         setCurrentInputLomajiMode(mCurrentInputLomajiMode);
 
         mLomajiSelectionRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 if (checkedId == R.id.tailoRadioButton) {
-                    setCurrentInputLomajiMode(INPUT_LOMAJI_MODE_TAILO);
+                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_TAILO);
                 } else if (checkedId == R.id.pojRadioButton) {
-                    setCurrentInputLomajiMode(INPUT_LOMAJI_MODE_POJ);
+                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_POJ);
                 } else if (checkedId == R.id.englishRadioButton) {
-                    setCurrentInputLomajiMode(INPUT_LOMAJI_MODE_NONE);
+                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_NONE);
                 }
             }
         });
@@ -358,17 +364,17 @@ public class TaigiIme extends InputMethodService
     private void setCurrentInputLomajiMode(int inputMode) {
         mCurrentInputLomajiMode = inputMode;
 
-        if (mCurrentInputLomajiMode == INPUT_LOMAJI_MODE_NONE) {
+        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_NONE) {
             commitRawInputSuggestion();
         } else {
-            Prefs.putInt(PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE, inputMode);
+            Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE, inputMode);
         }
 
-        if (mCurrentInputLomajiMode == INPUT_LOMAJI_MODE_TAILO) {
+        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
             mLomajiSelectionRadioGroup.check(R.id.tailoRadioButton);
-        } else if (mCurrentInputLomajiMode == INPUT_LOMAJI_MODE_POJ) {
+        } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
             mLomajiSelectionRadioGroup.check(R.id.pojRadioButton);
-        } else if (mCurrentInputLomajiMode == INPUT_LOMAJI_MODE_NONE) {
+        } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_NONE) {
             mLomajiSelectionRadioGroup.check(R.id.englishRadioButton);
         }
 
@@ -417,16 +423,16 @@ public class TaigiIme extends InputMethodService
 //        handleKeyboardViewAutoCaps();
 //    }
 
-    /**
-     * Helper function to commit any text being composed in to the editor.
-     */
-    private void commitTyped() {
-        if (mComposing.length() > 0) {
-            getCurrentInputConnection().commitText(mComposing, mComposing.length());
-            mComposing.setLength(0);
-            updateInputForCandidate();
-        }
-    }
+//    /**
+//     * Helper function to commit any text being composed in to the editor.
+//     */
+//    private void commitTyped() {
+//        if (mComposing.length() > 0) {
+//            getCurrentInputConnection().commitText(mComposing, 1);
+//            mComposing.setLength(0);
+//            updateInputForCandidate();
+//        }
+//    }
 
     /**
      * Helper to send a key down / key up pair to the current editor.
@@ -450,10 +456,10 @@ public class TaigiIme extends InputMethodService
             isShiftKey = true;
             handleShiftForSwitchKeyboard();
         } else if (primaryCode == CustomKeycode.KEYCODE_SWITCH_TO_HANJI) {
-            Prefs.putInt(PREFS_KEY_CURRENT_INPUT_MODE, INPUT_MODE_HANJI);
+            Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_MODE, AppPrefs.INPUT_MODE_HANJI);
             mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_HANJI_QWERTY);
         } else if (primaryCode == CustomKeycode.KEYCODE_SWITCH_TO_LOMAJI) {
-            Prefs.putInt(PREFS_KEY_CURRENT_INPUT_MODE, INPUT_MODE_LOMAJI);
+            Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_MODE, AppPrefs.INPUT_MODE_LOMAJI);
             mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
         } else if (primaryCode == CustomKeycode.KEYCODE_SETTINGS) {
             handleOpenSettings();
@@ -496,9 +502,13 @@ public class TaigiIme extends InputMethodService
     private void handleOpenSettings() {
         if (mKeyboardSettingLayout.getVisibility() == View.VISIBLE) {
             mKeyboardSettingLayout.setVisibility(View.GONE);
-            Prefs.putBoolean(PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_2_8, true);
+
+            Prefs.putBoolean(AppPrefs.PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_3_2, true);
+            Prefs.putBoolean(AppPrefs.PREFS_KEY_IS_SHOW_SETTING, false);
         } else {
             mKeyboardSettingLayout.setVisibility(View.VISIBLE);
+
+            Prefs.putBoolean(AppPrefs.PREFS_KEY_IS_SHOW_SETTING, true);
         }
     }
 
@@ -615,7 +625,7 @@ public class TaigiIme extends InputMethodService
 
     private void handleCharacter(int primaryCode, int[] keyCodes) {
         if (BuildConfig.DEBUG_LOG) {
-            Log.d(TAG, "handleCharacter: " + primaryCode + ", keyCodes: " + keyCodes);
+            Log.d(TAG, "handleCharacter: " + primaryCode);
         }
 
         if (isInputViewShown()) {
@@ -634,7 +644,7 @@ public class TaigiIme extends InputMethodService
             }
         }
 
-        if (!mKeyboardSwitcher.isCurrentKeyboardViewUseQwertyKeyboard() || mCurrentInputLomajiMode == INPUT_LOMAJI_MODE_NONE) {
+        if (!mKeyboardSwitcher.isCurrentKeyboardViewUseQwertyKeyboard() || mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_NONE) {
             sendKey(primaryCode);
         } else {
             mComposing.append((char) primaryCode);

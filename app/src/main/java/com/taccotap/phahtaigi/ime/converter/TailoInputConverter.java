@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class TailoInputConverter {
     private static final String TAG = TailoInputConverter.class.getSimpleName();
 
-    private static Pattern sTailoWordExtractPattern = Pattern.compile("(?:(ph|p|m|b|th|tsh|ts|t|n|l|kh|k|ng|g|h|s|j)?([aiueo+]+(?:nn)?|ng|m)(?:(ng|m|n)|(p|t|h|k))?([1-9])?|(ph|p|m|b|th|tsh|ts|t|n|l|kh|k|ng|g|h|s|j)-?-?)", Pattern.CASE_INSENSITIVE);
+    private static Pattern sTailoWordExtractPattern = Pattern.compile("(?:(ph|p|m|b|th|tsh|ts|t|n|l|kh|k|ng|g|h|s|j)?([aiueo+]+(?:nn)?|ng|m)(?:(ng|m|n|r)|(p|t|h|k))?([1-9])?|(ph|p|m|b|th|tsh|ts|t|n|l|kh|k|ng|g|h|s|j)-?-?)", Pattern.CASE_INSENSITIVE);
 
     public static String convertTailoNumberRawInputToTailoWords(String input) {
         if (BuildConfig.DEBUG_LOG) {
@@ -119,9 +119,11 @@ public class TailoInputConverter {
         } else if (tailoWithoutNumber.contains("U")) {
             return replaceTailoNumberWithTailoUnicode(number, tailoWithoutNumber, "U");
         } else if (tailoWithoutNumber.contains("ng")) {
-            return replaceTailoNumberWithTailoUnicode(number, tailoWithoutNumber, "n");
-        } else if (tailoWithoutNumber.contains("Ng") || tailoWithoutNumber.contains("NG")) {
-            return replaceTailoNumberWithTailoUnicode(number, tailoWithoutNumber, "N");
+            return replaceTailoNumberWithTailoUnicode(number, tailoWithoutNumber, "ng");
+        } else if (tailoWithoutNumber.contains("Ng")) {
+            return replaceTailoNumberWithTailoUnicode(number, tailoWithoutNumber, "Ng");
+        } else if (tailoWithoutNumber.contains("NG")) {
+            return replaceTailoNumberWithTailoUnicode(number, tailoWithoutNumber, "NG");
         } else if (tailoWithoutNumber.contains("m")) {
             return replaceTailoNumberWithTailoUnicode(number, tailoWithoutNumber, "m");
         } else if (tailoWithoutNumber.contains("M")) {

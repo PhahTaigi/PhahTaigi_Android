@@ -134,5 +134,55 @@
             </RadioGroup>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/keyboard_background_lxx_dark"
+            android:gravity="left"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="Phah字ê時陣震動："
+                android:textColor="#ffff"
+                android:textSize="18sp"/>
+
+            <RadioGroup
+                android:id="@+id/vibrationRadioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/yesVibrationRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/radio_button_setting_custom_color"
+                    android:text="欲"
+                    android:textColor="#fccc"
+                    android:textSize="15sp"/>
+
+                <RadioButton
+                    android:id="@+id/noVibrationRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:button="@drawable/radio_button_setting_custom_color"
+                    android:text="無愛"
+                    android:textColor="#fccc"
+                    android:textSize="15sp"/>
+            </RadioGroup>
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

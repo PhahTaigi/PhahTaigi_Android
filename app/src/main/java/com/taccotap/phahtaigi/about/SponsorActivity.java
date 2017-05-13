@@ -24,7 +24,7 @@ import butterknife.OnClick;
 public class SponsorActivity extends AppCompatActivity implements IabBroadcastReceiver.IabBroadcastListener {
     private static final String TAG = SponsorActivity.class.getSimpleName();
 
-    private static final String SPONSOR_PRODUCT_ID = "sponsor_subscription_monthly_149";
+    private static final String SPONSOR_PRODUCT_ID = "sponsor_subscription_monthly_99";
 
     // (arbitrary) request code for the purchase flow
     private static final int RC_REQUEST = 10001;

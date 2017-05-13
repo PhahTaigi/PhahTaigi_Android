@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class PojInputConverter {
     private static final String TAG = PojInputConverter.class.getSimpleName();
 
-    private static Pattern sPojWordExtractPattern = Pattern.compile("(?:(ph|p|m|b|th|t|n|l|kh|k|ng|g|h|chh|ch|s|j)?([aiueo+]+(?:nn)?|ng|m)(?:(ng|m|n)|(p|t|h|k))?([1-9])?|(ph|p|m|b|th|t|n|l|kh|k|ng|g|h|chh|ch|s|j)-?-?)", Pattern.CASE_INSENSITIVE);
+    private static Pattern sPojWordExtractPattern = Pattern.compile("(?:(ph|p|m|b|th|t|n|l|kh|k|ng|g|h|chh|ch|s|j)?([aiueo+]+(?:nn)?|ng|m)(?:(ng|m|n|r)|(p|t|h|k))?([1-9])?|(ph|p|m|b|th|t|n|l|kh|k|ng|g|h|chh|ch|s|j)-?-?)", Pattern.CASE_INSENSITIVE);
 
     // [o, a ,e ,u, i, n, m]
     private static int[] sLomajiNumberToWordTempArray = {0, 0, 0, 0, 0, 0, 0};
@@ -173,7 +173,11 @@ public class PojInputConverter {
             if (i == tonePosition) {
                 String pojNumber = currentCharString + number;
                 final String poj = Poj.sPojNumberToPojUnicodeHashMap.get(pojNumber);
-                stringBuilder.append(poj);
+                if (poj != null) {
+                    stringBuilder.append(poj);
+                } else {
+                    stringBuilder.append(currentCharString);
+                }
             } else {
                 stringBuilder.append(currentCharString);
             }

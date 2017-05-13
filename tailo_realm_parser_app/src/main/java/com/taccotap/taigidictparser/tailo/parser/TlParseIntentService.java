@@ -3,26 +3,35 @@ package com.taccotap.taigidictparser.tailo.parser;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.taccotap.phahtaigi.dictmodel.ImeDict;
+import com.taccotap.taigidictmodel.tailo.TlTaigiMadeWordCode;
 import com.taccotap.taigidictmodel.tailo.TlTaigiWord;
 import com.taccotap.taigidictmodel.tailo.TlTaigiWordOtherPronounce;
 import com.taccotap.taigidictparser.custom.CustomTaigiWords;
 import com.taccotap.taigidictparser.utils.ExcelUtils;
 import com.taccotap.taigidictparser.utils.LomajiPhraseSplitter;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import au.com.bytecode.opencsv.CSVReader;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -31,6 +40,12 @@ public class TlParseIntentService extends IntentService {
 
     private static final String ASSETS_PATH_TAILO_DICT_TAIGI_WORDS = "tailo/詞目總檔(含俗諺).xls";
     private static final String ASSETS_PATH_TAILO_DICT_TAIGI_WORDS_ANOTHER_PRONOUNCE = "tailo/又音(又唸作).xls";
+    private static final String ASSETS_PATH_TAILO_DICT_TAIGI_MADE_WORDS_CODES = "tailo/x-造字.csv";
+
+    private static Pattern sTailoShortInputExtractPattern = Pattern.compile("^(ph|p|m|b|th|tsh|ts|t|n|l|kh|k|ng|g|h|s|j|a|i|u|e|oo|o])", Pattern.CASE_INSENSITIVE);
+    private static Pattern sPojShotInputExtractPattern = Pattern.compile("^(ph|p|m|b|th|t|n|l|kh|k|ng|g|h|chh|ch|s|j|a|i|u|e|oo|o)", Pattern.CASE_INSENSITIVE);
+
+    private ArrayList<TlTaigiMadeWordCode> mTaigiMadeWordCodes = new ArrayList<>();
 
     private Realm mRealm;
     private ArrayList<ImeDict> mImeDictArrayList = new ArrayList<>();
@@ -57,6 +72,8 @@ public class TlParseIntentService extends IntentService {
         injectCustomTaigiWords();
         parseDictTaigiWordAnotherPronounce();
 
+        prepareMadeWordCode();
+
         mImeDictArrayList.clear();
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -80,6 +97,34 @@ public class TlParseIntentService extends IntentService {
         mRealm.close();
 
         Log.d(TAG, "finish ALL");
+    }
+
+    private void prepareMadeWordCode() {
+        Log.d(TAG, "start: prepareMadeWordCode()");
+
+        AssetManager assetManager = getAssets();
+
+        try {
+            InputStream csvStream = assetManager.open(ASSETS_PATH_TAILO_DICT_TAIGI_MADE_WORDS_CODES);
+            InputStreamReader csvStreamReader = new InputStreamReader(csvStream);
+            CSVReader csvReader = new CSVReader(csvStreamReader);
+            String[] line;
+
+            // throw away the header
+            csvReader.readNext();
+
+            while ((line = csvReader.readNext()) != null) {
+                String madeWordCode = StringEscapeUtils.unescapeJava("\\u" + line[0]);
+                TlTaigiMadeWordCode tlTaigiMadeWordCode = new TlTaigiMadeWordCode(madeWordCode, line[1]);
+                mTaigiMadeWordCodes.add(tlTaigiMadeWordCode);
+
+                Log.d(TAG, "line[0] = " + line[0] + ", line[1] = " + line[1]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(TAG, "finish: prepareMadeWordCode()");
     }
 
     private void parseDictTaigiWord() {
@@ -224,7 +269,7 @@ public class TlParseIntentService extends IntentService {
 
         final RealmResults<TlTaigiWord> taigiWords = mRealm.where(TlTaigiWord.class).findAll();
 
-        final ArrayList<TlTaigiWord> taigiWordArrayList = new ArrayList<>(taigiWords);
+        final ArrayList<TlTaigiWord> taigiWordArrayList = new ArrayList<>(mRealm.copyFromRealm(taigiWords));
         handleEachTaigiWord(taigiWordArrayList);
 
         Log.d(TAG, "finish: handleDefaultTaigiWords()");
@@ -269,6 +314,8 @@ public class TlParseIntentService extends IntentService {
                 continue;
             }
 
+            fixMadeWordHanjiCode(taigiWord);
+
             String tailo = taigiWord.getLomaji();
             String hanji = taigiWord.getHanji();
 
@@ -298,7 +345,23 @@ public class TlParseIntentService extends IntentService {
         }
     }
 
+    private void fixMadeWordHanjiCode(TlTaigiWord taigiWord) {
+        String fixedHanji = taigiWord.getHanji();
+
+        for (TlTaigiMadeWordCode madeWordCode : mTaigiMadeWordCodes) {
+            fixedHanji = fixedHanji.replaceAll(madeWordCode.getMadeWordCode(), madeWordCode.getMadeWordReplaceCode());
+
+            if (taigiWord.getHanji().contains(madeWordCode.getMadeWordCode())) {
+                Log.w(TAG, "MadeWord found: lomaji = " + taigiWord.getLomaji() + ", hanji = " + taigiWord.getHanji() + ", fixedHanji = " + fixedHanji);
+            }
+        }
+
+        taigiWord.setHanji(fixedHanji);
+    }
+
     private void handleTailoPhrase(TlTaigiWord taigiWord, String tailoPhrase, String hanji, boolean isStorePerWord) {
+//        Log.d(TAG, "handleTailoPhrase: tailoPhrase = " + tailoPhrase);
+
         StringBuilder tailoNumberWordsStringBuilder = new StringBuilder();
         StringBuilder pojNumberWordsStringBuilder = new StringBuilder();
         StringBuilder pojPhraseStringBuilder = new StringBuilder();
@@ -319,19 +382,33 @@ public class TlParseIntentService extends IntentService {
         final LomajiPhraseSplitter.LomajiPhraseSplitterResult lomajiPhraseSplitterResult = lomajiPhraseSplitter.split(tailoPhrase);
 
         long priority = 0;
+        int wordLength = 0;
+        StringBuilder tailoShortInputStringBuilder = new StringBuilder();
+        StringBuilder pojShortInputStringBuilder = new StringBuilder();
+
         if (lomajiPhraseSplitterResult.getSplitSperators().size() > 0) {
             final ArrayList<String> tailoWords = lomajiPhraseSplitterResult.getSplitStrings();
+            wordLength = tailoWords.size();
 
             if (!isLomajiLengthMatchHanjiLength(tailoWords.size(), hanji)) {
-                Log.e(TAG, "Lomaji not match Hanji: lomaji = " + tailoPhrase + ", hanji = " + hanji);
-                return;
-            } else {
-                int hanjiCharPos = 0;
-                int hanjiCharCount = 0;
-                int length = tailoWords.size();
+                Log.w(TAG, "Lomaji not match Hanji: lomaji = " + tailoPhrase + ", hanji = " + hanji);
 
-                for (int i = 0; i < length; i++) {
-                    String tailoWord = tailoWords.get(i);
+                if (tailoPhrase.contains("(") || tailoPhrase.contains(")")
+                        || hanji.contains("(") || hanji.contains(")") || hanji.contains("、")) {
+                    // special case: 羅馬字或漢字同時有不同字表示之特例，沒有規則，暫不處理
+                    Log.e(TAG, "Skip parsing: lomaji = " + tailoPhrase + ", hanji = " + hanji);
+                    return;
+                } else {
+                    // special case: 羅馬字長度與漢字長度不對應，不處理單獨漢字與羅馬字對應，僅處理整組詞
+                    isStorePerWord = false;
+                }
+            }
+
+            int hanjiCharPos = 0;
+            int length = tailoWords.size();
+
+            for (int i = 0; i < length; i++) {
+                String tailoWord = tailoWords.get(i);
 
 //                    try {
 //                        Log.d(TAG, "i=" + i + ", tailoPhrase = " + tailoPhrase + ", tailoWord = " + tailoWord + ", hanji=" + hanji + ", hanji unicode=" + StrToUnicode(hanji));
@@ -339,45 +416,59 @@ public class TlParseIntentService extends IntentService {
 //                        e.printStackTrace();
 //                    }
 
-                    hanjiCharCount = Character.charCount(hanji.codePointAt(hanjiCharPos));
-                    String hanjiWord = hanji.substring(hanjiCharPos, hanjiCharPos + hanjiCharCount);
+                String hanjiWord;
+                if (isStorePerWord) {
+                    int hanjiCharCount = Character.charCount(hanji.codePointAt(hanjiCharPos));
+                    hanjiWord = hanji.substring(hanjiCharPos, hanjiCharPos + hanjiCharCount);
                     hanjiCharPos += hanjiCharCount;
 
-//                Log.d(TAG, "i=" + i + ", tailoWord = " + tailoWord + ", hanjiWord = " + hanjiWord);
-
-                    final String tailoInputWithNumberTone = LomajiConverter.convertLomajiWordToNumberTone(tailoWord, LomajiConverter.LOMAJI_TYPE_TAILO);
-
-                    final String pojInputWithNumberTone = LomajiConverter.convertTailoInputWordToPojInputWord(tailoInputWithNumberTone);
-                    final String pojNumberWord = LomajiConverter.convertTailoNumberWordToPojNumberWord(tailoInputWithNumberTone);
-                    final String pojWord = PojInputConverter.convertPojNumberToPoj(pojNumberWord);
-
-                    int thisLomajiWordToneNumber = LomajiConverter.getLomajiWordToneNumber(tailoInputWithNumberTone);
-
-                    priority += thisLomajiWordToneNumber * (int) (Math.pow(10, i));
-                    if (priority < 0) {
-                        priority = Long.MAX_VALUE;
-                    }
-
-                    if (isStorePerWord) {
-                        final String tailoInputWithoutTone = LomajiConverter.removeToneNumberAndHyphens(tailoInputWithNumberTone.toLowerCase());
-                        final String pojInputWithoutTone = LomajiConverter.removeToneNumberAndHyphens(pojInputWithNumberTone.toLowerCase());
-
-                        int thisPriority = LomajiConverter.getLomajiWordToneNumber(tailoInputWithNumberTone);
-
-                        prepareImeDict(taigiWord, tailoWord, tailoInputWithNumberTone.toLowerCase(), tailoInputWithoutTone, pojWord, pojInputWithNumberTone.toLowerCase(), pojInputWithoutTone, hanjiWord, thisPriority);
-                    }
-
-                    tailoNumberWordsStringBuilder.append(tailoInputWithNumberTone);
-                    pojNumberWordsStringBuilder.append(pojInputWithNumberTone);
-
-                    pojPhraseStringBuilder.append(pojWord);
-                    if (i < length - 1) {
-                        pojPhraseStringBuilder.append(lomajiPhraseSplitterResult.getSplitSperators().get(i));
-                    }
+                    // Log.d(TAG, "i=" + i + ", tailoWord = " + tailoWord + ", hanjiWord = " + hanjiWord);
+                } else {
+                    hanjiWord = hanji;
                 }
+
+                final String tailoInputWithNumberTone = LomajiConverter.convertLomajiWordToNumberTone(tailoWord, LomajiConverter.LOMAJI_TYPE_TAILO);
+
+                final String pojInputWithNumberTone = LomajiConverter.convertTailoInputWordToPojInputWord(tailoInputWithNumberTone);
+                final String pojNumberWord = LomajiConverter.convertTailoNumberWordToPojNumberWord(tailoInputWithNumberTone);
+                final String pojWord = PojInputConverter.convertPojNumberToPoj(pojNumberWord);
+
+                int thisLomajiWordToneNumber = LomajiConverter.getLomajiWordToneNumber(tailoInputWithNumberTone);
+
+                priority += thisLomajiWordToneNumber * (int) (Math.pow(10, i));
+                if (priority < 0) {
+                    priority = Long.MAX_VALUE;
+                }
+
+                if (isStorePerWord) {
+                    final String tailoInputWithoutTone = LomajiConverter.removeToneNumberAndHyphens(tailoInputWithNumberTone.toLowerCase());
+                    final String pojInputWithoutTone = LomajiConverter.removeToneNumberAndHyphens(pojInputWithNumberTone.toLowerCase());
+
+                    int thisPriority = LomajiConverter.getLomajiWordToneNumber(tailoInputWithNumberTone);
+
+                    prepareImeDict(taigiWord, tailoWord, tailoInputWithNumberTone.toLowerCase(), tailoInputWithoutTone, "", pojWord, pojInputWithNumberTone.toLowerCase(), pojInputWithoutTone, "", hanjiWord, thisPriority, 1);
+                }
+
+                tailoNumberWordsStringBuilder.append(tailoInputWithNumberTone);
+                pojNumberWordsStringBuilder.append(pojInputWithNumberTone);
+
+                pojPhraseStringBuilder.append(pojWord);
+                if (i < length - 1) {
+                    pojPhraseStringBuilder.append(lomajiPhraseSplitterResult.getSplitSperators().get(i));
+                }
+
+                final String tailoShortInput = getTailoShortInput(tailoInputWithNumberTone);
+                tailoShortInputStringBuilder.append(tailoShortInput);
+
+                final String pojShortInput = getPojShortInput(pojInputWithNumberTone);
+                pojShortInputStringBuilder.append(pojShortInput);
+
+//                    Log.d(TAG, "tailoInputWithNumberTone=" + tailoInputWithNumberTone + ", tailoShortInput=" + tailoShortInput + ", pojInputWithNumberTone=" + pojInputWithNumberTone + ", pojShortInput=" + pojShortInput);
             }
         } else {
             // single word case
+            wordLength = 1;
+
             final String tailoNumberWord = LomajiConverter.convertLomajiWordToNumberTone(tailoPhrase, LomajiConverter.LOMAJI_TYPE_TAILO);
 
             final String pojInputWord = LomajiConverter.convertTailoInputWordToPojInputWord(tailoNumberWord);
@@ -399,25 +490,53 @@ public class TlParseIntentService extends IntentService {
         final String pojInputWithNumberTone = pojNumberWordsStringBuilder.toString().toLowerCase();
         final String pojInputWithoutTone = LomajiConverter.removeToneNumberAndHyphens(pojInputWithNumberTone);
 
-        prepareImeDict(taigiWord, tailoPhrase, tailoInputWithNumberTone, tailoInputWithoutTone, pojPhrase, pojInputWithNumberTone, pojInputWithoutTone, taigiWord.getHanji(), priority);
+        prepareImeDict(taigiWord, tailoPhrase, tailoInputWithNumberTone, tailoInputWithoutTone, tailoShortInputStringBuilder.toString().toLowerCase(), pojPhrase, pojInputWithNumberTone, pojInputWithoutTone, pojShortInputStringBuilder.toString().toLowerCase(), taigiWord.getHanji(), priority, wordLength);
     }
 
-    private void prepareImeDict(TlTaigiWord taigiWord, String lomajiPhrase, String lomajiInputWithNumberTone, String lomajiInputWithoutTone, String pojPhrase, String pojInputWithNumberTone, String pojInputWithoutTone, String hanji, long priority) {
+    private String getTailoShortInput(String tailoWord) {
+        final Matcher matcher = sTailoShortInputExtractPattern.matcher(tailoWord);
+        if (matcher.find()) {
+            return matcher.group(0);
+        }
+
+        return "";
+    }
+
+    private String getPojShortInput(String pojWord) {
+        final Matcher matcher = sPojShotInputExtractPattern.matcher(pojWord);
+        if (matcher.find()) {
+            return matcher.group(0);
+        }
+
+        return "";
+    }
+
+    private void prepareImeDict(TlTaigiWord taigiWord, String tailoPhrase, String tailoInputWithNumberTone, String tailoInputWithoutTone, String tailoShortInput, String pojPhrase, String pojInputWithNumberTone, String pojInputWithoutTone, String pojShortInput, String hanji, long priority, int wordLength) {
         ImeDict newImeDict = new ImeDict();
 
         newImeDict.setMainCode(taigiWord.getMainCode());
         newImeDict.setWordPropertyCode(taigiWord.getWordPropertyCode());
-        newImeDict.setTailo(lomajiPhrase);
-        newImeDict.setTailoInputWithNumberTone(lomajiInputWithNumberTone);
-        newImeDict.setTailoInputWithoutTone(lomajiInputWithoutTone);
+        newImeDict.setTailo(tailoPhrase);
+        newImeDict.setTailoInputWithNumberTone(tailoInputWithNumberTone);
+        newImeDict.setTailoInputWithoutTone(tailoInputWithoutTone);
+        newImeDict.setTailoShortInput(tailoShortInput);
         newImeDict.setPoj(pojPhrase);
         newImeDict.setPojInputWithNumberTone(pojInputWithNumberTone);
         newImeDict.setPojInputWithoutTone(pojInputWithoutTone);
+        newImeDict.setPojShortInput(pojShortInput);
         newImeDict.setHanji(hanji);
         newImeDict.setPriority(priority);
+        newImeDict.setWordLength(wordLength);
 
         for (ImeDict imeDict : mImeDictArrayList) {
             if (newImeDict.getTailo().equals(imeDict.getTailo()) && newImeDict.getHanji().equals(imeDict.getHanji())) {
+                return;
+            }
+        }
+
+        for (TlTaigiMadeWordCode madeWordCode : mTaigiMadeWordCodes) {
+            if (newImeDict.getHanji().equals(madeWordCode.getMadeWordCode())) {
+                Log.e(TAG, "MadeWord found???: lomaji = " + taigiWord.getLomaji() + ", hanji = " + taigiWord.getHanji());
                 return;
             }
         }
@@ -435,7 +554,8 @@ public class TlParseIntentService extends IntentService {
                 for (int i = 0; i < count; i++) {
                     ImeDict imeDict = mImeDictArrayList.get(i);
 
-                    Log.d(TAG, "tailoWord=" + imeDict.getTailo() + ", tailoNumberTone=" + imeDict.getTailoInputWithNumberTone() + ", tailoWithoutTone=" + imeDict.getTailoInputWithoutTone() + ", hanjiWord=" + imeDict.getHanji() + ", poj=" + imeDict.getPoj() + ", getPojInputWithNumberTone=" + imeDict.getPojInputWithNumberTone() + ", getPojInputWithoutTone=" + imeDict.getPojInputWithoutTone());
+//                    Log.d(TAG, "tailoWord=" + imeDict.getTailo() + ", tailoNumberTone=" + imeDict.getTailoInputWithNumberTone() + ", tailoWithoutTone=" + imeDict.getTailoInputWithoutTone() + ", hanjiWord=" + imeDict.getHanji() + ", poj=" + imeDict.getPoj() + ", getPojInputWithNumberTone=" + imeDict.getPojInputWithNumberTone() + ", getPojInputWithoutTone=" + imeDict.getPojInputWithoutTone());
+//                    Log.d(TAG, "tailoWord=" + imeDict.getTailo() + ", tailoShortInput=" + imeDict.getTailoShortInput() + ", pojWord=" + imeDict.getPoj() + ", pojShortInput=" + imeDict.getPojShortInput());
 
                     imeDict.setWordId(i);
 

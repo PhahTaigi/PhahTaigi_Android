@@ -84,6 +84,7 @@ public class TaigiIme extends InputMethodService
     private long mLastPrimaryKeyTime = 0;
 
     private volatile boolean mIsNeedToUpdateHanjiFont = false;
+    private boolean mIsVibration;
 
     /**
      * Main initialization of the input method component.  Be sure to call
@@ -140,6 +141,8 @@ public class TaigiIme extends InputMethodService
         if (BuildConfig.DEBUG_LOG) {
             Log.i(TAG, "onStartInput(): restarting = " + restarting);
         }
+
+        mIsVibration = Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_VIBRATION, AppPrefs.PREFS_KEY_IS_VIBRATION_YES);
 
         // We are now going to initialize our state based on the type of
         // text being edited.
@@ -231,7 +234,9 @@ public class TaigiIme extends InputMethodService
         moreSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+                if (mIsVibration) {
+                    mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+                }
 
                 final Intent intent = new Intent(TaigiIme.this, MoreSettingsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -242,7 +247,9 @@ public class TaigiIme extends InputMethodService
         sponsorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+                if (mIsVibration) {
+                    mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+                }
 
                 final Intent intent = new Intent(TaigiIme.this, SponsorActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -253,7 +260,9 @@ public class TaigiIme extends InputMethodService
         aboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+                if (mIsVibration) {
+                    mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+                }
 
                 final Intent intent = new Intent(TaigiIme.this, AboutActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -264,7 +273,9 @@ public class TaigiIme extends InputMethodService
         settingCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+                if (mIsVibration) {
+                    mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+                }
                 handleOpenCloseSettingLayout();
             }
         });
@@ -356,8 +367,10 @@ public class TaigiIme extends InputMethodService
         mLomajiSelectionRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
-                
+                if (mIsVibration) {
+                    mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+                }
+
                 if (checkedId == R.id.tailoRadioButton) {
                     setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_TAILO);
                 } else if (checkedId == R.id.pojRadioButton) {
@@ -488,7 +501,9 @@ public class TaigiIme extends InputMethodService
         }
 
         if (isNeedVibration(primaryCode)) {
-            mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+            if (mIsVibration) {
+                mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+            }
         }
     }
 
@@ -765,22 +780,30 @@ public class TaigiIme extends InputMethodService
 //    }
 
     public void swipeRight() {
-        mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+        if (mIsVibration) {
+            mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+        }
         switchToNextIme();
     }
 
     public void swipeLeft() {
-        mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+        if (mIsVibration) {
+            mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+        }
         showImePicker();
     }
 
     public void swipeDown() {
-        mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+        if (mIsVibration) {
+            mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+        }
         handleClose();
     }
 
     public void swipeUp() {
-        mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+        if (mIsVibration) {
+            mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+        }
         handleOpenCloseSettingLayout();
     }
 

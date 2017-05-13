@@ -19,4 +19,8 @@ public class AppPrefs {
     public static final int HANJI_FONT_TYPE_MINGLIUB = 1;
     public static final int HANJI_FONT_TYPE_MOEDICT = 2;
     public static final int HANJI_FONT_TYPE_APP_DEFAULT = HANJI_FONT_TYPE_MINGLIUB;
+
+    public static final String PREFS_KEY_IS_VIBRATION = "PREFS_KEY_IS_VIBRATION";
+    public static final boolean PREFS_KEY_IS_VIBRATION_YES = true;
+    public static final boolean PREFS_KEY_IS_VIBRATION_NO = false;
 }

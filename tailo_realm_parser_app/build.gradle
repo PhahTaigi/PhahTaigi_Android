@@ -3,7 +3,7 @@ apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         minSdkVersion 23
@@ -38,4 +38,6 @@ dependencies {
 
     compile project(':tailo_realm_model')
 
+    compile 'com.github.shiami:opencsv:6c92281d1c'
+    compile 'commons-lang:commons-lang:2.6'
 }

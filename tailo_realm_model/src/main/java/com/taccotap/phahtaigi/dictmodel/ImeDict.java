@@ -27,6 +27,10 @@ public class ImeDict extends RealmObject {
 
     @Index
     @Required
+    private String tailoShortInput;
+
+    @Index
+    @Required
     private String poj;
 
     @Index
@@ -37,7 +41,13 @@ public class ImeDict extends RealmObject {
     @Required
     private String pojInputWithoutTone;
 
+    @Index
+    @Required
+    private String pojShortInput;
+
     private long priority;
+
+    private int wordLength;
 
     @Index
     @Required
@@ -53,11 +63,14 @@ public class ImeDict extends RealmObject {
         this.tailo = imeDict.getTailo();
         this.tailoInputWithNumberTone = imeDict.getTailoInputWithNumberTone();
         this.tailoInputWithoutTone = imeDict.getTailoInputWithoutTone();
+        this.tailoShortInput = imeDict.getTailoShortInput();
         this.poj = imeDict.getPoj();
         this.pojInputWithNumberTone = imeDict.getPojInputWithNumberTone();
         this.pojInputWithoutTone = imeDict.getPojInputWithoutTone();
+        this.pojShortInput = imeDict.getPojShortInput();
         this.hanji = imeDict.getHanji();
         this.priority = imeDict.getPriority();
+        this.wordLength = imeDict.getWordLength();
     }
 
     public int getWordId() {
@@ -146,5 +159,29 @@ public class ImeDict extends RealmObject {
 
     public void setPriority(long priority) {
         this.priority = priority;
+    }
+
+    public int getWordLength() {
+        return wordLength;
+    }
+
+    public void setWordLength(int wordLength) {
+        this.wordLength = wordLength;
+    }
+
+    public String getTailoShortInput() {
+        return tailoShortInput;
+    }
+
+    public void setTailoShortInput(String tailoShortInput) {
+        this.tailoShortInput = tailoShortInput;
+    }
+
+    public String getPojShortInput() {
+        return pojShortInput;
+    }
+
+    public void setPojShortInput(String pojShortInput) {
+        this.pojShortInput = pojShortInput;
     }
 }

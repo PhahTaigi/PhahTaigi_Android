@@ -31,7 +31,7 @@
                 android:gravity="center"
                 android:text="設定"
                 android:textColor="#ffff"
-                android:textSize="20sp"/>
+                android:textSize="18sp"/>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -42,44 +42,44 @@
 
                 <Button
                     android:id="@+id/sponsorButton"
-                    android:layout_width="70dp"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
                     android:background="@drawable/btn_setting_custom_color"
                     android:text="贊助"
                     android:textColor="#feee"
-                    android:textSize="14sp"/>
+                    android:textSize="13sp"/>
 
                 <Button
                     android:id="@+id/moreSettingButton"
-                    android:layout_width="100dp"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
                     android:background="@drawable/btn_setting_custom_color"
                     android:text="其他ê設定"
                     android:textAllCaps="false"
                     android:textColor="#feee"
-                    android:textSize="14sp"/>
+                    android:textSize="13sp"/>
 
                 <Button
                     android:id="@+id/aboutButton"
-                    android:layout_width="50dp"
+                    android:layout_width="45dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:background="@drawable/btn_setting_custom_color"
                     android:text="？"
                     android:textColor="#feee"
-                    android:textSize="14sp"/>
+                    android:textSize="13sp"/>
 
                 <Button
                     android:id="@+id/keyboardSettingCloseButton"
-                    android:layout_width="50dp"
+                    android:layout_width="45dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:background="@drawable/btn_setting_custom_color"
                     android:text="Ｘ"
                     android:textColor="#feee"
-                    android:textSize="14sp"/>
+                    android:textSize="13sp"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -125,27 +125,27 @@
                     android:button="@drawable/radio_button_setting_custom_color"
                     android:text="T/L 臺羅"
                     android:textColor="#fccc"
-                    android:textSize="15sp"/>
+                    android:textSize="14sp"/>
 
                 <RadioButton
                     android:id="@+id/pojRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:button="@drawable/radio_button_setting_custom_color"
                     android:text="POJ 白話字"
                     android:textColor="#fccc"
-                    android:textSize="15sp"/>
+                    android:textSize="14sp"/>
 
                 <RadioButton
                     android:id="@+id/englishRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:button="@drawable/radio_button_setting_custom_color"
                     android:text="EN 英文"
                     android:textColor="#fccc"
-                    android:textSize="15sp"/>
+                    android:textSize="14sp"/>
             </RadioGroup>
         </LinearLayout>
     </LinearLayout>

@@ -22,6 +22,9 @@ public class MoreSettingsActivity extends AppCompatActivity {
     @BindView(R.id.fontSelectionRadioGroup)
     RadioGroup mFontSelectionRadioGroup;
 
+    @BindView(R.id.vibrationRadioGroup)
+    RadioGroup mVibrationRadioGroup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +74,29 @@ public class MoreSettingsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        final boolean isVibration = Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_VIBRATION, AppPrefs.PREFS_KEY_IS_VIBRATION_YES);
+        if (isVibration == AppPrefs.PREFS_KEY_IS_VIBRATION_YES) {
+            mVibrationRadioGroup.check(R.id.yesVibrationRadioButton);
+        } else if (isVibration == AppPrefs.PREFS_KEY_IS_VIBRATION_NO) {
+            mVibrationRadioGroup.check(R.id.noVibrationRadioButton);
+        } else {
+            mVibrationRadioGroup.check(R.id.yesVibrationRadioButton);
+        }
+        mVibrationRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                if (checkedId == R.id.yesVibrationRadioButton) {
+                    setCurrentVibration(AppPrefs.PREFS_KEY_IS_VIBRATION_YES);
+                } else if (checkedId == R.id.noVibrationRadioButton) {
+                    setCurrentVibration(AppPrefs.PREFS_KEY_IS_VIBRATION_NO);
+                }
+            }
+        });
+    }
+
+    private void setCurrentVibration(boolean isVibration) {
+        Prefs.putBoolean(AppPrefs.PREFS_KEY_IS_VIBRATION, isVibration);
     }
 
     private void setCurrentInputLomajiMode(int inputMode) {

@@ -18,6 +18,7 @@ import android.view.View;
 
 import com.pixplicity.easyprefs.library.Prefs;
 import com.taccotap.phahtaigi.AppPrefs;
+import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.R;
 import com.taccotap.phahtaigi.dictmodel.ImeDict;
 import com.taccotap.phahtaigi.ime.TaigiIme;
@@ -159,7 +160,7 @@ public class TaigiCandidateView extends View {
 
         final int hanjiType = Prefs.getInt(AppPrefs.PREFS_KEY_HANJI_FONT_TYPE, HANJI_FONT_TYPE_APP_DEFAULT);
         if (hanjiType == AppPrefs.HANJI_FONT_TYPE_MINGLIUB) {
-            mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/mingliub.ttf");
+            mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/mingliub.ttc");
             Log.i(TAG, "Hanji font: mingliub");
         } else if (hanjiType == AppPrefs.HANJI_FONT_TYPE_MOEDICT) {
             mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/moedict.ttf");
@@ -486,11 +487,30 @@ public class TaigiCandidateView extends View {
                         if (mSelectedIndex == 0 || mIsMainCandidateLomaji) {
                             if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
                                 mService.commitPickedSuggestion(imeDict.getTailo());
+
+                                if (BuildConfig.DEBUG_LOG) {
+                                    Log.d(TAG, "Selected output: " + imeDict.getTailo());
+                                }
                             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                                 mService.commitPickedSuggestion(imeDict.getPoj());
+
+                                if (BuildConfig.DEBUG_LOG) {
+                                    Log.d(TAG, "Selected output: " + imeDict.getPoj());
+                                }
                             }
                         } else {
                             mService.commitPickedSuggestion(imeDict.getHanji());
+
+                            if (BuildConfig.DEBUG_LOG) {
+                                Log.d(TAG, "Selected output: " + imeDict.getHanji());
+                                int count = imeDict.getHanji().length();
+                                for (int i = 0; i < count; i++) {
+                                    final char charAt = imeDict.getHanji().charAt(i);
+                                    Log.d(TAG, "Selected hanji code: " + String.format("\\u%04x", (int) charAt));
+                                }
+
+                                Log.d(TAG, "gau5: \uD842\uDC95");
+                            }
                         }
                     }
                 }

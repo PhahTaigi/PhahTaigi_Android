@@ -514,6 +514,13 @@ public class TlParseIntentService extends IntentService {
     private void prepareImeDict(TlTaigiWord taigiWord, String tailoPhrase, String tailoInputWithNumberTone, String tailoInputWithoutTone, String tailoShortInput, String pojPhrase, String pojInputWithNumberTone, String pojInputWithoutTone, String pojShortInput, String hanji, long priority, int wordLength) {
         ImeDict newImeDict = new ImeDict();
 
+//        if (TextUtils.isEmpty(tailoShortInput)) {
+//            tailoShortInput = tailoInputWithoutTone;
+//        }
+//        if (TextUtils.isEmpty(pojShortInput)) {
+//            pojShortInput = pojInputWithoutTone;
+//        }
+
         newImeDict.setMainCode(taigiWord.getMainCode());
         newImeDict.setWordPropertyCode(taigiWord.getWordPropertyCode());
         newImeDict.setTailo(tailoPhrase);
@@ -527,6 +534,7 @@ public class TlParseIntentService extends IntentService {
         newImeDict.setHanji(hanji);
         newImeDict.setPriority(priority);
         newImeDict.setWordLength(wordLength);
+        newImeDict.setLomajiCharLength(tailoPhrase.length());
 
         for (ImeDict imeDict : mImeDictArrayList) {
             if (newImeDict.getTailo().equals(imeDict.getTailo()) && newImeDict.getHanji().equals(imeDict.getHanji())) {
@@ -540,6 +548,18 @@ public class TlParseIntentService extends IntentService {
                 return;
             }
         }
+
+//        if (TextUtils.isEmpty(newImeDict.getTailoShortInput())) {
+//            Log.e(TAG, "Add word: getTailo = " + newImeDict.getTailo()
+//                    + ", getTailoInputWithNumberTone = " + newImeDict.getTailoInputWithNumberTone()
+//                    + ", getTailoInputWithoutTone = " + newImeDict.getTailoInputWithoutTone()
+//                    + ", getTailoShortInput = " + newImeDict.getTailoShortInput()
+//                    + ", getPoj = " + newImeDict.getPoj()
+//                    + ", getPojInputWithNumberTone = " + newImeDict.getPojInputWithNumberTone()
+//                    + ", getPojInputWithoutTone = " + newImeDict.getPojInputWithoutTone()
+//                    + ", getPojShortInput = " + newImeDict.getPojShortInput()
+//                    + ", getHanji = " + newImeDict.getHanji());
+//        }
 
         mImeDictArrayList.add(newImeDict);
     }

@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:text="逐工贊助5箍"
+                android:text="我欲贊助"
                 android:textColor="#f222"
                 android:textSize="26sp"/>
 
@@ -74,10 +74,10 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:layout_marginTop="10dp"
-                android:text="若是無欲閣繼續贊助，ài對Google Play 商店內底：帳戶 > 訂閱 來kā取消。"
+                android:text="若是無欲閣繼續贊助，會使佇 Google Play 商店內底：帳戶 > 訂閱 隨時來kā取消。"
                 android:textColor="#f666"
                 android:textSize="16sp"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

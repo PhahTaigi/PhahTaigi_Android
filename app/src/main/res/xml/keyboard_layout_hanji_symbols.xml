@@ -45,37 +45,37 @@
 
     <Row>
         <Key
-            android:codes="65281"
+            android:codes="33"
             android:keyEdgeFlags="left"
-            android:keyLabel="！"/>
+            android:keyLabel="!"/>
         <Key
-            android:codes="9585"
-            android:keyLabel="╱"/>
+            android:codes="64"
+            android:keyLabel="\@"/>
         <Key
-            android:codes="12304"
-            android:keyLabel="【"/>
+            android:codes="35"
+            android:keyLabel="\#"/>
         <Key
-            android:codes="12305"
-            android:keyLabel="】"/>
+            android:codes="36"
+            android:keyLabel="$"/>
         <Key
-            android:codes="12296"
-            android:keyLabel="〈"/>
+            android:codes="37"
+            android:keyLabel="%"/>
         <Key
-            android:codes="12297"
-            android:keyLabel="〉"/>
+            android:codes="94"
+            android:keyLabel="^"/>
         <Key
-            android:codes="12298"
-            android:keyLabel="《"/>
+            android:codes="38"
+            android:keyLabel="&amp;"/>
         <Key
-            android:codes="12299"
-            android:keyLabel="》"/>
+            android:codes="42"
+            android:keyLabel="*"/>
         <Key
-            android:codes="12302"
-            android:keyLabel="『"/>
+            android:codes="40"
+            android:keyLabel="("/>
         <Key
-            android:codes="12303"
+            android:codes="41"
             android:keyEdgeFlags="right"
-            android:keyLabel="』"/>
+            android:keyLabel=")"/>
     </Row>
 
     <Row>
@@ -87,12 +87,8 @@
             android:keyIcon="@drawable/sym_keyboard_shift"
             android:keyWidth="15%p"/>
         <Key
-            android:codes="65288"
-            android:keyLabel="（"
-            android:keyWidth="10%p"/>
-        <Key
-            android:codes="65289"
-            android:keyLabel="）"
+            android:codes="65374"
+            android:keyLabel="～"
             android:keyWidth="10%p"/>
         <Key
             android:codes="12300"
@@ -113,6 +109,10 @@
         <Key
             android:codes="65311"
             android:keyLabel="？"
+            android:keyWidth="10%p"/>
+        <Key
+            android:codes="65281"
+            android:keyLabel="！"
             android:keyWidth="10%p"/>
         <Key
             android:codes="-5"

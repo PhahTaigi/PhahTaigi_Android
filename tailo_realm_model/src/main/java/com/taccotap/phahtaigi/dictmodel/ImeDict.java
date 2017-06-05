@@ -49,6 +49,8 @@ public class ImeDict extends RealmObject {
 
     private int wordLength;
 
+    private int lomajiCharLength;
+
     @Index
     @Required
     private String hanji;
@@ -183,5 +185,13 @@ public class ImeDict extends RealmObject {
 
     public void setPojShortInput(String pojShortInput) {
         this.pojShortInput = pojShortInput;
+    }
+
+    public int getLomajiCharLength() {
+        return lomajiCharLength;
+    }
+
+    public void setLomajiCharLength(int lomajiCharLength) {
+        this.lomajiCharLength = lomajiCharLength;
     }
 }

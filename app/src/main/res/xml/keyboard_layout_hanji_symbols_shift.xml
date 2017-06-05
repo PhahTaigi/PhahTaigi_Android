@@ -27,72 +27,72 @@
 
     <Row>
         <Key
-            android:codes="126"
+            android:codes="61"
             android:keyEdgeFlags="left"
-            android:keyLabel="~"/>
-        <Key
-            android:codes="177"
-            android:keyLabel="±"/>
-        <Key
-            android:codes="215"
-            android:keyLabel="×"/>
-        <Key
-            android:codes="247"
-            android:keyLabel="÷"/>
-        <Key
-            android:codes="8226"
-            android:keyLabel="•"/>
-        <Key
-            android:codes="176"
-            android:keyLabel="°"/>
-        <Key
-            android:codes="96"
-            android:keyLabel="`"/>
-        <Key
-            android:codes="180"
-            android:keyLabel="´"/>
-        <Key
-            android:codes="123"
-            android:keyLabel="{"/>
-        <Key
-            android:codes="125"
-            android:keyEdgeFlags="right"
-            android:keyLabel="}"/>
-    </Row>
-
-    <Row>
-        <Key
-            android:codes="169"
-            android:keyEdgeFlags="left"
-            android:keyLabel="©"/>
-        <Key
-            android:codes="163"
-            android:keyLabel="£"/>
-        <Key
-            android:codes="8364"
-            android:keyLabel="€"/>
-        <Key
-            android:codes="94"
-            android:keyLabel="^"/>
-        <Key
-            android:codes="174"
-            android:keyLabel="®"/>
-        <Key
-            android:codes="165"
-            android:keyLabel="¥"/>
-        <Key
-            android:codes="95"
-            android:keyLabel="_"/>
+            android:keyLabel="="/>
         <Key
             android:codes="43"
             android:keyLabel="+"/>
         <Key
-            android:codes="91"
-            android:keyLabel="["/>
+            android:codes="45"
+            android:keyLabel="-"/>
         <Key
-            android:codes="93"
+            android:codes="47"
+            android:keyLabel="/"/>
+        <Key
+            android:codes="92"
+            android:keyLabel="\\"/>
+        <Key
+            android:codes="124"
+            android:keyLabel="|"/>
+        <Key
+            android:codes="183"
+            android:keyLabel="·"/>
+        <Key
+            android:codes="95"
+            android:keyLabel="_"/>
+        <Key
+            android:codes="8212"
+            android:keyLabel="—"/>
+        <Key
+            android:codes="65295"
             android:keyEdgeFlags="right"
-            android:keyLabel="]"/>
+            android:keyLabel="／"/>
+    </Row>
+
+    <Row>
+        <Key
+            android:codes="65288"
+            android:keyEdgeFlags="left"
+            android:keyLabel="（"/>
+        <Key
+            android:codes="65289"
+            android:keyLabel="）"/>
+        <Key
+            android:codes="12304"
+            android:keyLabel="【"/>
+        <Key
+            android:codes="12305"
+            android:keyLabel="】"/>
+        <Key
+            android:codes="12296"
+            android:keyLabel="〈"/>
+        <Key
+            android:codes="12297"
+            android:keyLabel="〉"/>
+        <Key
+            android:codes="12298"
+            android:keyLabel="《"/>
+        <Key
+            android:codes="12299"
+            android:keyLabel="》"/>
+        <Key
+            android:codes="12302"
+            android:keyLabel="『"/>
+        <Key
+            android:codes="12303"
+            android:keyEdgeFlags="right"
+            android:keyLabel="』"/>
     </Row>
 
     <Row>
@@ -104,26 +104,26 @@
             android:keyIcon="@drawable/sym_keyboard_shift"
             android:keyWidth="15%p"/>
         <Key
-            android:codes="161"
-            android:keyLabel="¡"/>
+            android:codes="12308"
+            android:keyLabel="〔"/>
         <Key
-            android:codes="60"
-            android:keyLabel="&lt;"/>
+            android:codes="12309"
+            android:keyLabel="〕"/>
         <Key
-            android:codes="62"
-            android:keyLabel="&gt;"/>
+            android:codes="8592"
+            android:keyLabel="←"/>
         <Key
-            android:codes="162"
-            android:keyLabel="¢"/>
+            android:codes="8593"
+            android:keyLabel="↑"/>
         <Key
-            android:codes="124"
-            android:keyLabel="|"/>
+            android:codes="8594"
+            android:keyLabel="→"/>
         <Key
-            android:codes="92"
-            android:keyLabel="\\"/>
+            android:codes="8595"
+            android:keyLabel="↓"/>
         <Key
-            android:codes="191"
-            android:keyLabel="¿"/>
+            android:codes="8230"
+            android:keyLabel="…"/>
         <Key
             android:codes="-5"
             android:isRepeatable="true"

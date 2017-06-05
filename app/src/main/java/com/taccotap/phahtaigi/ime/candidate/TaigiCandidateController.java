@@ -29,7 +29,7 @@ import io.realm.Sort;
 public class TaigiCandidateController {
     private static final String TAG = TaigiCandidateController.class.getSimpleName();
 
-    private static final int QUERY_LIMIT_100 = 100;
+    private static final int QUERY_LIMIT_100 = 150;
 
     private TaigiCandidateView mTaigiCandidateView;
     private int mCurrentInputLomajiMode = AppPrefs.INPUT_LOMAJI_MODE_TAILO;
@@ -142,13 +142,13 @@ public class TaigiCandidateController {
                         .beginsWith("tailoInputWithoutTone", search)
                         .or()
                         .beginsWith("tailoShortInput", search)
-                        .findAllSortedAsync("wordLength", Sort.ASCENDING);
+                        .findAllSortedAsync("lomajiCharLength", Sort.ASCENDING);
             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .beginsWith("pojInputWithoutTone", search)
                         .or()
                         .beginsWith("pojShortInput", search)
-                        .findAllSortedAsync("wordLength", Sort.ASCENDING);
+                        .findAllSortedAsync("lomajiCharLength", Sort.ASCENDING);
             }
         } else {
             mIsSetQueryLimit = false;
@@ -156,11 +156,11 @@ public class TaigiCandidateController {
             if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .beginsWith("tailoInputWithNumberTone", search)
-                        .findAllSortedAsync("wordLength", Sort.ASCENDING);
+                        .findAllSortedAsync("lomajiCharLength", Sort.ASCENDING);
             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .beginsWith("pojInputWithNumberTone", search)
-                        .findAllSortedAsync("wordLength", Sort.ASCENDING);
+                        .findAllSortedAsync("lomajiCharLength", Sort.ASCENDING);
             }
         }
 
@@ -180,6 +180,10 @@ public class TaigiCandidateController {
                 if (mIsSetQueryLimit && count > QUERY_LIMIT_100) {
                     count = QUERY_LIMIT_100;
                 }
+
+//                for (ImeDict imeDict : mImeDicts) {
+//                    Log.d(TAG, "tailo = " + imeDict.getTailo() + ", hanji = " + imeDict.getHanji());
+//                }
 
                 ArrayList<ImeDict> mutableArrayList = new ArrayList<>(mRealm.copyFromRealm(imeDicts.subList(0, count)));
 

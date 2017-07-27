@@ -2,12 +2,16 @@ package com.taccotap.phahtaigi.ime.candidate;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextUtils;
@@ -15,6 +19,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.pixplicity.easyprefs.library.Prefs;
 import com.taccotap.phahtaigi.AppPrefs;
@@ -22,6 +27,7 @@ import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.R;
 import com.taccotap.phahtaigi.dictmodel.ImeDict;
 import com.taccotap.phahtaigi.ime.TaigiIme;
+import com.taccotap.phahtaigi.utils.StoppableRunnable;
 
 import java.util.ArrayList;
 
@@ -30,6 +36,10 @@ import static com.taccotap.phahtaigi.AppPrefs.HANJI_FONT_TYPE_APP_DEFAULT;
 @SuppressLint("ViewConstructor")
 public class TaigiCandidateView extends View {
     private static final String TAG = TaigiCandidateView.class.getSimpleName();
+
+    private static final String ACTION_SEARCH_FROM_PHAHTAIGI = "com.taccotap.taigidict.search.from.phahtaigi";
+    private static final String EXTRA_TAILO_SEARCH_KEYWORD = "EXTRA_TAILO_SEARCH_KEYWORD";
+    private static final String EXTRA_TAILO_HANJI_SEARCH_KEYWORD = "EXTRA_TAILO_HANJI_SEARCH_KEYWORD";
 
     private static final int OUT_OF_BOUNDS = -1;
 
@@ -40,6 +50,7 @@ public class TaigiCandidateView extends View {
 
     private final Context mContext;
     private final Vibrator mVibrator;
+    private final Handler mHandler;
 
     private TaigiIme mService;
     private ArrayList<ImeDict> mSuggestions = new ArrayList<>();
@@ -75,8 +86,14 @@ public class TaigiCandidateView extends View {
 
     private boolean mScrolled;
     private int mTargetScrollX;
-
     private int mTotalWidth;
+
+    private StoppableRunnable mLongTouchTask = new StoppableRunnable() {
+        @Override
+        public void stoppableRun() {
+            onLongTouched();
+        }
+    };
 
     private GestureDetectorCompat mGestureDetector;
     private String mRawInput;
@@ -85,10 +102,11 @@ public class TaigiCandidateView extends View {
     private Typeface mHanjiTypeface;
     private int mCurrentInputLomajiMode;
 
-    public TaigiCandidateView(Context context, Vibrator vibrator) {
+    public TaigiCandidateView(Context context, Vibrator vibrator, android.os.Handler handler) {
         super(context);
         mContext = context;
         mVibrator = vibrator;
+        mHandler = handler;
         init();
     }
 
@@ -467,6 +485,9 @@ public class TaigiCandidateView extends View {
             case MotionEvent.ACTION_DOWN:
                 mScrolled = false;
                 invalidate();
+
+                triggerLongTouchEvent();
+
                 break;
 //            case MotionEvent.ACTION_MOVE:
 //                if (y <= 0) {
@@ -479,6 +500,8 @@ public class TaigiCandidateView extends View {
 //                invalidate();
 //                break;
             case MotionEvent.ACTION_UP:
+                stopTriggeredLongTouchEvent();
+
                 if (!mScrolled) {
                     if (mSelectedIndex >= 0) {
                         mVibrator.vibrate(TaigiIme.KEY_VIBRATION_MILLISECONDS);
@@ -520,6 +543,58 @@ public class TaigiCandidateView extends View {
                 break;
         }
         return true;
+    }
+
+    private void triggerLongTouchEvent() {
+        stopTriggeredLongTouchEvent();
+        mHandler.postDelayed(mLongTouchTask, 500);
+    }
+
+    private void stopTriggeredLongTouchEvent() {
+        mLongTouchTask.stop();
+        mHandler.removeCallbacks(mLongTouchTask);
+    }
+
+    private void onLongTouched() {
+        if (BuildConfig.DEBUG_LOG) {
+            Log.d(TAG, "onLongTouched()");
+        }
+
+        // check TaigiDict install
+        PackageManager pm = mContext.getPackageManager();
+        boolean isInstalled = isPackageInstalled("com.taccotap.taigidict", pm);
+        if (!isInstalled) {
+            Toast.makeText(mContext, "若欲 tshiau-tshuē 字詞 ài 先安裝辭典 ê APP。", Toast.LENGTH_LONG).show();
+
+            String appPackageName = "com.taccotap.taigidict";
+            try {
+                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+            }
+
+            return;
+        }
+
+        final ImeDict imeDict = mSuggestions.get(mSelectedIndex);
+
+        final Intent intent = new Intent(ACTION_SEARCH_FROM_PHAHTAIGI);
+        if (mSelectedIndex == 0 || mIsMainCandidateLomaji) {
+            intent.putExtra(EXTRA_TAILO_SEARCH_KEYWORD, imeDict.getTailo());
+        } else {
+            intent.putExtra(EXTRA_TAILO_HANJI_SEARCH_KEYWORD, imeDict.getHanji());
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        mContext.startActivity(intent);
+    }
+
+    private boolean isPackageInstalled(String packagename, PackageManager packageManager) {
+        try {
+            packageManager.getPackageInfo(packagename, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
 //    /**

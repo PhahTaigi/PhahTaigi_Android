@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class PojInputConverter {
     private static final String TAG = PojInputConverter.class.getSimpleName();
 
-    private static Pattern sPojWordExtractPattern = Pattern.compile("(?:(ph|p|m|b|th|t|n|l|kh|k|ng|g|h|chh|ch|s|j)?([aiueo+]+(?:nn)?|ng|m)(?:(ng|m|n|r)|(p|t|h|k))?([1-9])?|(ph|p|m|b|th|t|n|l|kh|k|ng|g|h|chh|ch|s|j)-?-?)", Pattern.CASE_INSENSITIVE);
+    private static Pattern sPojWordExtractPattern = Pattern.compile("(?:(ph|p|m|b|th|t|n|l|kh|k|ng|g|h|chh|ch|s|j)?([aiueo+]+(?:nn)?|ng|m)(?:(ng|m|n|re|r)|(p|t|h|k))?([1-9])?|(ph|p|m|b|th|t|n|l|kh|k|ng|g|h|chh|ch|s|j)-?-?)", Pattern.CASE_INSENSITIVE);
 
     // [o, a ,e ,u, i, n, m]
     private static int[] sLomajiNumberToWordTempArray = {0, 0, 0, 0, 0, 0, 0};
@@ -108,13 +108,87 @@ public class PojInputConverter {
         String poj = generatePojInput(pojWithoutNumber, number, tonePosition);
 
         if (BuildConfig.DEBUG_LOG) {
-            Log.d(TAG, "pojWithoutNumber=" + pojWithoutNumber + "number=" + number + ", tonePosition=" + tonePosition + ", poj=" + poj);
+            Log.d(TAG, "pojWithoutNumber=" + pojWithoutNumber + ", number=" + number + ", tonePosition=" + tonePosition + ", poj=" + poj);
         }
 
         return poj;
     }
 
     private static int calculateTonePosition(String pojWithoutNumber) {
+        int count = pojWithoutNumber.length();
+        if (BuildConfig.DEBUG_LOG) {
+            Log.d(TAG, "calculateTonePosition: pojWithoutNumber = " + pojWithoutNumber + ", count = " + count);
+        }
+
+        if (count == 1) {
+            if (pojWithoutNumber.toLowerCase().matches("(?:(a|i|u|e|o))")) {
+                return 0;
+            } else {
+                return -1;
+            }
+        } else if (count >= 2) {
+            if (pojWithoutNumber.endsWith("ng")) {
+                if (count == 2) {
+                    return count - 2;
+                } else {
+                    return count - 3;
+                }
+            }
+
+            String lastTwoChars;
+            boolean isEndingWithLittleN = false;
+
+            if (pojWithoutNumber.endsWith("ⁿ")) {
+                if (count == 2) {
+                    return 0;
+                }
+
+                isEndingWithLittleN = true;
+                lastTwoChars = pojWithoutNumber.toLowerCase().substring(count - 3, count - 1);
+            } else {
+                lastTwoChars = pojWithoutNumber.toLowerCase().substring(count - 2, count);
+            }
+
+
+            if (lastTwoChars.equals("ia")
+                    || lastTwoChars.equals("iu")
+                    || lastTwoChars.equals("ie")
+                    || lastTwoChars.equals("io")) {
+                if (isEndingWithLittleN) {
+                    return count - 2;
+                } else {
+                    return count - 1;
+                }
+            }
+
+            if (isEndingWithLittleN) {
+                pojWithoutNumber = pojWithoutNumber.substring(0, count - 1);
+            }
+
+            final String possibleToneChar = pojWithoutNumber.toLowerCase().substring(count - 2, count - 1);
+            if (possibleToneChar.matches("(?:(a|i|u|e|o))")) {
+                if (isEndingWithLittleN) {
+                    return count - 3;
+                } else {
+                    return count - 2;
+                }
+            } else {
+                final String lastChar = pojWithoutNumber.toLowerCase().substring(count - 1, count);
+                if (lastChar.matches("(?:(a|i|u|e|o))")) {
+                    if (isEndingWithLittleN) {
+                        return count - 2;
+                    } else {
+                        return count - 1;
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    @Deprecated
+    private static int calculateTonePositionWithPojToneStatistics(String pojWithoutNumber) {
         resetTempArray();
 
         int count = pojWithoutNumber.length();

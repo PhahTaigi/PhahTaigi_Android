@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class TailoInputConverter {
     private static final String TAG = TailoInputConverter.class.getSimpleName();
 
-    private static Pattern sTailoWordExtractPattern = Pattern.compile("(?:(ph|p|m|b|th|tsh|ts|t|n|l|kh|k|ng|g|h|s|j)?([aiueo+]+(?:nn)?|ng|m)(?:(ng|m|n|r)|(p|t|h|k))?([1-9])?|(ph|p|m|b|th|tsh|ts|t|n|l|kh|k|ng|g|h|s|j)-?-?)", Pattern.CASE_INSENSITIVE);
+    private static Pattern sTailoWordExtractPattern = Pattern.compile("(?:(ph|p|m|b|th|tsh|ts|t|n|l|kh|k|ng|g|h|s|j)?([aiueo+]+(?:nn)?|ng|m)(?:(ng|m|n|re|r)|(p|t|h|k))?([1-9])?|(ph|p|m|b|th|tsh|ts|t|n|l|kh|k|ng|g|h|s|j)-?-?)", Pattern.CASE_INSENSITIVE);
 
     public static String convertTailoNumberRawInputToTailoWords(String input) {
         if (BuildConfig.DEBUG_LOG) {

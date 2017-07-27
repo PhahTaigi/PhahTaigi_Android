@@ -120,7 +120,7 @@
         <Key
             android:codes="-2"
             android:keyEdgeFlags="left"
-            android:keyLabel="返回"
+            android:keyLabel="轉去"
             android:keyWidth="13%p"/>
         <Key
             android:codes="59"

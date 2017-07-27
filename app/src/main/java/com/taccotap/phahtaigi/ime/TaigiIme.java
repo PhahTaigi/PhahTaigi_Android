@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.support.annotation.IdRes;
 import android.text.InputType;
@@ -292,7 +294,7 @@ public class TaigiIme extends InputMethodService
         }
 
         if (mTaigiCandidateView == null) {
-            mTaigiCandidateView = new TaigiCandidateView(this, mVibrator);
+            mTaigiCandidateView = new TaigiCandidateView(this, mVibrator, new Handler(Looper.getMainLooper()));
             mTaigiCandidateView.setService(this);
 
             mKeyboardSwitcher.setTaigiCandidateView(mTaigiCandidateView);

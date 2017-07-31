@@ -139,6 +139,8 @@ public class TaigiCandidateView extends View {
                     return false;
                 }
 
+                stopTriggeredLongTouchEvent();
+
                 mScrolled = true;
                 int sx = getScrollX();
                 sx += distanceX;
@@ -476,8 +478,8 @@ public class TaigiCandidateView extends View {
         }
 
         int action = me.getAction();
-//        int x = (int) me.getX();
-//        int y = (int) me.getY();
+        int x = (int) me.getX();
+        int y = (int) me.getY();
 
         mTouchX = (int) me.getX();
 
@@ -547,7 +549,7 @@ public class TaigiCandidateView extends View {
 
     private void triggerLongTouchEvent() {
         stopTriggeredLongTouchEvent();
-        mHandler.postDelayed(mLongTouchTask, 500);
+        mHandler.postDelayed(mLongTouchTask, 600);
     }
 
     private void stopTriggeredLongTouchEvent() {
@@ -568,9 +570,13 @@ public class TaigiCandidateView extends View {
 
             String appPackageName = "com.taccotap.taigidict";
             try {
-                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
             } catch (android.content.ActivityNotFoundException anfe) {
-                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
             }
 
             return;

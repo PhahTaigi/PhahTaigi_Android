@@ -19,8 +19,8 @@ android {
         applicationId "com.taccotap.phahtaigi"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 24
-        versionName "2.0.1"
+        versionCode 25
+        versionName "2.0.2"
     }
 
     dataBinding {
@@ -97,8 +97,11 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
+    // Realm
+    // compile 'com.github.eggheadgames:android-realm-asset-helper:2.0.0'
+    compile 'com.github.shiami:android-realm-asset-helper:98202c62dc'
+
     compile 'com.pixplicity.easyprefs:library:1.8.1@aar'
-    compile 'com.github.eggheadgames:android-realm-asset-helper:2.0.0'
     compile 'com.github.daniel-stoneuk:material-about-library:1.8.2'
 
     testCompile 'junit:junit:4.12'

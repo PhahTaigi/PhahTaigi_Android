@@ -58,18 +58,23 @@ public class PojInputConverter {
                         return pojWithoutNumber.indexOf("o");
                     }
 
-                    final String previousChar = pojWithoutNumber.substring(count - 2, count - 1);
+                    final String previousChar = pojWithoutNumber.substring(lastIndexOfVowel - 1, lastIndexOfVowel);
                     // if vowel count >= 2
                     if (previousChar.matches("a|i|u|e|o")) {
-                        // if vowel is the last char
-                        if (lastIndexOfVowel + 1 == count) {
-                            if (previousChar.equals("i")) {
-                                return lastIndexOfVowel;
-                            } else {
-                                return lastIndexOfVowel - 1;
-                            }
+                        final String lastVowelChar = pojWithoutNumber.substring(lastIndexOfVowel, lastIndexOfVowel + 1);
+                        if (lastVowelChar.equals("i") && lastIndexOfVowel == count - 2) {
+                            return lastIndexOfVowel - 1;
                         } else {
-                            return lastIndexOfVowel;
+                            // if vowel is the last char
+                            if (lastIndexOfVowel == count - 1) {
+                                if (previousChar.equals("i")) {
+                                    return lastIndexOfVowel;
+                                } else {
+                                    return lastIndexOfVowel - 1;
+                                }
+                            } else {
+                                return lastIndexOfVowel;
+                            }
                         }
                     } else {
                         return lastIndexOfVowel;

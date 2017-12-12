@@ -378,7 +378,7 @@ public class TaigiIme extends InputMethodService
                 } else if (checkedId == R.id.pojRadioButton) {
                     setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_POJ);
                 } else if (checkedId == R.id.englishRadioButton) {
-                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_NONE);
+                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_ENGLISH);
                 }
             }
         });
@@ -387,7 +387,7 @@ public class TaigiIme extends InputMethodService
     private void setCurrentInputLomajiMode(int inputMode) {
         mCurrentInputLomajiMode = inputMode;
 
-        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_NONE) {
+        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_ENGLISH) {
             commitRawInputSuggestion();
         } else {
             Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE, inputMode);
@@ -397,7 +397,7 @@ public class TaigiIme extends InputMethodService
             mLomajiSelectionRadioGroup.check(R.id.tailoRadioButton);
         } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
             mLomajiSelectionRadioGroup.check(R.id.pojRadioButton);
-        } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_NONE) {
+        } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_ENGLISH) {
             mLomajiSelectionRadioGroup.check(R.id.englishRadioButton);
         }
 
@@ -669,12 +669,27 @@ public class TaigiIme extends InputMethodService
             }
         }
 
-        if (!mKeyboardSwitcher.isCurrentKeyboardViewUseQwertyKeyboard() || mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_NONE) {
+        if (!mKeyboardSwitcher.isCurrentKeyboardViewUseQwertyKeyboard() || mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_ENGLISH) {
             sendKey(primaryCode);
         } else {
-            mComposing.append((char) primaryCode);
-            updateInputForCandidate();
+            if (isDirectlySendKeyWhenOnlyInputNumbers(primaryCode)) {
+                sendKey(primaryCode);
+            } else {
+                mComposing.append((char) primaryCode);
+                updateInputForCandidate();
+            }
         }
+    }
+
+    private boolean isDirectlySendKeyWhenOnlyInputNumbers(int primaryCode) {
+        if (mComposing.length() == 0) {
+            // 1~9
+            if (primaryCode >= 49 && primaryCode <= 57) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void handleKeyboardViewAutoCaps() {

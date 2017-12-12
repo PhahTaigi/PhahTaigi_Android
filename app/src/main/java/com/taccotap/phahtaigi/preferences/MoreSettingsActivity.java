@@ -47,7 +47,7 @@ public class MoreSettingsActivity extends AppCompatActivity {
                 } else if (checkedId == R.id.pojRadioButton) {
                     setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_POJ);
                 } else if (checkedId == R.id.englishRadioButton) {
-                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_NONE);
+                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_ENGLISH);
                 }
             }
         });
@@ -100,7 +100,7 @@ public class MoreSettingsActivity extends AppCompatActivity {
     }
 
     private void setCurrentInputLomajiMode(int inputMode) {
-        if (inputMode == AppPrefs.INPUT_LOMAJI_MODE_NONE) {
+        if (inputMode == AppPrefs.INPUT_LOMAJI_MODE_ENGLISH) {
             // skip saving EN
         } else {
             Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE, inputMode);

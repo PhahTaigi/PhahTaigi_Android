@@ -46,12 +46,12 @@ public class CustomTaigiWords {
         taigiWord4.setHanji("羅馬字");
         sTaigiWordArrayList.add(taigiWord4);
 
-        TlTaigiWord taigiWord5 = new TlTaigiWord();
-        taigiWord5.setMainCode(CUSTOM_WORD_MAIN_CODE_START_INDEX + 5);
-        taigiWord5.setWordPropertyCode(1);
-        taigiWord5.setLomaji("lô-má-jī");
-        taigiWord5.setHanji("羅馬字");
-        sTaigiWordArrayList.add(taigiWord5);
+//        TlTaigiWord taigiWord5 = new TlTaigiWord();
+//        taigiWord5.setMainCode(CUSTOM_WORD_MAIN_CODE_START_INDEX + 5);
+//        taigiWord5.setWordPropertyCode(1);
+//        taigiWord5.setLomaji("lô-má-jī");
+//        taigiWord5.setHanji("羅馬字");
+//        sTaigiWordArrayList.add(taigiWord5);
 
         TlTaigiWord taigiWord6 = new TlTaigiWord();
         taigiWord6.setMainCode(CUSTOM_WORD_MAIN_CODE_START_INDEX + 6);
@@ -66,5 +66,12 @@ public class CustomTaigiWords {
         taigiWord7.setLomaji("Tâi-lô");
         taigiWord7.setHanji("臺羅");
         sTaigiWordArrayList.add(taigiWord7);
+
+        TlTaigiWord taigiWord8 = new TlTaigiWord();
+        taigiWord8.setMainCode(CUSTOM_WORD_MAIN_CODE_START_INDEX + 8);
+        taigiWord8.setWordPropertyCode(1);
+        taigiWord8.setLomaji("Hàn-lô");
+        taigiWord8.setHanji("漢羅");
+        sTaigiWordArrayList.add(taigiWord8);
     }
 }

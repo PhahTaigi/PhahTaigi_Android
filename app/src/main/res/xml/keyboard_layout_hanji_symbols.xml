@@ -70,12 +70,12 @@
             android:codes="42"
             android:keyLabel="*"/>
         <Key
-            android:codes="40"
-            android:keyLabel="("/>
+            android:codes="12302"
+            android:keyLabel="『"/>
         <Key
-            android:codes="41"
+            android:codes="12303"
             android:keyEdgeFlags="right"
-            android:keyLabel=")"/>
+            android:keyLabel="』"/>
     </Row>
 
     <Row>

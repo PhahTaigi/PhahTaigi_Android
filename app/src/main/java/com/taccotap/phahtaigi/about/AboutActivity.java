@@ -74,8 +74,14 @@ public class AboutActivity extends MaterialAboutActivity {
         functionCardBuilder.title("特殊 ê KEY");
 
         functionCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text("Kā空白KEY揤牢咧：選輸入法")
-                .subText("干焦佇主要ê鍵盤有效，符號鍵盤無影響。")
+                .text("Kā空白key tshi̍h牢咧：選輸入法")
+                .subText("Kan-na佇主要ê鍵盤有效，符號鍵盤無影響。")
+                .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_crop_landscape).sizeDp(48))
+                .build());
+
+        functionCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text("Kā欲選ê字詞tshi̍h牢咧：tshuē辭典")
+                .subText("直接轉過辭典ê app tshiau-tshuē字詞。")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_crop_landscape).sizeDp(48))
                 .build());
 

@@ -43,8 +43,8 @@
             android:codes="92"
             android:keyLabel="\\"/>
         <Key
-            android:codes="47"
-            android:keyLabel="/"/>
+            android:codes="63"
+            android:keyLabel="\?"/>
         <Key
             android:codes="91"
             android:keyLabel="["/>

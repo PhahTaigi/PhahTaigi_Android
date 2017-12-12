@@ -106,8 +106,8 @@
             android:codes="58"
             android:keyLabel=":"/>
         <Key
-            android:codes="63"
-            android:keyLabel="\?"/>
+            android:codes="47"
+            android:keyLabel="/"/>
         <Key
             android:codes="-5"
             android:isRepeatable="true"

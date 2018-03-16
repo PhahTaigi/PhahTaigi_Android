@@ -590,7 +590,8 @@ public class TaigiCandidateView extends View {
         } else {
             intent.putExtra(EXTRA_TAILO_HANJI_SEARCH_KEYWORD, imeDict.getHanji());
         }
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(intent);
     }
 

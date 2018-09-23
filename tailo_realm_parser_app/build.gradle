@@ -3,7 +3,7 @@ apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         minSdkVersion 23
@@ -29,15 +29,15 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    testCompile 'junit:junit:4.12'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//    })
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+//    testCompile 'junit:junit:4.12'
 
-    compile project(':tailo_realm_model')
+    implementation project(':tailo_realm_model')
 
-    compile 'com.github.shiami:opencsv:6c92281d1c'
-    compile 'commons-lang:commons-lang:2.6'
+    implementation 'com.github.shiami:opencsv:6c92281d1c'
+    implementation 'commons-lang:commons-lang:2.6'
 }

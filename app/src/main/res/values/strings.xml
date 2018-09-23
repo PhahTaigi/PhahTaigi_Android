@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Phah Tâi-gí 臺語輸入法</string>
-    <string name="app_start_title">設定輸入法 - Phah Tâi-gí</string>
+    <string name="app_name">Phah Tâi-gí 台語輸入法</string>
+    <string name="app_start_title">PhahTaigi</string>
 
     <!-- Titles for ImePreference -->
     <string name="settings_name">Phah Tâi-gí 設定</string>
@@ -18,17 +18,18 @@
     <string name="label_send_key">Send</string>
 
     <!-- Labels for subtype -->
-    <string name="label_subtype_taigi">Tâi-gí 臺語</string>
+    <string name="label_subtype_taigi">Tâi-gí 台語</string>
     <string name="spacekey_text">Phah Tâi-gí</string>
 
     <string name="activity_start_step_one">第一步：</string>
-    <string name="activity_start_step_one_desc">佇「語言與輸入設定」內底，kā「Phah Tâi-gí 臺語輸入法」phah予開。</string>
+    <string name="activity_start_step_one_desc">佇「語言與輸入設定」內底，kā「Phah Tâi-gí 台語輸入法」phah予開。</string>
     <string name="activity_start_step_one_button">Kā輸入法phah開</string>
     <string name="activity_start_step_two">第二步：</string>
-    <string name="activity_start_step_two_desc">選「Phah Tâi-gí 臺語輸入法」做 tsit-má 欲用 ê 輸入法。</string>
+    <string name="activity_start_step_two_desc">選「Phah Tâi-gí 台語輸入法」做 lán 欲用 ê 輸入法。</string>
     <string name="activity_start_step_two_button">選Phah Tâi-gí輸入法</string>
     <string name="activity_start_step_three">第三步：</string>
     <string name="activity_start_step_three_desc">揣所在開始 phah 字！</string>
+    <string name="activity_start_more_setting_button">其他ê設定</string>
     <string name="activity_start_feedback_button">問題kap建議</string>
     <string name="activity_start_button_finish">完成！</string>
     <string name="title_activity_about">AboutActivity</string>
@@ -40,8 +41,8 @@
     <string name="about_facebook_group_url">https://www.facebook.com/groups/PhahTaigiApp/</string>
     <string name="about_author_card_title_text">作者</string>
     <string name="about_author_item_text">Hê-bí</string>
-    <string name="about_author_item_subtext">Tánn-káu, Tâi-uân</string>
+    <string name="about_author_item_subtext">Táⁿ-káu, Tâi-oân</string>
     <string name="about_email_me_item_text">寫批予我</string>
-    <string name="about_feedback_email">taccotap@gmail.com</string>
-    <string name="about_email_me_mail_title">臺語辭典APP ê 建議 kap 指教</string>
+    <string name="about_feedback_email">ngoohebi+phahtaigi@gmail.com</string>
+    <string name="about_email_me_mail_title">Phah Tâi-gí 台語輸入法 ê 建議 kap 指教</string>
 </resources>

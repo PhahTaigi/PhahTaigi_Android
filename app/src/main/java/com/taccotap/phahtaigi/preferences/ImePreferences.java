@@ -1,4 +1,4 @@
-package com.taccotap.phahtaigi.start;
+package com.taccotap.phahtaigi.preferences;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +22,7 @@ import butterknife.OnClick;
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-public class StartActivity extends AppCompatActivity {
+public class ImePreferences extends AppCompatActivity {
 
     private static final int KEY_MESSAGE_UNREGISTER_LISTENER = 447;
     private static final int KEY_MESSAGE_RETURN_TO_APP = 446;
@@ -32,6 +32,9 @@ public class StartActivity extends AppCompatActivity {
 
     @BindView(R.id.step2Button)
     Button mStep2Button;
+
+    @BindView(R.id.otherSettingButton)
+    Button mOtherSettingButton;
 
     @BindView(R.id.feedbackButton)
     Button mFeedbackButton;
@@ -43,7 +46,7 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
+        setContentView(R.layout.activity_prefs);
         ButterKnife.bind(this);
 
         mBaseContext = getBaseContext();
@@ -98,6 +101,11 @@ public class StartActivity extends AppCompatActivity {
     void onClickStep2Button() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.showInputMethodPicker();
+    }
+
+    @OnClick(R.id.otherSettingButton)
+    void onClickOtherSettingButton() {
+        startActivity(new Intent(this, MoreSettingsActivity.class));
     }
 
     @OnClick(R.id.feedbackButton)

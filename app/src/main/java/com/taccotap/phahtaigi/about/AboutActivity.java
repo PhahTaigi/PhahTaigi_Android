@@ -128,7 +128,24 @@ public class AboutActivity extends MaterialAboutActivity {
                 getString(R.string.about_feedback_email),
                 getString(R.string.about_email_me_mail_title)));
 
-        return new MaterialAboutList(appCardBuilder.build(), gestureCardBuilder.build(), functionCardBuilder.build(), helpCardBuilder.build(), feedbackCardBuilder.build(), authorCardBuilder.build());
+        // privacy
+        MaterialAboutCard.Builder privacyCardBuilder = new MaterialAboutCard.Builder();
+        privacyCardBuilder.title("隱私權政策");
+
+        privacyCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text("使用app tio̍h表示你同意這ê隱私權政策")
+                .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_account_alert).sizeDp(48))
+                .setOnClickListener(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse("http://phahtaigi.blogspot.com/p/phah-tai-gi.html")))
+                .build());
+
+        return new MaterialAboutList(
+                appCardBuilder.build(),
+                gestureCardBuilder.build(),
+                functionCardBuilder.build(),
+                helpCardBuilder.build(),
+                feedbackCardBuilder.build(),
+                privacyCardBuilder.build(),
+                authorCardBuilder.build());
     }
 
     @Nullable

@@ -1,4 +1,4 @@
-package com.taccotap.phahtaigi.start;
+package com.taccotap.phahtaigi.preferences;
 
 import android.content.ComponentName;
 import android.content.Context;

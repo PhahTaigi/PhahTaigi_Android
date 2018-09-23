@@ -13,15 +13,15 @@ apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 26
 
         applicationId "com.taccotap.phahtaigi"
-        versionCode 28
-        versionName "2.1.1"
+        versionCode 29
+        versionName "2.2.0"
     }
 
     dataBinding {
@@ -65,6 +65,13 @@ android {
             buildConfigField "boolean", "DEBUG_LOG", "true"
         }
     }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
 }
 
 repositories {
@@ -76,6 +83,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(':tailo_realm_model')
+    implementation project(':realm_db_installer')
 
 //    implementation 'com.android.support:support-v4:26.1.0'
 //    implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -101,14 +109,10 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
-    // Realm
-    // compile 'com.github.eggheadgames:android-realm-asset-helper:2.0.0'
-    implementation 'com.github.shiami:android-realm-asset-helper:98202c62dc'
-
     implementation 'com.pixplicity.easyprefs:library:1.8.1@aar'
     implementation 'com.github.daniel-stoneuk:material-about-library:1.8.2'
 
-    testCompile 'junit:junit:4.12'
+//    testCompile 'junit:junit:4.12'
 }
 
 apply plugin: 'com.google.gms.google-services'

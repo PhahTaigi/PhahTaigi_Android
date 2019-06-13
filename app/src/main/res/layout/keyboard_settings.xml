@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/keyboardSettingLayout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#0fff"
@@ -19,8 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -31,7 +30,7 @@
                 android:gravity="center"
                 android:text="設定"
                 android:textColor="#ffff"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -48,7 +47,7 @@
                     android:background="@drawable/btn_setting_custom_color"
                     android:text="贊助"
                     android:textColor="#feee"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
 
                 <Button
                     android:id="@+id/moreSettingButton"
@@ -56,10 +55,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
                     android:background="@drawable/btn_setting_custom_color"
-                    android:text="其他ê設定"
+                    android:text="其他設定"
                     android:textAllCaps="false"
                     android:textColor="#feee"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
 
                 <Button
                     android:id="@+id/aboutButton"
@@ -69,7 +68,7 @@
                     android:background="@drawable/btn_setting_custom_color"
                     android:text="？"
                     android:textColor="#feee"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
 
                 <Button
                     android:id="@+id/keyboardSettingCloseButton"
@@ -79,7 +78,7 @@
                     android:background="@drawable/btn_setting_custom_color"
                     android:text="Ｘ"
                     android:textColor="#feee"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -87,8 +86,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -97,9 +96,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="7dp"
                 android:layout_marginRight="7dp"
-                android:text="「提醒」：\n佇鍵盤對下底撇去頂面會使叫出這个設定，抑是符號鍵盤(:;0)內底嘛會使。"
+                android:text="Ùi字盤下底phiat去頂koân，a̍h是符號字盤(:;0)內底，ē-sái叫出設定。"
                 android:textColor="#faaa"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -112,20 +111,11 @@
                 android:id="@+id/lomajiSelectionRadioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/tailoRadioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:button="@drawable/radio_button_setting_custom_color"
-                    android:text="T/L 臺羅"
-                    android:textColor="#fccc"
-                    android:textSize="14sp"/>
 
                 <RadioButton
                     android:id="@+id/pojRadioButton"
@@ -133,9 +123,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:button="@drawable/radio_button_setting_custom_color"
-                    android:text="POJ 白話字"
+                    android:text="POJ白話字"
                     android:textColor="#fccc"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/tailoRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/radio_button_setting_custom_color"
+                    android:text="教育部KIP"
+                    android:textColor="#fccc"
+                    android:textSize="14sp" />
 
                 <RadioButton
                     android:id="@+id/englishRadioButton"
@@ -143,9 +142,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:button="@drawable/radio_button_setting_custom_color"
-                    android:text="EN 英文"
+                    android:text="EN英文"
                     android:textColor="#fccc"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp" />
             </RadioGroup>
         </LinearLayout>
     </LinearLayout>

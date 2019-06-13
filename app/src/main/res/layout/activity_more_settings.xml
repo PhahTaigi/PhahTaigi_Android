@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -31,26 +30,17 @@
                 android:gravity="center"
                 android:text="輸入ê方式："
                 android:textColor="#ffff"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <RadioGroup
                 android:id="@+id/lomajiSelectionRadioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
                 android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/tailoRadioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:button="@drawable/radio_button_setting_custom_color"
-                    android:text="T/L 臺羅"
-                    android:textColor="#fccc"
-                    android:textSize="15sp"/>
 
                 <RadioButton
                     android:id="@+id/pojRadioButton"
@@ -58,9 +48,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:button="@drawable/radio_button_setting_custom_color"
-                    android:text="POJ 白話字"
+                    android:text="POJ白話字"
                     android:textColor="#fccc"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp" />
+
+                <RadioButton
+                    android:id="@+id/tailoRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/radio_button_setting_custom_color"
+                    android:text="KIP教育部"
+                    android:textColor="#fccc"
+                    android:textSize="15sp" />
 
                 <RadioButton
                     android:id="@+id/englishRadioButton"
@@ -68,9 +67,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:button="@drawable/radio_button_setting_custom_color"
-                    android:text="EN 英文"
+                    android:text="EN英文"
                     android:textColor="#fccc"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp" />
             </RadioGroup>
         </LinearLayout>
 
@@ -80,7 +79,8 @@
             android:layout_margin="5dp"
             android:background="@drawable/keyboard_background_lxx_dark"
             android:gravity="left"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -91,16 +91,16 @@
                 android:gravity="center"
                 android:text="漢字ê字型："
                 android:textColor="#ffff"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <RadioGroup
                 android:id="@+id/fontSelectionRadioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
                 android:orientation="horizontal">
 
                 <RadioButton
@@ -110,7 +110,7 @@
                     android:button="@drawable/radio_button_setting_custom_color"
                     android:text="教育部"
                     android:textColor="#fccc"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp" />
 
                 <RadioButton
                     android:id="@+id/moedictFontRadioButton"
@@ -120,7 +120,7 @@
                     android:button="@drawable/radio_button_setting_custom_color"
                     android:text="萌典"
                     android:textColor="#fccc"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp" />
 
                 <RadioButton
                     android:id="@+id/systemFontRadioButton"
@@ -130,7 +130,7 @@
                     android:button="@drawable/radio_button_setting_custom_color"
                     android:text="系統預設"
                     android:textColor="#fccc"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp" />
             </RadioGroup>
         </LinearLayout>
 
@@ -151,16 +151,16 @@
                 android:gravity="center"
                 android:text="Phah字ê時陣震動："
                 android:textColor="#ffff"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <RadioGroup
                 android:id="@+id/vibrationRadioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
                 android:orientation="horizontal">
 
                 <RadioButton
@@ -168,9 +168,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:button="@drawable/radio_button_setting_custom_color"
-                    android:text="欲"
+                    android:text="Beh"
                     android:textColor="#fccc"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp" />
 
                 <RadioButton
                     android:id="@+id/noVibrationRadioButton"
@@ -178,9 +178,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:button="@drawable/radio_button_setting_custom_color"
-                    android:text="無愛"
+                    android:text="無ài"
                     android:textColor="#fccc"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp" />
             </RadioGroup>
         </LinearLayout>
 

@@ -13,7 +13,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -21,7 +20,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.pixplicity.easyprefs.library.Prefs;
+import androidx.core.view.GestureDetectorCompat;
+
 import com.taccotap.phahtaigi.AppPrefs;
 import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.R;
@@ -30,8 +30,6 @@ import com.taccotap.phahtaigi.ime.TaigiIme;
 import com.taccotap.phahtaigi.utils.StoppableRunnable;
 
 import java.util.ArrayList;
-
-import static com.taccotap.phahtaigi.AppPrefs.HANJI_FONT_TYPE_APP_DEFAULT;
 
 @SuppressLint("ViewConstructor")
 public class TaigiCandidateView extends View {
@@ -176,19 +174,19 @@ public class TaigiCandidateView extends View {
         //noinspection deprecation
         mColorRecommended = resources.getColor(R.color.candidate_recommended);
 
-        mLomajiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/twu3.ttf");
-
-        final int hanjiType = Prefs.getInt(AppPrefs.PREFS_KEY_HANJI_FONT_TYPE, HANJI_FONT_TYPE_APP_DEFAULT);
-        if (hanjiType == AppPrefs.HANJI_FONT_TYPE_MINGLIUB) {
-            mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/mingliub.ttc");
-            Log.i(TAG, "Hanji font: mingliub");
-        } else if (hanjiType == AppPrefs.HANJI_FONT_TYPE_MOEDICT) {
-            mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/moedict.ttf");
-            Log.i(TAG, "Hanji font: moedict");
-        } else {
-            mHanjiTypeface = Typeface.DEFAULT;
-            Log.i(TAG, "Hanji font: system default");
-        }
+        mLomajiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/TauhuOo-Regular.otf");
+        mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/TauhuOo-Regular.otf");
+//        final int hanjiType = Prefs.getInt(AppPrefs.PREFS_KEY_HANJI_FONT_TYPE, HANJI_FONT_TYPE_APP_DEFAULT);
+//        if (hanjiType == AppPrefs.HANJI_FONT_TYPE_MINGLIUB) {
+//            mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/mingliub.ttc");
+//            Log.i(TAG, "Hanji font: mingliub");
+//        } else if (hanjiType == AppPrefs.HANJI_FONT_TYPE_MOEDICT) {
+//            mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/moedict.ttf");
+//            Log.i(TAG, "Hanji font: moedict");
+//        } else {
+//            mHanjiTypeface = Typeface.DEFAULT;
+//            Log.i(TAG, "Hanji font: system default");
+//        }
 
         mRawInputPaint = new Paint();
         mRawInputPaint.setColor(mColorNormal);

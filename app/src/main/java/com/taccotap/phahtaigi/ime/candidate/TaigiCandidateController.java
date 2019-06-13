@@ -142,13 +142,15 @@ public class TaigiCandidateController {
                         .beginsWith("tailoInputWithoutTone", search)
                         .or()
                         .beginsWith("tailoShortInput", search)
-                        .findAllSortedAsync("lomajiCharLength", Sort.ASCENDING);
+                        .sort("lomajiCharLength", Sort.ASCENDING)
+                        .findAllAsync();
             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .beginsWith("pojInputWithoutTone", search)
                         .or()
                         .beginsWith("pojShortInput", search)
-                        .findAllSortedAsync("lomajiCharLength", Sort.ASCENDING);
+                        .sort("lomajiCharLength", Sort.ASCENDING)
+                        .findAllAsync();
             }
         } else {
             mIsSetQueryLimit = false;
@@ -156,11 +158,13 @@ public class TaigiCandidateController {
             if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .beginsWith("tailoInputWithNumberTone", search)
-                        .findAllSortedAsync("lomajiCharLength", Sort.ASCENDING);
+                        .sort("lomajiCharLength", Sort.ASCENDING)
+                        .findAllAsync();
             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .beginsWith("pojInputWithNumberTone", search)
-                        .findAllSortedAsync("lomajiCharLength", Sort.ASCENDING);
+                        .sort("lomajiCharLength", Sort.ASCENDING)
+                        .findAllAsync();
             }
         }
 

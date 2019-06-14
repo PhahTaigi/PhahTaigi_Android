@@ -18,8 +18,8 @@ public class MoreSettingsActivity extends AppCompatActivity {
     @BindView(R.id.lomajiSelectionRadioGroup)
     RadioGroup mLomajiSelectionRadioGroup;
 
-    @BindView(R.id.fontSelectionRadioGroup)
-    RadioGroup mFontSelectionRadioGroup;
+//    @BindView(R.id.fontSelectionRadioGroup)
+//    RadioGroup mFontSelectionRadioGroup;
 
     @BindView(R.id.vibrationRadioGroup)
     RadioGroup mVibrationRadioGroup;
@@ -31,7 +31,7 @@ public class MoreSettingsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         final int lomajiMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V2, AppPrefs.INPUT_LOMAJI_MODE_APP_DEFAULT);
-        if (lomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
+        if (lomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
             mLomajiSelectionRadioGroup.check(R.id.tailoRadioButton);
         } else if (lomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
             mLomajiSelectionRadioGroup.check(R.id.pojRadioButton);
@@ -42,7 +42,7 @@ public class MoreSettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 if (checkedId == R.id.tailoRadioButton) {
-                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_TAILO);
+                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ);
                 } else if (checkedId == R.id.pojRadioButton) {
                     setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_POJ);
                 } else if (checkedId == R.id.englishRadioButton) {

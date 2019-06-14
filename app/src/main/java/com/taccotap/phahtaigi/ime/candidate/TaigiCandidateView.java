@@ -45,6 +45,7 @@ public class TaigiCandidateView extends View {
     private static final int X_GAP = 20;
     private static final int Y_GAP_BETWEEN_RAW_INPUT_AND_SUGGESTIONS = 5;
     private static final int Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION = 2;
+    private static final int MIN_WORD_WIDTH = 115;
 
     private final Context mContext;
     private final Vibrator mVibrator;
@@ -341,24 +342,24 @@ public class TaigiCandidateView extends View {
             String hintCandidate = "";
 
             if (i == 0) {
-                if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
-                    mainCandidate = imeDict.getTailo();
+                if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                    mainCandidate = imeDict.getKiplmj();
                 } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                     mainCandidate = imeDict.getPoj();
                 }
                 hintCandidate = imeDict.getHanji();
             } else {
                 if (mIsMainCandidateLomaji) {
-                    if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
-                        mainCandidate = imeDict.getTailo();
+                    if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                        mainCandidate = imeDict.getKiplmj();
                     } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                         mainCandidate = imeDict.getPoj();
                     }
                     hintCandidate = imeDict.getHanji();
                 } else {
                     mainCandidate = imeDict.getHanji();
-                    if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
-                        hintCandidate = imeDict.getTailo();
+                    if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                        hintCandidate = imeDict.getKiplmj();
                     } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                         hintCandidate = imeDict.getPoj();
                     }
@@ -373,7 +374,11 @@ public class TaigiCandidateView extends View {
             final float hintTextWidth = mSuggestionsHintPaint.measureText(hintCandidate);
             final int mainWordWidth = (int) mainTextWidth;
             final int hintWordWidth = (int) hintTextWidth;
-            final int fullWordWidth = (mainWordWidth > hintWordWidth ? mainWordWidth : hintWordWidth) + X_GAP * 2;
+            final int wordWidth = (mainWordWidth > hintWordWidth ? mainWordWidth : hintWordWidth);
+            int fullWordWidth = wordWidth + X_GAP * 2;
+            if (fullWordWidth < MIN_WORD_WIDTH) {
+                fullWordWidth = MIN_WORD_WIDTH;
+            }
 
             // draw touched effect
             if (touchX + scrollX >= x && touchX + scrollX < x + fullWordWidth && !scrolled) {
@@ -393,12 +398,15 @@ public class TaigiCandidateView extends View {
 
                 // draw line between words
                 String lomaji = "";
-                if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
-                    lomaji = imeDict.getTailo();
+                if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                    lomaji = imeDict.getKiplmj();
                 } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                     lomaji = imeDict.getPoj();
                 }
-                final float fullFirstLomajiWidth = mSuggestionsMainFirstLomajiPaint.measureText(lomaji) + X_GAP * 2;
+                int fullFirstLomajiWidth = (int) (mSuggestionsMainFirstLomajiPaint.measureText(lomaji) + X_GAP * 2);
+                if (fullFirstLomajiWidth < MIN_WORD_WIDTH) {
+                    fullFirstLomajiWidth = MIN_WORD_WIDTH;
+                }
                 canvas.drawLine(x + fullFirstLomajiWidth, mWordSeperatorLineYForPaint,
                         x + fullFirstLomajiWidth, mWordSeperatorLineYForPaint + fullWordHeight, mWordSeperatorLinePaint);
 
@@ -508,11 +516,11 @@ public class TaigiCandidateView extends View {
 
                         final ImeDict imeDict = mSuggestions.get(mSelectedIndex);
                         if (mSelectedIndex == 0 || mIsMainCandidateLomaji) {
-                            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
-                                mService.commitPickedSuggestion(imeDict.getTailo());
+                            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                                mService.commitPickedSuggestion(imeDict.getKiplmj());
 
                                 if (BuildConfig.DEBUG_LOG) {
-                                    Log.d(TAG, "Selected output: " + imeDict.getTailo());
+                                    Log.d(TAG, "Selected output: " + imeDict.getKiplmj());
                                 }
                             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                                 mService.commitPickedSuggestion(imeDict.getPoj());
@@ -584,7 +592,7 @@ public class TaigiCandidateView extends View {
 
         final Intent intent = new Intent(ACTION_SEARCH_FROM_PHAHTAIGI);
         if (mSelectedIndex == 0 || mIsMainCandidateLomaji) {
-            intent.putExtra(EXTRA_TAILO_SEARCH_KEYWORD, imeDict.getTailo());
+            intent.putExtra(EXTRA_TAILO_SEARCH_KEYWORD, imeDict.getKiplmj());
         } else {
             intent.putExtra(EXTRA_TAILO_HANJI_SEARCH_KEYWORD, imeDict.getHanji());
         }

@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 apply plugin: 'realm-android'
 
@@ -6,12 +9,12 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 24
         targetSdkVersion 29
 
         applicationId "com.taccotap.phahtaigi"
-        versionCode 29
-        versionName "2.2.0"
+        versionCode 30
+        versionName "2.3.0"
     }
 
     dataBinding {
@@ -22,7 +25,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             android.applicationVariants.all { variant ->
                 variant.outputs.all { output ->
@@ -88,6 +91,7 @@ android {
 repositories {
     maven { url "http://dl.bintray.com/pixplicity/maven" }
     maven { url 'https://maven.fabric.io/public' }
+    mavenCentral()
 }
 
 dependencies {
@@ -117,10 +121,12 @@ dependencies {
 
     // ButterKnife
     implementation 'com.jakewharton:butterknife:10.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+    kapt 'com.jakewharton:butterknife-compiler:10.1.0'
 
     implementation 'com.pixplicity.easyprefs:library:1.8.1@aar'
     implementation 'com.github.daniel-stoneuk:material-about-library:1.8.2'
+
+    implementation "androidx.core:core-ktx:1.0.2"
 
 //    testImplementation 'junit:junit:4.12'
 }

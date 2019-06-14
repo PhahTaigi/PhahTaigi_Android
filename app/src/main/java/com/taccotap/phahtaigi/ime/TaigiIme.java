@@ -375,7 +375,7 @@ public class TaigiIme extends InputMethodService
                 }
 
                 if (checkedId == R.id.tailoRadioButton) {
-                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_TAILO);
+                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ);
                 } else if (checkedId == R.id.pojRadioButton) {
                     setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_POJ);
                 } else if (checkedId == R.id.englishRadioButton) {
@@ -394,7 +394,7 @@ public class TaigiIme extends InputMethodService
             Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V2, inputMode);
         }
 
-        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
+        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
             mLomajiSelectionRadioGroup.check(R.id.tailoRadioButton);
         } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
             mLomajiSelectionRadioGroup.check(R.id.pojRadioButton);

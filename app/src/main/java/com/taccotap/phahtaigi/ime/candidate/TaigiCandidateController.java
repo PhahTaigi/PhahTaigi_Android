@@ -7,7 +7,7 @@ import com.taccotap.phahtaigi.AppPrefs;
 import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.dictmodel.ImeDict;
 import com.taccotap.phahtaigi.ime.converter.PojInputConverter;
-import com.taccotap.phahtaigi.ime.converter.TailoInputConverter;
+import com.taccotap.phahtaigi.ime.converter.KiplmjInputConverter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,10 +32,10 @@ public class TaigiCandidateController {
     private static final int QUERY_LIMIT_100 = 150;
 
     private TaigiCandidateView mTaigiCandidateView;
-    private int mCurrentInputLomajiMode = AppPrefs.INPUT_LOMAJI_MODE_TAILO;
+    private int mCurrentInputLomajiMode = AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ;
 
-    private String mRawInput;
-    private String mRawInputSuggestion;
+    private String mRawInput = "";
+    private String mRawInputSuggestion = "";
 
     private ArrayList<ImeDict> mCandidateImeDicts = new ArrayList<>();
 
@@ -53,7 +53,11 @@ public class TaigiCandidateController {
             Log.i(TAG, "setRawInput(): " + rawInput);
         }
 
-        mRawInput = rawInput;
+        if (rawInput == null) {
+            mRawInput = "";
+        } else {
+            mRawInput = rawInput;
+        }
         mRealm = Realm.getDefaultInstance();
 
         updateCandidateView();
@@ -92,14 +96,14 @@ public class TaigiCandidateController {
 
         mInputImeDict = new ImeDict();
 
-        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
-            mRawInputSuggestion = TailoInputConverter.convertTailoNumberRawInputToTailoWords(mRawInput);
-            mInputImeDict.setTailo(mRawInputSuggestion);
+        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+            mRawInputSuggestion = KiplmjInputConverter.INSTANCE.convertTailoNumberRawInputToTailoWords(mRawInput);
+            mInputImeDict.setKiplmj(mRawInputSuggestion);
             mInputImeDict.setPoj("");
         } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
-            mRawInputSuggestion = PojInputConverter.convertPojNumberRawInputToPojWords(mRawInput);
+            mRawInputSuggestion = PojInputConverter.INSTANCE.convertPojNumberRawInputToPojWords(mRawInput);
             mInputImeDict.setPoj(mRawInputSuggestion);
-            mInputImeDict.setTailo("");
+            mInputImeDict.setKiplmj("");
         }
 
         mInputImeDict.setHanji("");
@@ -107,12 +111,12 @@ public class TaigiCandidateController {
 
 //        // test input
 //        for (int i = 0; i < 10; i++) {
-//            final TlTaigiWord taigiWord2 = new TlTaigiWord();
+//            final KipTaigiWord taigiWord2 = new KipTaigiWord();
 //            taigiWord2.setTailo("Phah");
 //            taigiWord2.setHanji("拍");
 //            candidateImeDicts.add(taigiWord2);
 //
-//            final TlTaigiWord taigiWord1 = new TlTaigiWord();
+//            final KipTaigiWord taigiWord1 = new KipTaigiWord();
 //            taigiWord1.setTailo("Tâi-gí");
 //            taigiWord1.setHanji("臺語");
 //            candidateImeDicts.add(taigiWord1);
@@ -137,33 +141,33 @@ public class TaigiCandidateController {
         if (!search.matches(".*\\d+.*")) {
             mIsSetQueryLimit = true;
 
-            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
+            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
-                        .beginsWith("tailoInputWithoutTone", search)
+                        .beginsWith("kiplmjInputWithoutTone", search)
                         .or()
-                        .beginsWith("tailoShortInput", search)
-                        .sort("lomajiCharLength", Sort.ASCENDING)
+                        .beginsWith("kiplmjShortInput", search)
+                        .sort("priority", Sort.ASCENDING)
                         .findAllAsync();
             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .beginsWith("pojInputWithoutTone", search)
                         .or()
                         .beginsWith("pojShortInput", search)
-                        .sort("lomajiCharLength", Sort.ASCENDING)
+                        .sort("priority", Sort.ASCENDING)
                         .findAllAsync();
             }
         } else {
             mIsSetQueryLimit = false;
 
-            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
+            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
-                        .beginsWith("tailoInputWithNumberTone", search)
-                        .sort("lomajiCharLength", Sort.ASCENDING)
+                        .beginsWith("kiplmjInputWithNumberTone", search)
+                        .sort("priority", Sort.ASCENDING)
                         .findAllAsync();
             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .beginsWith("pojInputWithNumberTone", search)
-                        .sort("lomajiCharLength", Sort.ASCENDING)
+                        .sort("priority", Sort.ASCENDING)
                         .findAllAsync();
             }
         }
@@ -224,11 +228,11 @@ public class TaigiCandidateController {
                     final ImeDict imeDict = imeDicts.get(i);
                     ImeDict newImeDict = new ImeDict(imeDict);
 
-                    if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
+                    if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
                         if (rawInput.toUpperCase().equals(rawInput)) {
-                            newImeDict.setTailo(imeDict.getTailo().toUpperCase());
+                            newImeDict.setKiplmj(imeDict.getKiplmj().toUpperCase());
                         } else if (rawInput.substring(0, 1).toUpperCase().equals(rawInput.substring(0, 1))) {
-                            newImeDict.setTailo(imeDict.getTailo().substring(0, 1).toUpperCase() + imeDict.getTailo().substring(1));
+                            newImeDict.setKiplmj(imeDict.getKiplmj().substring(0, 1).toUpperCase() + imeDict.getKiplmj().substring(1));
                         }
                     } else if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                         if (rawInput.toUpperCase().equals(rawInput)) {
@@ -245,10 +249,10 @@ public class TaigiCandidateController {
                 Collections.sort(suggestions, new Comparator<ImeDict>() {
                     @Override
                     public int compare(ImeDict o1, ImeDict o2) {
-                        if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
-                            if (o1.getTailo().length() > o2.getTailo().length()) {
+                        if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                            if (o1.getKiplmj().length() > o2.getKiplmj().length()) {
                                 return 1;
-                            } else if (o1.getTailo().length() < o2.getTailo().length()) {
+                            } else if (o1.getKiplmj().length() < o2.getKiplmj().length()) {
                                 return -1;
                             } else {
                                 return getPrioritySorting(o1, o2);

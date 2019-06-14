@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Vibrator;
-import android.support.annotation.IdRes;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,6 +25,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+
+import androidx.annotation.IdRes;
 
 import com.pixplicity.easyprefs.library.Prefs;
 import com.taccotap.phahtaigi.AppPrefs;
@@ -227,7 +228,7 @@ public class TaigiIme extends InputMethodService
         mKeyboardSettingLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.keyboard_settings, null);
         mInputView.addView(mKeyboardSettingLayout);
 
-        if (!Prefs.getBoolean(AppPrefs.PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_3_2, false)
+        if (!Prefs.getBoolean(AppPrefs.PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V2, false)
                 || Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_SHOW_SETTING, true)) {
             mKeyboardSettingLayout.setVisibility(View.VISIBLE);
         }
@@ -363,7 +364,7 @@ public class TaigiIme extends InputMethodService
         mCurrentInputMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_MODE, AppPrefs.INPUT_MODE_LOMAJI);
 
         mLomajiSelectionRadioGroup = (RadioGroup) mInputView.findViewById(R.id.lomajiSelectionRadioGroup);
-        mCurrentInputLomajiMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE, AppPrefs.INPUT_LOMAJI_MODE_APP_DEFAULT);
+        mCurrentInputLomajiMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V2, AppPrefs.INPUT_LOMAJI_MODE_APP_DEFAULT);
         setCurrentInputLomajiMode(mCurrentInputLomajiMode);
 
         mLomajiSelectionRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -374,7 +375,7 @@ public class TaigiIme extends InputMethodService
                 }
 
                 if (checkedId == R.id.tailoRadioButton) {
-                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_TAILO);
+                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ);
                 } else if (checkedId == R.id.pojRadioButton) {
                     setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_POJ);
                 } else if (checkedId == R.id.englishRadioButton) {
@@ -390,10 +391,10 @@ public class TaigiIme extends InputMethodService
         if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_ENGLISH) {
             commitRawInputSuggestion();
         } else {
-            Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE, inputMode);
+            Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V2, inputMode);
         }
 
-        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_TAILO) {
+        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
             mLomajiSelectionRadioGroup.check(R.id.tailoRadioButton);
         } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
             mLomajiSelectionRadioGroup.check(R.id.pojRadioButton);
@@ -528,7 +529,7 @@ public class TaigiIme extends InputMethodService
         if (mKeyboardSettingLayout.getVisibility() == View.VISIBLE) {
             mKeyboardSettingLayout.setVisibility(View.GONE);
 
-            Prefs.putBoolean(AppPrefs.PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V1_3_2, true);
+            Prefs.putBoolean(AppPrefs.PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V2, true);
             Prefs.putBoolean(AppPrefs.PREFS_KEY_IS_SHOW_SETTING, false);
         } else {
             mKeyboardSettingLayout.setVisibility(View.VISIBLE);

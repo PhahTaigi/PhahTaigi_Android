@@ -3,10 +3,11 @@ package com.taccotap.phahtaigi.preferences;
 import android.content.ComponentName;
 import android.content.Context;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 public class SetupSupport {
     private static final String TAG = SetupSupport.class.getSimpleName();

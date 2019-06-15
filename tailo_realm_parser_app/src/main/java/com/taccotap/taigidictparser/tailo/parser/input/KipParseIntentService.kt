@@ -421,12 +421,22 @@ class KipParseIntentService : IntentService("KipParseIntentService") {
     }
 
     private fun sortAndGeneratePriorities() {
+        // kiplmj
+        mImeDictArrayList.sortBy { it.kiplmjInputWithNumberTone.toLowerCase() }
+
+        var kiplmjPriority = 0
+        for (imeDict in mImeDictArrayList) {
+            imeDict.kiplmjPriority = kiplmjPriority
+            kiplmjPriority++
+        }
+
+        // poj
         mImeDictArrayList.sortBy { it.pojInputWithNumberTone.toLowerCase() }
 
-        var priority = 0
+        var pojPriority = 0
         for (imeDict in mImeDictArrayList) {
-            imeDict.priority = priority
-            priority++
+            imeDict.pojPriority = pojPriority
+            pojPriority++
         }
     }
 

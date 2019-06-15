@@ -6,8 +6,8 @@ import android.util.Log;
 import com.taccotap.phahtaigi.AppPrefs;
 import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.dictmodel.ImeDict;
-import com.taccotap.phahtaigi.ime.converter.PojInputConverter;
 import com.taccotap.phahtaigi.ime.converter.KiplmjInputConverter;
+import com.taccotap.phahtaigi.ime.converter.PojInputConverter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -136,7 +136,9 @@ public class TaigiCandidateController {
             mImeDicts.removeAllChangeListeners();
         }
 
-        String search = mRawInput.toLowerCase().replaceAll("1|4", "");
+        String search = mRawInput.toLowerCase()
+                .replaceAll("1|4", "")
+                .replaceAll("6", "2");
 
         if (!search.matches(".*\\d+.*")) {
             mIsSetQueryLimit = true;
@@ -146,14 +148,14 @@ public class TaigiCandidateController {
                         .beginsWith("kiplmjInputWithoutTone", search)
                         .or()
                         .beginsWith("kiplmjShortInput", search)
-                        .sort("priority", Sort.ASCENDING)
+                        .sort("kiplmjPriority", Sort.ASCENDING)
                         .findAllAsync();
             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .beginsWith("pojInputWithoutTone", search)
                         .or()
                         .beginsWith("pojShortInput", search)
-                        .sort("priority", Sort.ASCENDING)
+                        .sort("pojPriority", Sort.ASCENDING)
                         .findAllAsync();
             }
         } else {
@@ -162,12 +164,12 @@ public class TaigiCandidateController {
             if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .beginsWith("kiplmjInputWithNumberTone", search)
-                        .sort("priority", Sort.ASCENDING)
+                        .sort("kiplmjPriority", Sort.ASCENDING)
                         .findAllAsync();
             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
                         .beginsWith("pojInputWithNumberTone", search)
-                        .sort("priority", Sort.ASCENDING)
+                        .sort("pojPriority", Sort.ASCENDING)
                         .findAllAsync();
             }
         }
@@ -255,7 +257,7 @@ public class TaigiCandidateController {
                             } else if (o1.getKiplmj().length() < o2.getKiplmj().length()) {
                                 return -1;
                             } else {
-                                return getPrioritySorting(o1, o2);
+                                return getPrioritySorting(currentInputLomajiMode, o1, o2);
                             }
                         } else if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                             if (o1.getPoj().length() > o2.getPoj().length()) {
@@ -263,7 +265,7 @@ public class TaigiCandidateController {
                             } else if (o1.getPoj().length() < o2.getPoj().length()) {
                                 return -1;
                             } else {
-                                return getPrioritySorting(o1, o2);
+                                return getPrioritySorting(currentInputLomajiMode, o1, o2);
                             }
                         } else {
                             return 0;
@@ -277,13 +279,25 @@ public class TaigiCandidateController {
         }, BackpressureStrategy.BUFFER);
     }
 
-    private int getPrioritySorting(ImeDict o1, ImeDict o2) {
-        if (o1.getPriority() > o2.getPriority()) {
-            return 1;
-        } else if (o1.getPriority() < o2.getPriority()) {
-            return -1;
-        } else {
-            return 0;
+    private int getPrioritySorting(int currentInputLomajiMode, ImeDict o1, ImeDict o2) {
+        if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+            if (o1.getKiplmjPriority() > o2.getKiplmjPriority()) {
+                return 1;
+            } else if (o1.getKiplmjPriority() < o2.getKiplmjPriority()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        } else if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
+            if (o1.getPojPriority() > o2.getPojPriority()) {
+                return 1;
+            } else if (o1.getPojPriority() < o2.getPojPriority()) {
+                return -1;
+            } else {
+                return 0;
+            }
         }
+
+        return 0;
     }
 }

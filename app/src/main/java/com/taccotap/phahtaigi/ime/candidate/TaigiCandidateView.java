@@ -45,7 +45,7 @@ public class TaigiCandidateView extends View {
     private static final int X_GAP = 20;
     private static final int Y_GAP_BETWEEN_RAW_INPUT_AND_SUGGESTIONS = 5;
     private static final int Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION = 2;
-    private static final int MIN_WORD_WIDTH = 115;
+    private static final int MIN_WORD_WIDTH = 110;
 
     private final Context mContext;
     private final Vibrator mVibrator;
@@ -201,7 +201,7 @@ public class TaigiCandidateView extends View {
         mSuggestionsMainFirstLomajiPaint = new Paint();
         mSuggestionsMainFirstLomajiPaint.setColor(mColorRecommended);
         mSuggestionsMainFirstLomajiPaint.setAntiAlias(true);
-        mSuggestionsMainFirstLomajiPaint.setTextSize(resources.getDimensionPixelSize(R.dimen.candidate_main_font_height));
+        mSuggestionsMainFirstLomajiPaint.setTextSize(resources.getDimensionPixelSize(R.dimen.candidate_main_font_lomaji_height));
         mSuggestionsMainFirstLomajiPaint.setStrokeWidth(0);
         mSuggestionsMainFirstLomajiPaint.setTypeface(mLomajiTypeface);
         final Paint.FontMetrics suggestionsMainFirstLomajiPaintFontMetrics = mSuggestionsMainFirstLomajiPaint.getFontMetrics();
@@ -219,12 +219,13 @@ public class TaigiCandidateView extends View {
         mSuggestionsMainPaint = new Paint();
         mSuggestionsMainPaint.setColor(mColorRecommended);
         mSuggestionsMainPaint.setAntiAlias(true);
-        mSuggestionsMainPaint.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.candidate_main_font_height));
         mSuggestionsMainPaint.setStrokeWidth(0);
         if (mIsMainCandidateLomaji) {
             mSuggestionsMainPaint.setTypeface(mLomajiTypeface);
+            mSuggestionsMainPaint.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.candidate_main_font_lomaji_height));
         } else {
             mSuggestionsMainPaint.setTypeface(mHanjiTypeface);
+            mSuggestionsMainPaint.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.candidate_main_font_hanji_height));
         }
         final Paint.FontMetrics suggestionsMainPaintFontMetrics = mSuggestionsMainPaint.getFontMetrics();
         mSuggestionsMainTextHeight = suggestionsMainPaintFontMetrics.bottom - suggestionsMainPaintFontMetrics.top + suggestionsMainPaintFontMetrics.leading;
@@ -234,12 +235,13 @@ public class TaigiCandidateView extends View {
         mSuggestionsHintPaint = new Paint();
         mSuggestionsHintPaint.setColor(mColorRecommended);
         mSuggestionsHintPaint.setAntiAlias(true);
-        mSuggestionsHintPaint.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.candidate_hint_font_height));
         mSuggestionsHintPaint.setStrokeWidth(0);
         if (mIsMainCandidateLomaji) {
             mSuggestionsHintPaint.setTypeface(mHanjiTypeface);
+            mSuggestionsHintPaint.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.candidate_hint_font_hanji_height));
         } else {
             mSuggestionsHintPaint.setTypeface(mLomajiTypeface);
+            mSuggestionsHintPaint.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.candidate_hint_font_lomaji_height));
         }
         final Paint.FontMetrics suggestionsHintPaintFontMetrics = mSuggestionsHintPaint.getFontMetrics();
         mSuggestionsHintTextHeight = suggestionsHintPaintFontMetrics.bottom - suggestionsHintPaintFontMetrics.top + suggestionsHintPaintFontMetrics.leading;

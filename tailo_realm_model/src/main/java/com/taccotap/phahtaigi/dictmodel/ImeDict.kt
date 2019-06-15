@@ -41,7 +41,8 @@ open class ImeDict : RealmObject {
     @Required
     lateinit var pojShortInput: String
 
-    var priority: Int = 0
+    var pojPriority: Int = 0
+    var kiplmjPriority: Int = 0
 
     @Index
     @Required
@@ -64,6 +65,7 @@ open class ImeDict : RealmObject {
 
         this.hanji = imeDict.hanji
 
-        this.priority = imeDict.priority
+        this.pojPriority = imeDict.pojPriority
+        this.kiplmjPriority = imeDict.kiplmjPriority
     }
 }

@@ -74,6 +74,9 @@ object LomajiConverter {
             if (fixPojInputBoSianntiau.endsWith("nn", true)) {
                 fixPojInput = fixPojInput.replace("nn", "ⁿ")
                         .replace("NN", "ⁿ")
+            } else if (fixPojInputBoSianntiau.endsWith("nnh", true)) {
+                fixPojInput = fixPojInput.replace("nnh", "ⁿh")
+                        .replace("NNH", "ⁿH")
             }
         }
 
@@ -454,8 +457,8 @@ object LomajiConverter {
     }
 
     private fun isPojJipsiann(pojBoSianntiau: String): Boolean {
-        val lastCharExcludingPhinnim = pojBoSianntiau.replace("ⁿ", "").substring(pojBoSianntiau.length - 1)
-        return lastCharExcludingPhinnim.toLowerCase().matches("[ptkh]".toRegex())
+        val lastCharExcludingPhinnim = pojBoSianntiau.replace("ⁿ", "")
+        return lastCharExcludingPhinnim.substring(lastCharExcludingPhinnim.length - 1).toLowerCase().matches("[ptkh]".toRegex())
     }
 
     private fun findJiboPositionFromLastCharExludingPhinnim(pojBoSianntiau: String, findWhichCharFromRight: Int): Int {

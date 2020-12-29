@@ -137,7 +137,7 @@
         <Key
             android:codes="-2"
             android:keyEdgeFlags="left"
-            android:keyLabel="轉去"
+            android:keyLabel="Tńg"
             android:keyWidth="13%p"/>
         <Key
             android:codes="65307"
@@ -148,7 +148,7 @@
         -->
         <Key
             android:codes="-2000"
-            android:keyLabel="設定"
+            android:keyLabel="Siat"
             android:keyWidth="12%p"/>
         <Key
             android:codes="32"

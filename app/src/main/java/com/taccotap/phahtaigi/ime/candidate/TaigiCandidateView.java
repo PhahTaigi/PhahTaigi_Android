@@ -175,8 +175,8 @@ public class TaigiCandidateView extends View {
         //noinspection deprecation
         mColorRecommended = resources.getColor(R.color.candidate_recommended);
 
-        mLomajiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/TauhuOo-Regular.otf");
-        mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/TauhuOo-Regular.otf");
+        mLomajiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/TauhuOo20.05-Regular.otf");
+        mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/TauhuOo20.05-Regular.otf");
 //        final int hanjiType = Prefs.getInt(AppPrefs.PREFS_KEY_HANJI_FONT_TYPE, HANJI_FONT_TYPE_APP_DEFAULT);
 //        if (hanjiType == AppPrefs.HANJI_FONT_TYPE_MINGLIUB) {
 //            mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/mingliub.ttc");

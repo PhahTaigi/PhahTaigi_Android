@@ -14,8 +14,8 @@ object ConverterUtils {
         val number = lomajiNumber.substring(foundNumberIndex, foundNumberIndex + 1)
         if (number == "1" || number == "4") {
             return fixLomajiNumber.substring(0, fixLomajiNumber.length - 1)
-        } else if (number == "6") {
-            return fixLomajiNumber.substring(0, fixLomajiNumber.length - 1) + "2"
+//        } else if (number == "6") {
+//            return fixLomajiNumber.substring(0, fixLomajiNumber.length - 1) + "2"
         }
 
         return fixLomajiNumber

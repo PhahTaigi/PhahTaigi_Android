@@ -3,18 +3,17 @@ package com.taccotap.phahtaigi;
 import android.app.Application;
 import android.content.ContextWrapper;
 
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
+import androidx.multidex.MultiDexApplication;
+
 import com.pixplicity.easyprefs.library.Prefs;
 import com.taccotap.chhoetaigi.realm_db_installer.IRealmAssetHelperStorageListener;
 import com.taccotap.chhoetaigi.realm_db_installer.RealmAssetHelper;
 import com.taccotap.chhoetaigi.realm_db_installer.RealmAssetHelperStatus;
 
-import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
-public class PhahTaigiApp extends Application {
+public class PhahTaigiApp extends MultiDexApplication {
 
     public static final String DATABASE_ASSETS_PATH = "preload_realm_db";
     public static final String DATABASE_BASE_NAME = "ime_dict";
@@ -22,18 +21,6 @@ public class PhahTaigiApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        if (BuildConfig.DEBUG) {
-            // Set up Crashlytics, disabled for debug builds
-            Crashlytics crashlyticsKit = new Crashlytics.Builder()
-                    .core(new CrashlyticsCore.Builder().disabled(true).build())
-                    .build();
-
-            // Initialize Fabric with the debug-disabled crashlytics.
-            Fabric.with(this, crashlyticsKit);
-        } else {
-            Fabric.with(this, new Crashlytics());
-        }
 
         new Prefs.Builder()
                 .setContext(this)

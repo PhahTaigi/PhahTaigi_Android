@@ -33,7 +33,6 @@ import com.taccotap.phahtaigi.AppPrefs;
 import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.R;
 import com.taccotap.phahtaigi.about.AboutActivity;
-import com.taccotap.phahtaigi.about.SponsorActivity;
 import com.taccotap.phahtaigi.ime.candidate.TaigiCandidateController;
 import com.taccotap.phahtaigi.ime.candidate.TaigiCandidateView;
 import com.taccotap.phahtaigi.ime.keyboard.CustomKeycode;
@@ -242,19 +241,6 @@ public class TaigiIme extends InputMethodService
                 }
 
                 final Intent intent = new Intent(TaigiIme.this, MoreSettingsActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        });
-        Button sponsorButton = (Button) mKeyboardSettingLayout.findViewById(R.id.sponsorButton);
-        sponsorButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mIsVibration) {
-                    mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
-                }
-
-                final Intent intent = new Intent(TaigiIme.this, SponsorActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
@@ -485,6 +471,10 @@ public class TaigiIme extends InputMethodService
         } else if (primaryCode == CustomKeycode.KEYCODE_SWITCH_TO_LOMAJI) {
             Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_MODE, AppPrefs.INPUT_MODE_LOMAJI);
             mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_LOMAJI_QWERTY);
+        } else if (primaryCode == CustomKeycode.KEYCODE_SWITCH_TO_TAIBUN) {
+            mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_TO_TAIBUN);
+        } else if (primaryCode == CustomKeycode.KEYCODE_SWITCH_TO_ENGBUN) {
+            mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_TO_ENGBUN);
         } else if (primaryCode == CustomKeycode.KEYCODE_SETTINGS) {
             handleOpenCloseSettingLayout();
         } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE && mTaigiKeyboardView != null) {
@@ -670,7 +660,7 @@ public class TaigiIme extends InputMethodService
             }
         }
 
-        if (!mKeyboardSwitcher.isCurrentKeyboardViewUseQwertyKeyboard() || mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_ENGLISH) {
+        if (!mKeyboardSwitcher.isCurrentKeyboardViewUseTaibunQwertyKeyboard() || mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_ENGLISH) {
             sendKey(primaryCode);
         } else {
             if (isDirectlySendKeyWhenOnlyInputNumbers(primaryCode)) {
@@ -684,8 +674,8 @@ public class TaigiIme extends InputMethodService
 
     private boolean isDirectlySendKeyWhenOnlyInputNumbers(int primaryCode) {
         if (mComposing.length() == 0) {
-            // 1~9
-            if (primaryCode >= 49 && primaryCode <= 57) {
+            // 0~9
+            if (primaryCode >= 48 && primaryCode <= 57) {
                 return true;
             }
         }

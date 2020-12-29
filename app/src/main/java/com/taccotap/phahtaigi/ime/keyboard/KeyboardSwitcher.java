@@ -10,6 +10,8 @@ import com.taccotap.phahtaigi.ime.candidate.TaigiCandidateView;
 
 public class KeyboardSwitcher {
 
+    public static final int KEYBOARD_TYPE_TO_TAIBUN = -2;
+    public static final int KEYBOARD_TYPE_TO_ENGBUN = -1;
     public static final int KEYBOARD_TYPE_LOMAJI_QWERTY = 0;
     public static final int KEYBOARD_TYPE_HANJI_QWERTY = 1;
     public static final int KEYBOARD_TYPE_LOMAJI_SYMBOL = 2;
@@ -23,14 +25,20 @@ public class KeyboardSwitcher {
     private TaigiKeyboardView mTaigiKeyboardView;
     private TaigiCandidateView mTaigiCandidateView;
 
-    private TaigiKeyboard mLomajiQwertyKeyboard;
-    private TaigiKeyboard mHanjiQwertyKeyboard;
+    private TaigiKeyboard mTaibunLomajiQwertyKeyboard;
+    private TaigiKeyboard mEngbunLomajiQwertyKeyboard;
+    private TaigiKeyboard mTaibunHanjiQwertyKeyboard;
+    private TaigiKeyboard mEngbunHanjiQwertyKeyboard;
     private TaigiKeyboard mLomajiSymbolsKeyboard;
     private TaigiKeyboard mLomajiSymbolsShiftedKeyboard;
     private TaigiKeyboard mHanjiSymbolsKeyboard;
     private TaigiKeyboard mHanjiSymbolsShiftedKeyboard;
 
     private TaigiKeyboard mCurrentKeyboard;
+    private enum InputLanguage {
+        TAIBUN, ENGBUN
+    }
+    private InputLanguage mCurrentInputLanguage = InputLanguage.TAIBUN;
 
     private int mImeOptions;
 
@@ -38,14 +46,16 @@ public class KeyboardSwitcher {
         mTaigiIme = taigiIme;
         mInputMethodManager = inputMethodManager;
 
-        mLomajiQwertyKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_lomaji_qwerty);
-        mHanjiQwertyKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_hanji_qwerty);
+        mTaibunLomajiQwertyKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_lomaji_qwerty_taibun);
+        mEngbunLomajiQwertyKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_lomaji_qwerty_engbun);
+        mTaibunHanjiQwertyKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_hanji_qwerty_taibun);
+        mEngbunHanjiQwertyKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_hanji_qwerty_engbun);
         mLomajiSymbolsKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_lomaji_symbols);
         mLomajiSymbolsShiftedKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_lomaji_symbols_shift);
         mHanjiSymbolsKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_hanji_symbols);
         mHanjiSymbolsShiftedKeyboard = new TaigiKeyboard(taigiIme, R.xml.keyboard_layout_hanji_symbols_shift);
 
-        mCurrentKeyboard = mLomajiQwertyKeyboard;
+        mCurrentKeyboard = mTaibunLomajiQwertyKeyboard;
     }
 
     public void setTaigiCandidateView(TaigiCandidateView taigiCandidateView) {
@@ -57,12 +67,26 @@ public class KeyboardSwitcher {
 //    }
 
     public void setKeyboardByType(int keyboardType) {
-        TaigiKeyboard nextKeyboard;
+        TaigiKeyboard nextKeyboard = null;
 
         if (keyboardType == KEYBOARD_TYPE_LOMAJI_QWERTY) {
-            nextKeyboard = mLomajiQwertyKeyboard;
+            nextKeyboard = mTaibunLomajiQwertyKeyboard;
         } else if (keyboardType == KEYBOARD_TYPE_HANJI_QWERTY) {
-            nextKeyboard = mHanjiQwertyKeyboard;
+            nextKeyboard = mTaibunHanjiQwertyKeyboard;
+        } else if (keyboardType == KEYBOARD_TYPE_TO_ENGBUN) {
+            mCurrentInputLanguage = InputLanguage.ENGBUN;
+            if (mCurrentKeyboard == mTaibunHanjiQwertyKeyboard) {
+                nextKeyboard = mEngbunHanjiQwertyKeyboard;
+            } else {
+                nextKeyboard = mEngbunLomajiQwertyKeyboard;
+            }
+        } else if (keyboardType == KEYBOARD_TYPE_TO_TAIBUN) {
+            mCurrentInputLanguage = InputLanguage.TAIBUN;
+            if (mCurrentKeyboard == mEngbunHanjiQwertyKeyboard) {
+                nextKeyboard = mTaibunHanjiQwertyKeyboard;
+            } else {
+                nextKeyboard = mTaibunLomajiQwertyKeyboard;
+            }
         } else if (keyboardType == KEYBOARD_TYPE_LOMAJI_SYMBOL) {
             nextKeyboard = mLomajiSymbolsKeyboard;
         } else if (keyboardType == KEYBOARD_TYPE_LOMAJI_SYMBOL_SHIFTED) {
@@ -72,7 +96,7 @@ public class KeyboardSwitcher {
         } else if (keyboardType == KEYBOARD_TYPE_HANJI_SYMBOL_SHIFTED) {
             nextKeyboard = mHanjiSymbolsShiftedKeyboard;
         } else {
-            nextKeyboard = mLomajiQwertyKeyboard;
+            nextKeyboard = mTaibunLomajiQwertyKeyboard;
         }
 
         mCurrentKeyboard = nextKeyboard;
@@ -86,22 +110,37 @@ public class KeyboardSwitcher {
     }
 
     public boolean isCurrentKeyboardViewUseQwertyKeyboard() {
-        return mCurrentKeyboard == mLomajiQwertyKeyboard
-                || mCurrentKeyboard == mHanjiQwertyKeyboard;
+        return mCurrentKeyboard == mTaibunLomajiQwertyKeyboard ||
+                mCurrentKeyboard == mEngbunLomajiQwertyKeyboard ||
+                mCurrentKeyboard == mTaibunHanjiQwertyKeyboard ||
+                mCurrentKeyboard == mEngbunHanjiQwertyKeyboard;
+    }
+
+    public boolean isCurrentKeyboardViewUseTaibunQwertyKeyboard() {
+        return mCurrentKeyboard == mTaibunLomajiQwertyKeyboard ||
+                mCurrentKeyboard == mTaibunHanjiQwertyKeyboard;
     }
 
     public void switchKeyboard() {
         TaigiKeyboard currentKeyboard = (TaigiKeyboard) mTaigiKeyboardView.getKeyboard();
-        TaigiKeyboard nextKeyboard = mLomajiQwertyKeyboard;
+        TaigiKeyboard nextKeyboard = mTaibunLomajiQwertyKeyboard;
 
-        if (currentKeyboard == mLomajiQwertyKeyboard) {
+        if (currentKeyboard == mTaibunLomajiQwertyKeyboard || currentKeyboard == mEngbunLomajiQwertyKeyboard) {
             nextKeyboard = mLomajiSymbolsKeyboard;
-        } else if (currentKeyboard == mHanjiQwertyKeyboard) {
+        } else if (currentKeyboard == mTaibunHanjiQwertyKeyboard || currentKeyboard == mEngbunHanjiQwertyKeyboard) {
             nextKeyboard = mHanjiSymbolsKeyboard;
         } else if (currentKeyboard == mLomajiSymbolsKeyboard || currentKeyboard == mLomajiSymbolsShiftedKeyboard) {
-            nextKeyboard = mLomajiQwertyKeyboard;
+            if (mCurrentInputLanguage == InputLanguage.ENGBUN) {
+                nextKeyboard = mEngbunLomajiQwertyKeyboard;
+            } else {
+                nextKeyboard = mTaibunLomajiQwertyKeyboard;
+            }
         } else if (currentKeyboard == mHanjiSymbolsKeyboard || currentKeyboard == mHanjiSymbolsShiftedKeyboard) {
-            nextKeyboard = mHanjiQwertyKeyboard;
+            if (mCurrentInputLanguage == InputLanguage.ENGBUN) {
+                nextKeyboard = mEngbunHanjiQwertyKeyboard;
+            } else {
+                nextKeyboard = mTaibunHanjiQwertyKeyboard;
+            }
         }
 
         mCurrentKeyboard = nextKeyboard;
@@ -111,7 +150,7 @@ public class KeyboardSwitcher {
 
     public void handleShift() {
         Keyboard currentKeyboard = mTaigiKeyboardView.getKeyboard();
-        TaigiKeyboard nextKeyboard = mLomajiQwertyKeyboard;
+        TaigiKeyboard nextKeyboard = mTaibunLomajiQwertyKeyboard;
 
         if (currentKeyboard == mLomajiSymbolsKeyboard) {
             nextKeyboard = mLomajiSymbolsShiftedKeyboard;
@@ -136,7 +175,7 @@ public class KeyboardSwitcher {
         }
 
         if (mTaigiCandidateView != null) {
-            if (nextKeyboard == mLomajiQwertyKeyboard
+            if (nextKeyboard == mTaibunLomajiQwertyKeyboard
                     || nextKeyboard == mLomajiSymbolsKeyboard
                     || nextKeyboard == mLomajiSymbolsShiftedKeyboard) {
                 mTaigiCandidateView.setIsMainCandidateLomaji(true);

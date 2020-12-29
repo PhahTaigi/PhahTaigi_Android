@@ -32,7 +32,7 @@ public class TaigiCandidateController {
     private static final int QUERY_LIMIT_100 = 150;
 
     private TaigiCandidateView mTaigiCandidateView;
-    private int mCurrentInputLomajiMode = AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ;
+    private int mCurrentInputLomajiMode = AppPrefs.INPUT_LOMAJI_MODE_POJ;
 
     private String mRawInput = "";
     private String mRawInputSuggestion = "";
@@ -137,8 +137,8 @@ public class TaigiCandidateController {
         }
 
         String search = mRawInput.toLowerCase()
-                .replaceAll("1|4", "")
-                .replaceAll("6", "2");
+                .replaceAll("1|4", "");
+//                .replaceAll("6", "2");
 
         if (!search.matches(".*\\d+.*")) {
             mIsSetQueryLimit = true;
@@ -159,7 +159,7 @@ public class TaigiCandidateController {
                         .findAllAsync();
             }
         } else {
-            mIsSetQueryLimit = false;
+            mIsSetQueryLimit = true;
 
             if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
                 mImeDicts = mRealm.where(ImeDict.class)
@@ -192,7 +192,7 @@ public class TaigiCandidateController {
                 }
 
 //                for (ImeDict imeDict : mImeDicts) {
-//                    Log.d(TAG, "tailo = " + imeDict.getTailo() + ", hanji = " + imeDict.getHanji());
+//                    Log.d(TAG, "poj = " + imeDict.poj + ", hanji = " + imeDict.getHanji());
 //                }
 
                 ArrayList<ImeDict> mutableArrayList = new ArrayList<>(mRealm.copyFromRealm(imeDicts.subList(0, count)));

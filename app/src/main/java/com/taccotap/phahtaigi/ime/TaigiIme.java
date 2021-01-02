@@ -666,10 +666,34 @@ public class TaigiIme extends InputMethodService
             if (isDirectlySendKeyWhenOnlyInputNumbers(primaryCode)) {
                 sendKey(primaryCode);
             } else {
-                mComposing.append((char) primaryCode);
-                updateInputForCandidate();
+                if (!isInputNonTaibunCharacters(primaryCode)) {
+                    mComposing.append((char) primaryCode);
+                    updateInputForCandidate();
+                }
             }
         }
+    }
+
+    private boolean isInputNonTaibunCharacters(int primaryCode) {
+        if (BuildConfig.DEBUG_LOG) {
+            Log.d(TAG, "isInputNonTaibunCharacters: primaryCode = " + primaryCode);
+        }
+
+        if (mComposing.length() == 0) {
+            if (primaryCode == 81 || primaryCode == 113   // Qq
+                    || primaryCode == 87 || primaryCode == 119   // Ww
+                    || primaryCode == 89 || primaryCode == 121   // Yy
+                    || primaryCode == 68 || primaryCode == 100   // Dd
+                    || primaryCode == 70 || primaryCode == 102   // Ff
+                    || primaryCode == 90 || primaryCode == 122   // Zz
+                    || primaryCode == 88 || primaryCode == 120   // Xx
+                    || primaryCode == 86 || primaryCode == 118   // Vv
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private boolean isDirectlySendKeyWhenOnlyInputNumbers(int primaryCode) {

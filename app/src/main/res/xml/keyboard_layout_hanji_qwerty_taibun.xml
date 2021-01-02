@@ -47,8 +47,8 @@
             android:keyEdgeFlags="left"
             android:keyLabel="！"/>
         <Key
-            android:codes="119"
-            android:keyLabel="w"/>
+            android:codes="65311"
+            android:keyLabel="？"/>
         <Key
             android:codes="101"
             android:keyLabel="e"/>
@@ -113,9 +113,10 @@
             android:codes="108"
             android:keyLabel="l"/>
         <Key
-            android:codes="65311"
+            android:codes="45"
             android:keyEdgeFlags="right"
-            android:keyLabel="？"/>
+            android:keyLabel="-"
+            android:keyWidth="10%p"/>
     </Row>
 
     <Row>
@@ -127,17 +128,18 @@
             android:keyIcon="@drawable/dark_key_shift_set"
             android:keyWidth="15%p"/>
         <Key
-            android:codes="12290"
-            android:keyLabel="。"/>
-        <Key
             android:codes="65292"
             android:keyLabel="，"/>
+        <Key
+            android:codes="12290"
+            android:keyLabel="。"/>
         <Key
             android:codes="99"
             android:keyLabel="c"/>
         <Key
-            android:codes="45"
-            android:keyLabel="-"/>
+            android:codes="118"
+            android:keyLabel="v"
+            android:keyWidth="10%p"/>
         <Key
             android:codes="98"
             android:keyLabel="b"/>
@@ -154,43 +156,6 @@
             android:keyIcon="@drawable/sym_keyboard_delete_lxx_dark"
             android:keyWidth="15%p"/>
     </Row>
-
-<!--    <Row android:rowEdgeFlags="bottom">-->
-<!--        <Key-->
-<!--            android:codes="-2"-->
-<!--            android:keyEdgeFlags="left"-->
-<!--            android:keyLabel=":;0"-->
-<!--            android:keyWidth="13%p"/>-->
-<!--        <Key-->
-<!--            android:codes="65281"-->
-<!--            android:keyLabel="！"-->
-<!--            android:keyWidth="10%p"/>-->
-<!--        &lt;!&ndash;-->
-<!--            android:codes: -1000 is not a framework-defined key code-->
-<!--        &ndash;&gt;-->
-<!--        <Key-->
-<!--            android:codes="-1000"-->
-<!--            android:keyLabel="漢"-->
-<!--            android:keyWidth="12%p"/>-->
-<!--        <Key-->
-<!--            android:codes="32"-->
-<!--            android:isRepeatable="false"-->
-<!--            android:keyIcon="@drawable/btn_keyboard_spacebar_lxx_dark"-->
-<!--            android:keyWidth="30%p"/>-->
-<!--        <Key-->
-<!--            android:codes="65292"-->
-<!--            android:keyLabel="，"-->
-<!--            android:keyWidth="10%p"/>-->
-<!--        <Key-->
-<!--            android:codes="12290"-->
-<!--            android:keyLabel="。"-->
-<!--            android:keyWidth="10%p"/>-->
-<!--        <Key-->
-<!--            android:codes="10"-->
-<!--            android:keyEdgeFlags="right"-->
-<!--            android:keyIcon="@drawable/sym_keyboard_return"-->
-<!--            android:keyWidth="15%p"/>-->
-<!--    </Row>-->
     <Row android:rowEdgeFlags="bottom">
         <Key
             android:codes="-2"

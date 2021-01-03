@@ -25,8 +25,8 @@ import androidx.core.view.GestureDetectorCompat;
 import com.taccotap.phahtaigi.AppPrefs;
 import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.R;
-import com.taccotap.phahtaigi.dictmodel.ImeDict;
 import com.taccotap.phahtaigi.ime.TaigiIme;
+import com.taccotap.phahtaigi.imedict.ImeDictModel;
 import com.taccotap.phahtaigi.utils.StoppableRunnable;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class TaigiCandidateView extends View {
     private final Handler mHandler;
 
     private TaigiIme mService;
-    private ArrayList<ImeDict> mSuggestions = new ArrayList<>();
+    private ArrayList<ImeDictModel> mSuggestions = new ArrayList<>();
 
     private boolean mIsMainCandidateLomaji = true;
 
@@ -338,32 +338,32 @@ public class TaigiCandidateView extends View {
 //        }
 
         for (int i = 0; i < count; i++) {
-            ImeDict imeDict = mSuggestions.get(i);
+            ImeDictModel imeDictModel = mSuggestions.get(i);
 
             String mainCandidate = "";
             String hintCandidate = "";
 
             if (i == 0) {
                 if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
-                    mainCandidate = imeDict.getKiplmj();
+                    mainCandidate = imeDictModel.getKip();
                 } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
-                    mainCandidate = imeDict.getPoj();
+                    mainCandidate = imeDictModel.getPoj();
                 }
-                hintCandidate = imeDict.getHanji();
+                hintCandidate = imeDictModel.getHanji();
             } else {
-                if (mIsMainCandidateLomaji) {
+                if (mIsMainCandidateLomaji || (!mIsMainCandidateLomaji && imeDictModel.getSrcDict() > 1)) {
                     if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
-                        mainCandidate = imeDict.getKiplmj();
+                        mainCandidate = imeDictModel.getKip();
                     } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
-                        mainCandidate = imeDict.getPoj();
+                        mainCandidate = imeDictModel.getPoj();
                     }
-                    hintCandidate = imeDict.getHanji();
+                    hintCandidate = imeDictModel.getHanji();
                 } else {
-                    mainCandidate = imeDict.getHanji();
+                    mainCandidate = imeDictModel.getHanji();
                     if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
-                        hintCandidate = imeDict.getKiplmj();
+                        hintCandidate = imeDictModel.getKip();
                     } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
-                        hintCandidate = imeDict.getPoj();
+                        hintCandidate = imeDictModel.getPoj();
                     }
                 }
             }
@@ -401,9 +401,9 @@ public class TaigiCandidateView extends View {
                 // draw line between words
                 String lomaji = "";
                 if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
-                    lomaji = imeDict.getKiplmj();
+                    lomaji = imeDictModel.getKip();
                 } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
-                    lomaji = imeDict.getPoj();
+                    lomaji = imeDictModel.getPoj();
                 }
                 int fullFirstLomajiWidth = (int) (mSuggestionsMainFirstLomajiPaint.measureText(lomaji) + X_GAP * 2);
                 if (fullFirstLomajiWidth < MIN_WORD_WIDTH) {
@@ -456,7 +456,7 @@ public class TaigiCandidateView extends View {
         invalidate();
     }
 
-    protected void setSuggestions(String rawInput, ArrayList<ImeDict> suggestions, int currentInputLomajiMode) {
+    protected void setSuggestions(String rawInput, ArrayList<ImeDictModel> suggestions, int currentInputLomajiMode) {
         clear();
         mRawInput = rawInput;
         if (suggestions != null) {
@@ -516,33 +516,47 @@ public class TaigiCandidateView extends View {
                     if (mSelectedIndex >= 0) {
                         mVibrator.vibrate(TaigiIme.KEY_VIBRATION_MILLISECONDS);
 
-                        final ImeDict imeDict = mSuggestions.get(mSelectedIndex);
+                        final ImeDictModel imeDictModel = mSuggestions.get(mSelectedIndex);
                         if (mSelectedIndex == 0 || mIsMainCandidateLomaji) {
                             if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
-                                mService.commitPickedSuggestion(imeDict.getKiplmj());
+                                mService.commitPickedSuggestion(imeDictModel.getKip());
 
                                 if (BuildConfig.DEBUG_LOG) {
-                                    Log.d(TAG, "Selected output: " + imeDict.getKiplmj());
+                                    Log.d(TAG, "Selected output: " + imeDictModel.getKip());
                                 }
                             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
-                                mService.commitPickedSuggestion(imeDict.getPoj());
+                                mService.commitPickedSuggestion(imeDictModel.getPoj());
 
                                 if (BuildConfig.DEBUG_LOG) {
-                                    Log.d(TAG, "Selected output: " + imeDict.getPoj());
+                                    Log.d(TAG, "Selected output: " + imeDictModel.getPoj());
                                 }
                             }
                         } else {
-                            mService.commitPickedSuggestion(imeDict.getHanji());
+                            if (imeDictModel.getSrcDict() > 1) {
+                                if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                                    mService.commitPickedSuggestion(imeDictModel.getKip());
+
+                                    if (BuildConfig.DEBUG_LOG) {
+                                        Log.d(TAG, "Selected output: " + imeDictModel.getKip());
+                                    }
+                                } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
+                                    mService.commitPickedSuggestion(imeDictModel.getPoj());
+
+                                    if (BuildConfig.DEBUG_LOG) {
+                                        Log.d(TAG, "Selected output: " + imeDictModel.getPoj());
+                                    }
+                                }
+                            } else {
+                                mService.commitPickedSuggestion(imeDictModel.getHanji());
+                            }
 
                             if (BuildConfig.DEBUG_LOG) {
-                                Log.d(TAG, "Selected output: " + imeDict.getHanji());
-                                int count = imeDict.getHanji().length();
+                                Log.d(TAG, "Selected output: " + imeDictModel.getHanji());
+                                int count = imeDictModel.getHanji().length();
                                 for (int i = 0; i < count; i++) {
-                                    final char charAt = imeDict.getHanji().charAt(i);
+                                    final char charAt = imeDictModel.getHanji().charAt(i);
                                     Log.d(TAG, "Selected hanji code: " + String.format("\\u%04x", (int) charAt));
                                 }
-
-                                Log.d(TAG, "gau5: \uD842\uDC95");
                             }
                         }
                     }
@@ -590,13 +604,13 @@ public class TaigiCandidateView extends View {
             return;
         }
 
-        final ImeDict imeDict = mSuggestions.get(mSelectedIndex);
+        final ImeDictModel imeDictModel = mSuggestions.get(mSelectedIndex);
 
         final Intent intent = new Intent(ACTION_SEARCH_FROM_PHAHTAIGI);
         if (mSelectedIndex == 0 || mIsMainCandidateLomaji) {
-            intent.putExtra(EXTRA_TAILO_SEARCH_KEYWORD, imeDict.getKiplmj());
+            intent.putExtra(EXTRA_TAILO_SEARCH_KEYWORD, imeDictModel.getKip());
         } else {
-            intent.putExtra(EXTRA_TAILO_HANJI_SEARCH_KEYWORD, imeDict.getHanji());
+            intent.putExtra(EXTRA_TAILO_HANJI_SEARCH_KEYWORD, imeDictModel.getHanji());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

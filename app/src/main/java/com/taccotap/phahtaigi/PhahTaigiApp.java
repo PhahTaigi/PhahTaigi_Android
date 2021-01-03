@@ -16,7 +16,7 @@ import io.realm.RealmConfiguration;
 public class PhahTaigiApp extends MultiDexApplication {
 
     public static final String DATABASE_ASSETS_PATH = "preload_realm_db";
-    public static final String DATABASE_BASE_NAME = "ime_dict";
+    public static final String DATABASE_BASE_NAME = "PhahTaigiImeDict";
 
     @Override
     public void onCreate() {

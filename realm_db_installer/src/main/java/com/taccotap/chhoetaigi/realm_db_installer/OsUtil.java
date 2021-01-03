@@ -28,7 +28,7 @@ public class OsUtil {
             byte[] buffer = new byte[1024];
             FileOutputStream fos = new FileOutputStream(file);
 
-            int length = 0;
+            int length;
             while ((length = is.read(buffer)) >= 0) {
                 fos.write(buffer, 0, length);
             }

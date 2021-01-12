@@ -73,10 +73,6 @@ public class TaigiCandidateController {
 
     public void setCurrentInputLomajiMode(int currentInputLomajiMode) {
         mCurrentInputLomajiMode = currentInputLomajiMode;
-
-        if (mCurrentInputLomajiMode != AppPrefs.INPUT_LOMAJI_MODE_ENGLISH) {
-            updateCandidateView();
-        }
     }
 
 //    public int getCurrentInputLomajiMode() {

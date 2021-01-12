@@ -134,9 +134,9 @@
             android:keyLabel="l"
             android:keyWidth="10%p"/>
         <Key
-            android:codes="63"
+            android:codes="44"
             android:keyEdgeFlags="right"
-            android:keyLabel="\?"
+            android:keyLabel=","
             android:keyWidth="10%p"/>
     </Row>
 
@@ -202,12 +202,9 @@
             android:isRepeatable="false"
             android:keyIcon="@drawable/btn_keyboard_spacebar_lxx_dark"
             android:keyWidth="40%p"/>
-        <!--
-             android:codes: -1001 is not a framework-defined key code
-        -->
         <Key
-            android:codes="-1001"
-            android:keyLabel="JĪ"
+            android:codes="46,63"
+            android:keyLabel=".\?"
             android:keyWidth="15%p"/>
         <Key
             android:codes="10"

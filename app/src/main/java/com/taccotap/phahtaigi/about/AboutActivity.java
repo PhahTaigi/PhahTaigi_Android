@@ -36,7 +36,7 @@ public class AboutActivity extends MaterialAboutActivity {
 
         appCardBuilder.addItem(new MaterialAboutTitleItem.Builder()
                 .text(R.string.app_name)
-                .icon(R.drawable.ic_launcher)
+                .icon(R.mipmap.ic_launcher)
                 .build());
 
         try {
@@ -54,11 +54,11 @@ public class AboutActivity extends MaterialAboutActivity {
         gestureCardBuilder.title("鍵盤 ê 手勢");
 
         gestureCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text("撇去倒爿：選輸入法")
+                .text("撇去倒pêng：選輸入法")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_arrow_left).sizeDp(48))
                 .build());
         gestureCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text("撇去正爿：跳去下一个輸入法")
+                .text("撇去正pêng：跳去後1-ê輸入法")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_arrow_right).sizeDp(48))
                 .build());
         gestureCardBuilder.addItem(new MaterialAboutActionItem.Builder()
@@ -75,14 +75,14 @@ public class AboutActivity extends MaterialAboutActivity {
         functionCardBuilder.title("特殊 ê KEY");
 
         functionCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text("Kā空白key tshi̍h牢咧：選輸入法")
-                .subText("Kan-na佇主要ê鍵盤有效，符號鍵盤無影響。")
+                .text("Kā空白key chhi̍h牢咧：選輸入法")
+                .subText("Kan-na tī主要ê鍵盤有效，符號鍵盤無影響。")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_crop_landscape).sizeDp(48))
                 .build());
 
         functionCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text("Kā欲選ê字詞tshi̍h牢咧：tshuē辭典")
-                .subText("直接轉過辭典ê app tshiau-tshuē字詞。")
+                .text("Kā欲選ê字詞chhi̍h牢咧：chhōe辭典")
+                .subText("直接送過辭典ê app chhōe字詞。")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_crop_landscape).sizeDp(48))
                 .build());
 
@@ -107,9 +107,10 @@ public class AboutActivity extends MaterialAboutActivity {
         helpCardBuilder.title("幫贊");
 
         helpCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text("多謝你 ê 使用")
-                .subText("不管是建議，抑是會使鬥出力出錢，攏誠歡迎，請和我連絡，勞力！")
+                .text("請支持「台文雞絲麵」")
+                .subText("PhahTaigi 是靠 台文雞絲麵 Tâi-bûn Ke-si-mī 募資計畫維持團隊所有ê運作，向望你鬥陣來支持！")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_human).sizeDp(48))
+                .setOnClickListener(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse(getString(R.string.about_facebook_group_url))))
                 .build());
 
         // author
@@ -152,6 +153,6 @@ public class AboutActivity extends MaterialAboutActivity {
     @Nullable
     @Override
     protected CharSequence getActivityTitle() {
-        return "關於 Phah Tâi-gí";
+        return "關於 PhahTaigi";
     }
 }

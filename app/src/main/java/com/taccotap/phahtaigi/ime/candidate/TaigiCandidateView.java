@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.core.view.GestureDetectorCompat;
 
+import com.pixplicity.easyprefs.library.Prefs;
 import com.taccotap.phahtaigi.AppPrefs;
 import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.R;
@@ -43,9 +44,11 @@ public class TaigiCandidateView extends View {
 
     private static final int SCROLL_PIXELS = 20;
     private static final int X_GAP = 20;
-    private static final int Y_GAP_BETWEEN_RAW_INPUT_AND_SUGGESTIONS = 5;
-    private static final int Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION = 2;
-    private static final int MIN_WORD_WIDTH = 110;
+    private static final int Y_GAP_BETWEEN_RAW_INPUT_AND_SUGGESTIONS = 0;
+    private static final int Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION = 0;
+    private static final int Y_RAW_INPUT_HEIGHT_DIFF = -70;
+    private static final int Y_MAIN_SUGGESTION_HEIGHT_DIFF = -45;
+    private static final int MIN_WORD_WIDTH = 120;
 
     private final Context mContext;
     private final Vibrator mVibrator;
@@ -100,6 +103,7 @@ public class TaigiCandidateView extends View {
     private Typeface mLomajiTypeface;
     private Typeface mHanjiTypeface;
     private int mCurrentInputLomajiMode;
+    private boolean mIsVibration;
 
     public TaigiCandidateView(Context context, Vibrator vibrator, android.os.Handler handler) {
         super(context);
@@ -161,6 +165,8 @@ public class TaigiCandidateView extends View {
         setVerticalScrollBarEnabled(false);
 
         initTextPaintAndTextHeightCalculation();
+
+        mIsVibration = Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_VIBRATION, AppPrefs.PREFS_KEY_IS_VIBRATION_YES);
     }
 
     public void resetTextSettings() {
@@ -175,19 +181,8 @@ public class TaigiCandidateView extends View {
         //noinspection deprecation
         mColorRecommended = resources.getColor(R.color.candidate_recommended);
 
-        mLomajiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/TauhuOo20.05-Regular.otf");
-        mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/TauhuOo20.05-Regular.otf");
-//        final int hanjiType = Prefs.getInt(AppPrefs.PREFS_KEY_HANJI_FONT_TYPE, HANJI_FONT_TYPE_APP_DEFAULT);
-//        if (hanjiType == AppPrefs.HANJI_FONT_TYPE_MINGLIUB) {
-//            mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/mingliub.ttc");
-//            Log.i(TAG, "Hanji font: mingliub");
-//        } else if (hanjiType == AppPrefs.HANJI_FONT_TYPE_MOEDICT) {
-//            mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/moedict.ttf");
-//            Log.i(TAG, "Hanji font: moedict");
-//        } else {
-//            mHanjiTypeface = Typeface.DEFAULT;
-//            Log.i(TAG, "Hanji font: system default");
-//        }
+        mLomajiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/GenRyuMin-M.ttc");
+        mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/GenRyuMin-M.ttc");
 
         mRawInputPaint = new Paint();
         mRawInputPaint.setColor(mColorNormal);
@@ -196,7 +191,7 @@ public class TaigiCandidateView extends View {
         mRawInputPaint.setStrokeWidth(0);
         mRawInputPaint.setTypeface(mLomajiTypeface);
         final Paint.FontMetrics rawInputPaintFontMetrics = mRawInputPaint.getFontMetrics();
-        mRawInputPaintHeight = rawInputPaintFontMetrics.bottom - rawInputPaintFontMetrics.top + rawInputPaintFontMetrics.leading;
+        mRawInputPaintHeight = rawInputPaintFontMetrics.bottom - rawInputPaintFontMetrics.top + rawInputPaintFontMetrics.leading + Y_RAW_INPUT_HEIGHT_DIFF;
 
         mSuggestionsMainFirstLomajiPaint = new Paint();
         mSuggestionsMainFirstLomajiPaint.setColor(mColorRecommended);
@@ -205,7 +200,7 @@ public class TaigiCandidateView extends View {
         mSuggestionsMainFirstLomajiPaint.setStrokeWidth(0);
         mSuggestionsMainFirstLomajiPaint.setTypeface(mLomajiTypeface);
         final Paint.FontMetrics suggestionsMainFirstLomajiPaintFontMetrics = mSuggestionsMainFirstLomajiPaint.getFontMetrics();
-        mMainSuggestionFirstLomajiHeightForPaint = mRawInputPaintHeight - suggestionsMainFirstLomajiPaintFontMetrics.top + Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION;
+        mMainSuggestionFirstLomajiHeightForPaint = mRawInputPaintHeight - suggestionsMainFirstLomajiPaintFontMetrics.top + Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION + Y_MAIN_SUGGESTION_HEIGHT_DIFF;
 
         mWordSeperatorLinePaint = new Paint();
         mWordSeperatorLinePaint.setColor(mColorNormal);
@@ -228,9 +223,9 @@ public class TaigiCandidateView extends View {
             mSuggestionsMainPaint.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.candidate_main_font_hanji_height));
         }
         final Paint.FontMetrics suggestionsMainPaintFontMetrics = mSuggestionsMainPaint.getFontMetrics();
-        mSuggestionsMainTextHeight = suggestionsMainPaintFontMetrics.bottom - suggestionsMainPaintFontMetrics.top + suggestionsMainPaintFontMetrics.leading;
+        mSuggestionsMainTextHeight = suggestionsMainPaintFontMetrics.bottom - suggestionsMainPaintFontMetrics.top + suggestionsMainPaintFontMetrics.leading + Y_MAIN_SUGGESTION_HEIGHT_DIFF;
 
-        mMainSuggestionHeightForPaint = mRawInputPaintHeight - suggestionsMainPaintFontMetrics.top + Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION + suggestionsMainPaintFontMetrics.leading;
+        mMainSuggestionHeightForPaint = mRawInputPaintHeight - suggestionsMainPaintFontMetrics.top + Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION + suggestionsMainPaintFontMetrics.leading + Y_MAIN_SUGGESTION_HEIGHT_DIFF;
 
         mSuggestionsHintPaint = new Paint();
         mSuggestionsHintPaint.setColor(mColorRecommended);
@@ -244,10 +239,10 @@ public class TaigiCandidateView extends View {
             mSuggestionsHintPaint.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.candidate_hint_font_lomaji_height));
         }
         final Paint.FontMetrics suggestionsHintPaintFontMetrics = mSuggestionsHintPaint.getFontMetrics();
-        mSuggestionsHintTextHeight = suggestionsHintPaintFontMetrics.bottom - suggestionsHintPaintFontMetrics.top + suggestionsHintPaintFontMetrics.leading;
+        mSuggestionsHintTextHeight = suggestionsHintPaintFontMetrics.bottom - suggestionsHintPaintFontMetrics.top + suggestionsHintPaintFontMetrics.leading + Y_MAIN_SUGGESTION_HEIGHT_DIFF;
 
         mHintSuggestionHeightForPaint = mRawInputPaintHeight + Y_GAP_BETWEEN_RAW_INPUT_AND_SUGGESTIONS + mSuggestionsMainTextHeight
-                - suggestionsHintPaintFontMetrics.top + Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION + suggestionsHintPaintFontMetrics.leading;
+                - suggestionsHintPaintFontMetrics.top + Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION + suggestionsHintPaintFontMetrics.leading + Y_MAIN_SUGGESTION_HEIGHT_DIFF;
 
         mWordSeperatorLineYForPaint = mRawInputPaintHeight + Y_GAP_BETWEEN_RAW_INPUT_AND_SUGGESTIONS + suggestionsHintPaintFontMetrics.bottom;
 
@@ -514,7 +509,9 @@ public class TaigiCandidateView extends View {
 
                 if (!mScrolled) {
                     if (mSelectedIndex >= 0) {
-                        mVibrator.vibrate(TaigiIme.KEY_VIBRATION_MILLISECONDS);
+                        if (mIsVibration) {
+                            mVibrator.vibrate(TaigiIme.KEY_VIBRATION_MILLISECONDS);
+                        }
 
                         final ImeDictModel imeDictModel = mSuggestions.get(mSelectedIndex);
                         if (mSelectedIndex == 0 || mIsMainCandidateLomaji) {
@@ -588,7 +585,7 @@ public class TaigiCandidateView extends View {
         PackageManager pm = mContext.getPackageManager();
         boolean isInstalled = isPackageInstalled("com.taccotap.taigidict", pm);
         if (!isInstalled) {
-            Toast.makeText(mContext, "若欲 tshiau-tshuē 字詞 ài 先安裝辭典 ê APP。", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "若欲 chhōe 字詞 ài 先安裝辭典 ê APP。", Toast.LENGTH_LONG).show();
 
             String appPackageName = "com.taccotap.taigidict";
             try {

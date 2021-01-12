@@ -9,7 +9,6 @@ public class AppPrefs {
     public static final int INPUT_MODE_LOMAJI = 0;
     public static final int INPUT_MODE_HANJI = 1;
 
-    public static final int INPUT_LOMAJI_MODE_ENGLISH = -1;
     public static final int INPUT_LOMAJI_MODE_KIPLMJ = 0;
     public static final int INPUT_LOMAJI_MODE_POJ = 1;
     public static final int INPUT_LOMAJI_MODE_APP_DEFAULT = INPUT_LOMAJI_MODE_POJ;

@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="7dp"
                 android:layout_marginRight="7dp"
-                android:text="Ùi字盤下底phiat去頂koân，a̍h是符號字盤(:;0)內底，ē-sái叫出設定。"
+                android:text="符號字盤「Hō」內底ê「Siat」，ē-sái叫出設定。"
                 android:textColor="#faaa"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -123,16 +123,6 @@
                     android:layout_height="wrap_content"
                     android:button="@drawable/radio_button_setting_custom_color"
                     android:text="教育部KIP"
-                    android:textColor="#fccc"
-                    android:textSize="14sp" />
-
-                <RadioButton
-                    android:id="@+id/englishRadioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:button="@drawable/radio_button_setting_custom_color"
-                    android:text="EN英文"
                     android:textColor="#fccc"
                     android:textSize="14sp" />
             </RadioGroup>

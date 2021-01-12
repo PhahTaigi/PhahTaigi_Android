@@ -364,8 +364,6 @@ public class TaigiIme extends InputMethodService
                     setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ);
                 } else if (checkedId == R.id.pojRadioButton) {
                     setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_POJ);
-                } else if (checkedId == R.id.englishRadioButton) {
-                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_ENGLISH);
                 }
             }
         });
@@ -374,18 +372,12 @@ public class TaigiIme extends InputMethodService
     private void setCurrentInputLomajiMode(int inputMode) {
         mCurrentInputLomajiMode = inputMode;
 
-        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_ENGLISH) {
-            commitRawInputSuggestion();
-        } else {
-            Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V2, inputMode);
-        }
+        Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V2, inputMode);
 
         if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
             mLomajiSelectionRadioGroup.check(R.id.tailoRadioButton);
         } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
             mLomajiSelectionRadioGroup.check(R.id.pojRadioButton);
-        } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_ENGLISH) {
-            mLomajiSelectionRadioGroup.check(R.id.englishRadioButton);
         }
 
         mTaigiCandidateController.setCurrentInputLomajiMode(inputMode);
@@ -474,6 +466,7 @@ public class TaigiIme extends InputMethodService
         } else if (primaryCode == CustomKeycode.KEYCODE_SWITCH_TO_TAIBUN) {
             mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_TO_TAIBUN);
         } else if (primaryCode == CustomKeycode.KEYCODE_SWITCH_TO_ENGBUN) {
+            commitRawInputSuggestion();
             mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_TO_ENGBUN);
         } else if (primaryCode == CustomKeycode.KEYCODE_SETTINGS) {
             handleOpenCloseSettingLayout();
@@ -660,7 +653,7 @@ public class TaigiIme extends InputMethodService
             }
         }
 
-        if (!mKeyboardSwitcher.isCurrentKeyboardViewUseTaibunQwertyKeyboard() || mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_ENGLISH) {
+        if (!mKeyboardSwitcher.isCurrentKeyboardViewUseTaibunQwertyKeyboard()) {
             sendKey(primaryCode);
         } else {
             if (isDirectlySendKeyWhenOnlyInputNumbers(primaryCode)) {

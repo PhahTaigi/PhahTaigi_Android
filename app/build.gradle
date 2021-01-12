@@ -14,8 +14,8 @@ android {
         targetSdkVersion 29
 
         applicationId "com.taccotap.phahtaigi"
-        versionCode 32
-        versionName "2.3.1"
+        versionCode 35
+        versionName "3.0.1"
 
         multiDexEnabled true
     }
@@ -29,35 +29,6 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
-            android.applicationVariants.all { variant ->
-                variant.outputs.all { output ->
-                    if (variant.getBuildType().getName().endsWith('.apk')) {
-                        if (variant.versionName != null) {
-                            def baseName = output.baseName.toLowerCase()
-                            def formattedDate = new Date().format('yyyyMMdd-HHmmss')
-                            String fileName = "${rootProject.name}_${variant.versionName}-${baseName}-${formattedDate}.apk"
-
-                            // this is the line:
-                            outputFileName = new File(output.outputFile.parent, fileName).getName()
-                        }
-                    }
-                }
-            }
-
-//            android.applicationVariants.all { variant ->
-//                variant.outputs.all { output ->
-//                    def outputFile = output.outputFile
-//                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
-//                        project.ext { appName = 'MyAppName' }
-//                        def formattedDate = new Date().format('yyyyMMdd-HHmmss')
-//                        def newName = output.outputFile.name
-//                        newName = newName.replace("app-", "$rootProject.name-")
-//                        newName = newName.replace("-release", "-release-v" + versionName + "(" + versionCode + ")-" + formattedDate)
-//                        outputFileName = newName
-//                    }
-//                }
-//            }
 
             manifestPlaceholders = [enableCrashReporting: "true"]
 

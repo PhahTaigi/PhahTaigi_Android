@@ -165,8 +165,10 @@ public class TaigiCandidateView extends View {
         setVerticalScrollBarEnabled(false);
 
         initTextPaintAndTextHeightCalculation();
+    }
 
-        mIsVibration = Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_VIBRATION, AppPrefs.PREFS_KEY_IS_VIBRATION_YES);
+    public void setIsVibration(boolean isVibration) {
+        mIsVibration = isVibration;
     }
 
     public void resetTextSettings() {

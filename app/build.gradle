@@ -14,8 +14,8 @@ android {
         targetSdkVersion 29
 
         applicationId "com.taccotap.phahtaigi"
-        versionCode 35
-        versionName "3.0.1"
+        versionCode 37
+        versionName "3.0.3"
 
         multiDexEnabled true
     }

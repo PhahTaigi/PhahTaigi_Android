@@ -145,6 +145,9 @@ public class TaigiIme extends InputMethodService
         }
 
         mIsVibration = Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_VIBRATION, AppPrefs.PREFS_KEY_IS_VIBRATION_YES);
+        if (mTaigiCandidateView != null) {
+            mTaigiCandidateView.setIsVibration(mIsVibration);
+        }
 
         // We are now going to initialize our state based on the type of
         // text being edited.
@@ -287,6 +290,8 @@ public class TaigiIme extends InputMethodService
             mKeyboardSwitcher.setTaigiCandidateView(mTaigiCandidateView);
             mTaigiCandidateController.setTaigiCandidateView(mTaigiCandidateView);
         }
+
+        mTaigiCandidateView.setIsVibration(mIsVibration);
 
         final ViewGroup viewGroup = (ViewGroup) mTaigiCandidateView.getParent();
         if (viewGroup != null) {

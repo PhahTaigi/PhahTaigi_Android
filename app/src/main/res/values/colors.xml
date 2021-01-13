@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2b5306</color>
+    <color name="colorPrimary">#4b8b5b</color>
     <color name="colorPrimaryDark">#122302</color>
     <color name="colorAccent">#e1b04f</color>
 
@@ -22,5 +22,5 @@
     <color name="candidate_other">#ff808080</color>
     <color name="candidate_background">#324048</color>
 
-    <color name="mal_color_primary">#4b8308</color>
+    <color name="mal_color_primary">#4b8b5b</color>
 </resources>

@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.taccotap.phahtaigi.AppPrefs;
 import com.taccotap.phahtaigi.BuildConfig;
-import com.taccotap.phahtaigi.ime.converter.KiplmjInputConverter;
+import com.taccotap.phahtaigi.ime.converter.KipInputConverter;
 import com.taccotap.phahtaigi.ime.converter.PojInputConverter;
 import com.taccotap.phahtaigi.imedict.ImeDictModel;
 
@@ -42,8 +42,6 @@ public class TaigiCandidateController {
     private Realm mRealm;
     private RealmResults<ImeDictModel> mImeDictModels;
     private ImeDictModel mInputImeDictModel;
-
-    private boolean mIsSetQueryLimit = false;
 
     public TaigiCandidateController() {
     }
@@ -93,7 +91,7 @@ public class TaigiCandidateController {
         mInputImeDictModel = new ImeDictModel();
 
         if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
-            mRawInputSuggestion = KiplmjInputConverter.INSTANCE.convertTailoNumberRawInputToTailoWords(mRawInput);
+            mRawInputSuggestion = KipInputConverter.INSTANCE.convertKipNumberRawInputToTailoWords(mRawInput);
             mInputImeDictModel.setKip(mRawInputSuggestion);
             mInputImeDictModel.setPoj("");
         } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
@@ -137,14 +135,13 @@ public class TaigiCandidateController {
 //                .replaceAll("6", "2");
 
         if (!search.matches(".*\\d+.*")) {
-            mIsSetQueryLimit = true;
-
             if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
                 mImeDictModels = mRealm.where(ImeDictModel.class)
                         .beginsWith("kipSujipBoSooji", search)
                         .or()
                         .beginsWith("kipSujipThauJibo", search)
                         .sort("kipPriority", Sort.ASCENDING)
+                        .limit(100)
                         .findAllAsync();
             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDictModels = mRealm.where(ImeDictModel.class)
@@ -152,20 +149,21 @@ public class TaigiCandidateController {
                         .or()
                         .beginsWith("pojSujipThauJibo", search)
                         .sort("pojPriority", Sort.ASCENDING)
+                        .limit(100)
                         .findAllAsync();
             }
         } else {
-            mIsSetQueryLimit = true;
-
             if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
                 mImeDictModels = mRealm.where(ImeDictModel.class)
                         .beginsWith("kipSujip", search)
                         .sort("kipPriority", Sort.ASCENDING)
+                        .limit(100)
                         .findAllAsync();
             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDictModels = mRealm.where(ImeDictModel.class)
                         .beginsWith("pojSujip", search)
                         .sort("pojPriority", Sort.ASCENDING)
+                        .limit(100)
                         .findAllAsync();
             }
         }
@@ -177,21 +175,15 @@ public class TaigiCandidateController {
                     return;
                 }
 
-                int count = imeDictModels.size();
-
                 if (BuildConfig.DEBUG_LOG) {
-                    Log.w(TAG, "handleQueryResults: count = " + count);
-                }
-
-                if (mIsSetQueryLimit && count > QUERY_LIMIT_100) {
-                    count = QUERY_LIMIT_100;
+                    Log.w(TAG, "handleQueryResults: count = " + imeDictModels.size());
                 }
 
 //                for (ImeDict imeDict : mImeDicts) {
 //                    Log.d(TAG, "poj = " + imeDict.poj + ", hanji = " + imeDict.getHanji());
 //                }
 
-                ArrayList<ImeDictModel> mutableArrayList = new ArrayList<>(mRealm.copyFromRealm(imeDictModels.subList(0, count)));
+                ArrayList<ImeDictModel> mutableArrayList = new ArrayList<>(mRealm.copyFromRealm(imeDictModels));
 
                 handleQueryResultsAsync(mutableArrayList);
             }

@@ -3,25 +3,24 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'realm-android'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 29
+        minSdkVersion 19
+        targetSdkVersion 30
 
         applicationId "com.taccotap.phahtaigi"
-        versionCode 37
-        versionName "3.0.3"
+        versionCode 38
+        versionName "3.1.0"
 
         multiDexEnabled true
     }
 
-    dataBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding true
     }
 
     buildTypes {
@@ -64,7 +63,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    buildToolsVersion '29.0.2'
 }
 
 repositories {
@@ -76,11 +74,11 @@ dependencies {
 
     implementation project(':realm_db_installer')
 
-    implementation 'com.google.gms:google-services:4.3.4'
+    implementation 'com.google.gms:google-services:4.3.10'
 
     implementation platform('com.google.firebase:firebase-bom:26.2.0')
-    implementation 'com.google.firebase:firebase-crashlytics:17.3.0'
-    implementation 'com.google.firebase:firebase-analytics:18.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics:18.2.4'
+    implementation 'com.google.firebase:firebase-analytics:20.0.0'
 
     // rx
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
@@ -95,13 +93,13 @@ dependencies {
     implementation 'com.mikepenz:community-material-typeface:1.7.22.1@aar'
 
     // ButterKnife
-    implementation 'com.jakewharton:butterknife:10.1.0'
-    kapt 'com.jakewharton:butterknife-compiler:10.1.0'
+    implementation 'com.jakewharton:butterknife:10.2.3'
+    kapt 'com.jakewharton:butterknife-compiler:10.2.3'
 
-    implementation 'com.pixplicity.easyprefs:library:1.9.0@aar'
+    implementation 'com.pixplicity.easyprefs:EasyPrefs:1.10.0'
     implementation 'com.github.daniel-stoneuk:material-about-library:1.8.2'
 
-    implementation "androidx.core:core-ktx:1.3.2"
+    implementation "androidx.core:core-ktx:1.6.0"
 
     implementation 'androidx.multidex:multidex:2.0.1'
 

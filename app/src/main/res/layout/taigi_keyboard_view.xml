@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.taccotap.phahtaigi.ime.keyboard.TaigiKeyboardView
+<com.taccotap.phahtaigi.ime.keyboard.TaigiKeyboardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/taigiKeyboardView"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/keyboard_background_lxx_dark"
     android:keyBackground="@drawable/btn_keyboard_key_lxx_dark"
     android:keyPreviewLayout="@layout/preview"
     android:keyTextColor="#fccc"
-    android:popupLayout="@layout/key_popup_layout"
-    />
+    android:popupLayout="@layout/key_popup_layout" />

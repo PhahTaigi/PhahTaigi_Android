@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/btn_keyboard_key_popup_lxx_dark.xml" value="0.2682291666666667" />
+        <entry key="app/src/main/res/font/genryumin_m.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/activity_more_settings.xml" value="0.2520833333333333" />
+        <entry key="app/src/main/res/layout/input_view.xml" value="0.2520833333333333" />
+        <entry key="app/src/main/res/layout/setting_scroll_view.xml" value="0.2520833333333333" />
+        <entry key="app/src/main/res/layout/taigi_keyboard_view.xml" value="0.2520833333333333" />
+      </map>
+    </option>
+  </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
     <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />

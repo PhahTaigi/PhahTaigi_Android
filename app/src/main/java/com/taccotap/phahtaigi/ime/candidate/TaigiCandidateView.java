@@ -20,9 +20,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GestureDetectorCompat;
 
-import com.pixplicity.easyprefs.library.Prefs;
 import com.taccotap.phahtaigi.AppPrefs;
 import com.taccotap.phahtaigi.BuildConfig;
 import com.taccotap.phahtaigi.R;
@@ -46,9 +46,13 @@ public class TaigiCandidateView extends View {
     private static final int X_GAP = 20;
     private static final int Y_GAP_BETWEEN_RAW_INPUT_AND_SUGGESTIONS = 0;
     private static final int Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION = 0;
-    private static final int Y_RAW_INPUT_HEIGHT_DIFF = -70;
-    private static final int Y_MAIN_SUGGESTION_HEIGHT_DIFF = -45;
     private static final int MIN_WORD_WIDTH = 120;
+
+    private static final float Y_RAW_INPUT_HEIGHT_DIFF_MULTIPLY = 1.5f;
+    private static final float Y_MAIN_SUGGESTION_HEIGHT_DIFF_MULTIPLY = 0.8f;
+
+    private static int Y_RAW_INPUT_HEIGHT_DIFF;
+    private static int Y_MAIN_SUGGESTION_HEIGHT_DIFF;
 
     private final Context mContext;
     private final Vibrator mVibrator;
@@ -115,6 +119,9 @@ public class TaigiCandidateView extends View {
 
     private void init() {
         final Resources resources = mContext.getResources();
+
+        Y_RAW_INPUT_HEIGHT_DIFF = -(int) (resources.getDimensionPixelSize(R.dimen.candidate_raw_input_font_height) * Y_RAW_INPUT_HEIGHT_DIFF_MULTIPLY);
+        Y_MAIN_SUGGESTION_HEIGHT_DIFF = -(int) (resources.getDimensionPixelSize(R.dimen.candidate_main_font_lomaji_height) * Y_MAIN_SUGGESTION_HEIGHT_DIFF_MULTIPLY);
 
         //noinspection deprecation
         mSelectionHighlightDrawable = resources.getDrawable(android.R.drawable.list_selector_background);
@@ -183,8 +190,8 @@ public class TaigiCandidateView extends View {
         //noinspection deprecation
         mColorRecommended = resources.getColor(R.color.candidate_recommended);
 
-        mLomajiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/GenRyuMin-M.ttc");
-        mHanjiTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/GenRyuMin-M.ttc");
+        mLomajiTypeface = ResourcesCompat.getFont(mContext, R.font.fontfamily_genyomin_m);
+        mHanjiTypeface = ResourcesCompat.getFont(mContext, R.font.fontfamily_genyomin_m);
 
         mRawInputPaint = new Paint();
         mRawInputPaint.setColor(mColorNormal);

@@ -30,4 +30,10 @@
 
     <dimen name="candidate_vertical_padding">0sp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="setting_view_section_text_size">18sp</dimen>
+    <dimen name="setting_view_item_text_size">20sp</dimen>
+    <dimen name="setting_view_item_desc_text_size">17sp</dimen>
+    <dimen name="setting_view_title_text_size">20sp</dimen>
+    <dimen name="setting_view_done_button_text_size">18sp</dimen>
 </resources>

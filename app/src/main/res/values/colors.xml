@@ -23,4 +23,16 @@
     <color name="candidate_background">#324048</color>
 
     <color name="mal_color_primary">#4b8b5b</color>
+
+    <color name="setting_view_background">#eee</color>
+    <color name="setting_view_section_background">#bbb</color>
+    <color name="setting_view_section_text">#555</color>
+    <color name="setting_view_item_background">@color/setting_view_background</color>
+    <color name="setting_view_item_text">#222</color>
+    <color name="setting_view_item_switch_on">@color/colorPrimary</color>
+    <color name="setting_view_item_switch_off">#ccc</color>
+    <color name="setting_view_item_desc_text">#777</color>
+    <color name="setting_view_title_background">#ddd</color>
+    <color name="setting_view_title_text">@color/colorPrimary</color>
+    <color name="setting_view_done_button_text">@color/colorPrimaryDark</color>
 </resources>

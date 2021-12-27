@@ -1,4 +1,3 @@
-
 package com.taccotap.phahtaigi.ime;
 
 import android.annotation.SuppressLint;
@@ -25,8 +24,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.IdRes;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.pixplicity.easyprefs.library.Prefs;
 import com.taccotap.phahtaigi.AppPrefs;
@@ -38,7 +39,6 @@ import com.taccotap.phahtaigi.ime.candidate.TaigiCandidateView;
 import com.taccotap.phahtaigi.ime.keyboard.CustomKeycode;
 import com.taccotap.phahtaigi.ime.keyboard.KeyboardSwitcher;
 import com.taccotap.phahtaigi.ime.keyboard.TaigiKeyboardView;
-import com.taccotap.phahtaigi.preferences.MoreSettingsActivity;
 import com.taccotap.phahtaigi.rxbus.RxBus;
 import com.taccotap.phahtaigi.rxbus.events.UpdateHanjiFontEvent;
 
@@ -56,20 +56,22 @@ import io.reactivex.functions.Consumer;
  */
 public class TaigiIme extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
-    private static final String TAG = TaigiIme.class.getSimpleName();
-
     public static final int KEY_VIBRATION_MILLISECONDS = 5;
-
+    private static final String TAG = TaigiIme.class.getSimpleName();
     private String mWordSeparators;
     private String mWordEndingSentence;
 
     private InputMethodManager mInputMethodManager;
     private Vibrator mVibrator;
+
+    private ConstraintLayout mTaigiKeyboardViewLayout;
     private TaigiKeyboardView mTaigiKeyboardView;
     private TaigiCandidateView mTaigiCandidateView;
 
-    private LinearLayout mInputView;
-    private LinearLayout mKeyboardSettingLayout;
+    private RelativeLayout mInputViewBase;
+    private ConstraintLayout mInputView;
+    private ConstraintLayout mSettingPopupLayout;
+    private LinearLayout mTopMenuLayout;
     private RadioGroup mLomajiSelectionRadioGroup;
 
     private KeyboardSwitcher mKeyboardSwitcher;
@@ -204,38 +206,38 @@ public class TaigiIme extends InputMethodService
             Log.i(TAG, "onCreateInputView");
         }
 
-        if (mInputView == null) {
-            mInputView = (LinearLayout) getLayoutInflater().inflate(R.layout.input_view, null);
+        if (mInputViewBase == null) {
+            mInputViewBase = (RelativeLayout) getLayoutInflater().inflate(R.layout.input_view_base, null);
         } else {
-            mInputView.removeAllViews();
+            mInputViewBase.removeAllViews();
 
-            final ViewGroup viewGroup1 = (ViewGroup) mInputView.getParent();
+            final ViewGroup viewGroup1 = (ViewGroup) mInputViewBase.getParent();
             if (viewGroup1 != null) {
-                viewGroup1.removeView(mInputView);
+                viewGroup1.removeView(mInputViewBase);
             }
         }
-        initSettingLayout();
 
-        if (mTaigiKeyboardView == null) {
-            mTaigiKeyboardView = (TaigiKeyboardView) getLayoutInflater().inflate(R.layout.taigi_keyboard_view, null);
-            mTaigiKeyboardView.setOnKeyboardActionListener(this);
-        }
-        mInputView.addView(mTaigiKeyboardView);
+        mInputView = (ConstraintLayout) getLayoutInflater().inflate(R.layout.input_view, null);
 
-        return mInputView;
+        mTopMenuLayout = mInputView.findViewById(R.id.topMenuLayout);
+        mTaigiKeyboardView = mInputView.findViewById(R.id.taigiKeyboardView);
+        mTaigiKeyboardView.setOnKeyboardActionListener(this);
+
+        mInputViewBase.addView(mInputView);
+
+        initAboveKeyboardSettingLayout();
+
+        return mInputViewBase;
     }
 
     @SuppressLint("InflateParams")
-    private void initSettingLayout() {
-        mKeyboardSettingLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.keyboard_settings, null);
-        mInputView.addView(mKeyboardSettingLayout);
-
+    private void initAboveKeyboardSettingLayout() {
         if (!Prefs.getBoolean(AppPrefs.PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V2, false)
                 || Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_SHOW_SETTING, true)) {
-            mKeyboardSettingLayout.setVisibility(View.VISIBLE);
+            mTopMenuLayout.setVisibility(View.VISIBLE);
         }
 
-        Button moreSettingButton = (Button) mKeyboardSettingLayout.findViewById(R.id.moreSettingButton);
+        Button moreSettingButton = mTopMenuLayout.findViewById(R.id.moreSettingButton);
         moreSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,12 +245,17 @@ public class TaigiIme extends InputMethodService
                     mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
                 }
 
-                final Intent intent = new Intent(TaigiIme.this, MoreSettingsActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                // TODO: clean
+//                final Intent intent = new Intent(TaigiIme.this, MoreSettingsActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
+                if (mSettingPopupLayout == null) {
+                    mSettingPopupLayout = mInputView.findViewById(R.id.settingPopupLayout);
+                }
+                mSettingPopupLayout.setVisibility(View.VISIBLE);
             }
         });
-        Button aboutButton = (Button) mKeyboardSettingLayout.findViewById(R.id.aboutButton);
+        Button aboutButton = mTopMenuLayout.findViewById(R.id.aboutButton);
         aboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -261,7 +268,7 @@ public class TaigiIme extends InputMethodService
                 startActivity(intent);
             }
         });
-        Button settingCloseButton = (Button) mKeyboardSettingLayout.findViewById(R.id.keyboardSettingCloseButton);
+        Button settingCloseButton = (Button) mTopMenuLayout.findViewById(R.id.keyboardSettingCloseButton);
         settingCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -354,7 +361,7 @@ public class TaigiIme extends InputMethodService
     private void setCurrentInputMode() {
         mCurrentInputMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_MODE, AppPrefs.INPUT_MODE_LOMAJI);
 
-        mLomajiSelectionRadioGroup = (RadioGroup) mInputView.findViewById(R.id.lomajiSelectionRadioGroup);
+        mLomajiSelectionRadioGroup = (RadioGroup) mInputViewBase.findViewById(R.id.lomajiSelectionRadioGroup);
         mCurrentInputLomajiMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V2, AppPrefs.INPUT_LOMAJI_MODE_APP_DEFAULT);
         setCurrentInputLomajiMode(mCurrentInputLomajiMode);
 
@@ -514,13 +521,13 @@ public class TaigiIme extends InputMethodService
     }
 
     private void handleOpenCloseSettingLayout() {
-        if (mKeyboardSettingLayout.getVisibility() == View.VISIBLE) {
-            mKeyboardSettingLayout.setVisibility(View.GONE);
+        if (mTopMenuLayout.getVisibility() == View.VISIBLE) {
+            mTopMenuLayout.setVisibility(View.GONE);
 
             Prefs.putBoolean(AppPrefs.PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V2, true);
             Prefs.putBoolean(AppPrefs.PREFS_KEY_IS_SHOW_SETTING, false);
         } else {
-            mKeyboardSettingLayout.setVisibility(View.VISIBLE);
+            mTopMenuLayout.setVisibility(View.VISIBLE);
 
             Prefs.putBoolean(AppPrefs.PREFS_KEY_IS_SHOW_SETTING, true);
         }

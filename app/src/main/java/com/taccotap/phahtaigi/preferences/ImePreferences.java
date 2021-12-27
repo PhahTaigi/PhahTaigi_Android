@@ -1,5 +1,8 @@
 package com.taccotap.phahtaigi.preferences;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
@@ -20,11 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
 public class ImePreferences extends AppCompatActivity {
-
     private static final int KEY_MESSAGE_UNREGISTER_LISTENER = 447;
     private static final int KEY_MESSAGE_RETURN_TO_APP = 446;
 
@@ -34,8 +33,8 @@ public class ImePreferences extends AppCompatActivity {
     @BindView(R.id.step2Button)
     Button mStep2Button;
 
-    @BindView(R.id.otherSettingButton)
-    Button mOtherSettingButton;
+    @BindView(R.id.supportButton)
+    Button mSupportButton;
 
     @BindView(R.id.feedbackButton)
     Button mFeedbackButton;
@@ -43,6 +42,41 @@ public class ImePreferences extends AppCompatActivity {
     private Context mBaseContext = null;
     private Intent mReLaunchTaskIntent = null;
     private Context mAppContext;
+
+    @SuppressWarnings("HandlerLeak"/*I want this fragment to stay in memory as long as possible*/)
+    private Handler mGetBackHereHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case KEY_MESSAGE_RETURN_TO_APP:
+                    if (mReLaunchTaskIntent != null && mBaseContext != null) {
+                        mBaseContext.startActivity(mReLaunchTaskIntent);
+                        mReLaunchTaskIntent = null;
+                    }
+                    break;
+                case KEY_MESSAGE_UNREGISTER_LISTENER:
+                    unregisterSettingsObserverNow();
+                    break;
+            }
+        }
+    };
+    private final ContentObserver mSecureSettingsChanged = new ContentObserver(null) {
+        @Override
+        public boolean deliverSelfNotifications() {
+            return false;
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            if (isStepCompleted(mAppContext)) {
+                //should we return to this task?
+                //this happens when the user is asked to enable Keyboard, which is done on a different UI activity (outside of my App).
+                mGetBackHereHandler.removeMessages(KEY_MESSAGE_RETURN_TO_APP);
+                mGetBackHereHandler.sendMessageDelayed(mGetBackHereHandler.obtainMessage(KEY_MESSAGE_RETURN_TO_APP), 50/*enough for the user to see what happened.*/);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,27 +102,6 @@ public class ImePreferences extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-//        if (SetupSupport.isThisKeyboardEnabled(this)) {
-//            mStep1Button.setText(R.string.activity_start_button_finish);
-//            mStep1Button.setEnabled(false);
-//        } else {
-//            mStep1Button.setText(R.string.activity_start_step_one_button);
-//            mStep1Button.setEnabled(true);
-//        }
-//
-//        if (SetupSupport.isThisKeyboardSetAsDefaultIME(this)) {
-//            mStep2Button.setText(R.string.activity_start_button_finish);
-//            mStep2Button.setEnabled(false);
-//        } else {
-//            mStep2Button.setText(R.string.activity_start_step_two_button);
-//            mStep2Button.setEnabled(true);
-//        }
-    }
-
     @OnClick(R.id.step1Button)
     void onClickStep1Button() {
         Intent startSettings = new Intent(Settings.ACTION_INPUT_METHOD_SETTINGS);
@@ -104,53 +117,17 @@ public class ImePreferences extends AppCompatActivity {
         inputMethodManager.showInputMethodPicker();
     }
 
-    @OnClick(R.id.otherSettingButton)
+    @OnClick(R.id.supportButton)
     void onClickOtherSettingButton() {
-        startActivity(new Intent(this, MoreSettingsActivity.class));
+        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.zeczec.com/projects/taibun-kesimi"));
+        startActivity(myIntent);
     }
 
     @OnClick(R.id.feedbackButton)
     void onClickFeedbackButton() {
-        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/groups/PhahTaigiApp/"));
+        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/PhahTaigi"));
         startActivity(myIntent);
     }
-
-
-    @SuppressWarnings("HandlerLeak"/*I want this fragment to stay in memory as long as possible*/)
-    private Handler mGetBackHereHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case KEY_MESSAGE_RETURN_TO_APP:
-                    if (mReLaunchTaskIntent != null && mBaseContext != null) {
-                        mBaseContext.startActivity(mReLaunchTaskIntent);
-                        mReLaunchTaskIntent = null;
-                    }
-                    break;
-                case KEY_MESSAGE_UNREGISTER_LISTENER:
-                    unregisterSettingsObserverNow();
-                    break;
-            }
-        }
-    };
-
-    private final ContentObserver mSecureSettingsChanged = new ContentObserver(null) {
-        @Override
-        public boolean deliverSelfNotifications() {
-            return false;
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            if (isStepCompleted(mAppContext)) {
-                //should we return to this task?
-                //this happens when the user is asked to enable Keyboard, which is done on a different UI activity (outside of my App).
-                mGetBackHereHandler.removeMessages(KEY_MESSAGE_RETURN_TO_APP);
-                mGetBackHereHandler.sendMessageDelayed(mGetBackHereHandler.obtainMessage(KEY_MESSAGE_RETURN_TO_APP), 50/*enough for the user to see what happened.*/);
-            }
-        }
-    };
 
     protected boolean isStepCompleted(@NonNull Context context) {
         return SetupSupport.isThisKeyboardEnabled(context);

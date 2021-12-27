@@ -40,13 +40,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".preferences.MoreSettingsActivity"
-            android:label="@string/settings_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"

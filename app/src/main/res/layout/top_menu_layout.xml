@@ -1,129 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="0dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="left"
-    android:orientation="vertical"
-    android:visibility="gone">
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/keyboard_background_lxx_dark"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/keyboard_background_lxx_dark"
-        android:orientation="vertical">
+        android:layout_marginRight="5dp"
+        android:text="PhahTaigi 台語輸入法"
+        android:textColor="#ffff"
+        android:textSize="18sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+    <Button
+        android:id="@+id/openSettingButton"
+        android:layout_width="55dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_setting_custom_color"
+        android:text="設"
+        android:textAllCaps="false"
+        android:textColor="#feee"
+        android:textSize="13sp" />
 
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:gravity="center"
-                android:text="設定"
-                android:textColor="#ffff"
-                android:textSize="18sp" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right|center_vertical"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/moreSettingButton"
-                    android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|right"
-                    android:background="@drawable/btn_setting_custom_color"
-                    android:text="其他設定"
-                    android:textAllCaps="false"
-                    android:textColor="#feee"
-                    android:textSize="13sp" />
-
-                <Button
-                    android:id="@+id/aboutButton"
-                    android:layout_width="45dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/btn_setting_custom_color"
-                    android:text="？"
-                    android:textColor="#feee"
-                    android:textSize="13sp" />
-
-                <Button
-                    android:id="@+id/keyboardSettingCloseButton"
-                    android:layout_width="45dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/btn_setting_custom_color"
-                    android:text="Ｘ"
-                    android:textColor="#feee"
-                    android:textSize="13sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="7dp"
-                android:layout_marginRight="7dp"
-                android:text="符號字盤「Hō」內底ê「Siat」，ē-sái叫出設定。"
-                android:textColor="#faaa"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:orientation="horizontal">
-
-            <RadioGroup
-                android:id="@+id/lomajiSelectionRadioGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/pojRadioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:button="@drawable/radio_button_setting_custom_color"
-                    android:text="POJ白話字"
-                    android:textColor="#fccc"
-                    android:textSize="14sp" />
-
-                <RadioButton
-                    android:id="@+id/tailoRadioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:button="@drawable/radio_button_setting_custom_color"
-                    android:text="教育部KIP"
-                    android:textColor="#fccc"
-                    android:textSize="14sp" />
-            </RadioGroup>
-        </LinearLayout>
-    </LinearLayout>
+    <Button
+        android:id="@+id/openAboutButton"
+        android:layout_width="55dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/btn_setting_custom_color"
+        android:text="？"
+        android:textColor="#feee"
+        android:textSize="13sp" />
 </LinearLayout>

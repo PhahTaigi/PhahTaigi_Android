@@ -348,7 +348,7 @@ public class TaigiCandidateView extends View {
             String hintCandidate = "";
 
             if (i == 0) {
-                if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIP) {
                     mainCandidate = imeDictModel.getKip();
                 } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                     mainCandidate = imeDictModel.getPoj();
@@ -356,7 +356,7 @@ public class TaigiCandidateView extends View {
                 hintCandidate = imeDictModel.getHanji();
             } else {
                 if (mIsMainCandidateLomaji || (!mIsMainCandidateLomaji && imeDictModel.getSrcDict() > 1)) {
-                    if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                    if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIP) {
                         mainCandidate = imeDictModel.getKip();
                     } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                         mainCandidate = imeDictModel.getPoj();
@@ -364,7 +364,7 @@ public class TaigiCandidateView extends View {
                     hintCandidate = imeDictModel.getHanji();
                 } else {
                     mainCandidate = imeDictModel.getHanji();
-                    if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                    if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIP) {
                         hintCandidate = imeDictModel.getKip();
                     } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                         hintCandidate = imeDictModel.getPoj();
@@ -404,7 +404,7 @@ public class TaigiCandidateView extends View {
 
                 // draw line between words
                 String lomaji = "";
-                if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIP) {
                     lomaji = imeDictModel.getKip();
                 } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                     lomaji = imeDictModel.getPoj();
@@ -524,7 +524,7 @@ public class TaigiCandidateView extends View {
 
                         final ImeDictModel imeDictModel = mSuggestions.get(mSelectedIndex);
                         if (mSelectedIndex == 0 || mIsMainCandidateLomaji) {
-                            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIP) {
                                 mService.commitPickedSuggestion(imeDictModel.getKip());
 
                                 if (BuildConfig.DEBUG_LOG) {
@@ -539,7 +539,7 @@ public class TaigiCandidateView extends View {
                             }
                         } else {
                             if (imeDictModel.getSrcDict() > 1) {
-                                if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                                if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIP) {
                                     mService.commitPickedSuggestion(imeDictModel.getKip());
 
                                     if (BuildConfig.DEBUG_LOG) {
@@ -590,37 +590,37 @@ public class TaigiCandidateView extends View {
             Log.d(TAG, "onLongTouched()");
         }
 
-        // check TaigiDict install
-        PackageManager pm = mContext.getPackageManager();
-        boolean isInstalled = isPackageInstalled("com.taccotap.taigidict", pm);
-        if (!isInstalled) {
-            Toast.makeText(mContext, "若欲 chhōe 字詞 ài 先安裝辭典 ê APP。", Toast.LENGTH_LONG).show();
-
-            String appPackageName = "com.taccotap.taigidict";
-            try {
-                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
-            } catch (android.content.ActivityNotFoundException anfe) {
-                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
-            }
-
-            return;
-        }
-
-        final ImeDictModel imeDictModel = mSuggestions.get(mSelectedIndex);
-
-        final Intent intent = new Intent(ACTION_SEARCH_FROM_PHAHTAIGI);
-        if (mSelectedIndex == 0 || mIsMainCandidateLomaji) {
-            intent.putExtra(EXTRA_TAILO_SEARCH_KEYWORD, imeDictModel.getKip());
-        } else {
-            intent.putExtra(EXTRA_TAILO_HANJI_SEARCH_KEYWORD, imeDictModel.getHanji());
-        }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        mContext.startActivity(intent);
+        // TODO: go ChhoeTaigi website instead: check TaigiDict install
+//        PackageManager pm = mContext.getPackageManager();
+//        boolean isInstalled = isPackageInstalled("com.taccotap.taigidict", pm);
+//        if (!isInstalled) {
+//            Toast.makeText(mContext, "若欲 chhōe 字詞 ài 先安裝辭典 ê APP。", Toast.LENGTH_LONG).show();
+//
+//            String appPackageName = "com.taccotap.taigidict";
+//            try {
+//                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName));
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                mContext.startActivity(intent);
+//            } catch (android.content.ActivityNotFoundException anfe) {
+//                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName));
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                mContext.startActivity(intent);
+//            }
+//
+//            return;
+//        }
+//
+//        final ImeDictModel imeDictModel = mSuggestions.get(mSelectedIndex);
+//
+//        final Intent intent = new Intent(ACTION_SEARCH_FROM_PHAHTAIGI);
+//        if (mSelectedIndex == 0 || mIsMainCandidateLomaji) {
+//            intent.putExtra(EXTRA_TAILO_SEARCH_KEYWORD, imeDictModel.getKip());
+//        } else {
+//            intent.putExtra(EXTRA_TAILO_HANJI_SEARCH_KEYWORD, imeDictModel.getHanji());
+//        }
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        mContext.startActivity(intent);
     }
 
     private boolean isPackageInstalled(String packagename, PackageManager packageManager) {

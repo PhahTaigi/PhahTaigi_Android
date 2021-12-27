@@ -97,20 +97,20 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/otherSettingButton"
+        android:id="@+id/supportButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="@string/activity_start_more_setting_button"
+        android:text="@string/activity_open_crowdfunding_button"
         android:textColor="#444"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/feedbackButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="@string/activity_start_feedback_button"
+        android:text="@string/activity_open_fanpage_button"
         android:textColor="#444"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 </LinearLayout>

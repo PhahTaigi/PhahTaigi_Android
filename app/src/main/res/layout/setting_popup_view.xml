@@ -11,10 +11,10 @@
 
     <ScrollView
         android:id="@+id/settingTopScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:fadeScrollbars="false"
-        app:layout_constraintBottom_toTopOf="@id/settingButtomView"
+        app:layout_constraintBottom_toTopOf="@id/settingBottomView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -69,7 +69,7 @@
                         android:textSize="@dimen/setting_view_item_text_size" />
 
                     <com.bitvale.switcher.SwitcherX
-                        android:id="@+id/settingViewPojSwitch"
+                        android:id="@+id/settingPopupViewPojSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -145,7 +145,7 @@
                         android:textSize="@dimen/setting_view_item_text_size" />
 
                     <com.bitvale.switcher.SwitcherX
-                        android:id="@+id/settingViewVibrationSwitch"
+                        android:id="@+id/settingPopupViewVibrationSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -178,8 +178,8 @@
     </ScrollView>
 
     <RelativeLayout
-        android:id="@+id/settingButtomView"
-        android:layout_width="0dp"
+        android:id="@+id/settingBottomView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/setting_view_title_background"
         android:paddingLeft="10dp"
@@ -188,7 +188,8 @@
         android:paddingBottom="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_weight="1">
 
         <com.taccotap.phahtaigi.utils.BaselineFixedTextView
             android:layout_width="wrap_content"
@@ -202,7 +203,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/settingViewDoneButton"
+            android:id="@+id/settingPopupViewDoneButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

@@ -2,38 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="10dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginRight="10dp"
     android:background="@drawable/keyboard_background_lxx_dark"
     android:gravity="center_vertical"
+    android:padding="5dp"
     android:orientation="horizontal">
 
-    <TextView
+    <com.taccotap.phahtaigi.utils.BaselineFixedTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
+        android:layout_marginLeft="10dp"
         android:text="PhahTaigi 台語輸入法"
-        android:textColor="#ffff"
+        android:fontFamily="@font/fontfamily_genyomin_m"
+        android:textColor="@color/colorPrimaryLight"
         android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/openSettingButton"
         android:layout_width="55dp"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_setting_custom_color"
-        android:text="設"
+        android:text="Siat"
         android:textAllCaps="false"
         android:textColor="#feee"
-        android:textSize="13sp" />
+        android:textSize="15sp" />
 
     <Button
         android:id="@+id/openAboutButton"
         android:layout_width="55dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:background="@drawable/btn_setting_custom_color"
         android:text="？"
         android:textColor="#feee"
-        android:textSize="13sp" />
+        android:textSize="15sp" />
 </LinearLayout>

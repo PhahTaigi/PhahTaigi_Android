@@ -57,6 +57,7 @@ public class TaigiIme extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
     public static final int KEY_VIBRATION_MILLISECONDS = 5;
     private static final String TAG = TaigiIme.class.getSimpleName();
+
     private String mWordSeparators;
     private String mWordEndingSentence;
 
@@ -100,14 +101,14 @@ public class TaigiIme extends InputMethodService
         mWordSeparators = getResources().getString(R.string.word_separators);
         mWordEndingSentence = getResources().getString(R.string.word_ending_sentence);
 
-        RxBus.get().asFlowable().subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(Object event) throws Exception {
-                if (event instanceof UpdateHanjiFontEvent) {
-                    mIsNeedToUpdateHanjiFont = true;
-                }
-            }
-        });
+//        RxBus.get().asFlowable().subscribe(new Consumer<Object>() {
+//            @Override
+//            public void accept(Object event) throws Exception {
+//                if (event instanceof UpdateHanjiFontEvent) {
+//                    mIsNeedToUpdateHanjiFont = true;
+//                }
+//            }
+//        });
     }
 
     /**
@@ -143,10 +144,7 @@ public class TaigiIme extends InputMethodService
             Log.i(TAG, "onStartInput(): restarting = " + restarting);
         }
 
-        mIsVibration = Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_VIBRATION, AppPrefs.PREFS_KEY_IS_VIBRATION_YES);
-        if (mTaigiCandidateView != null) {
-            mTaigiCandidateView.setIsVibration(mIsVibration);
-        }
+        updateCurrentVibrationModeFromPrefs();
 
         // We are now going to initialize our state based on the type of
         // text being edited.
@@ -320,6 +318,9 @@ public class TaigiIme extends InputMethodService
                 }
 
                 mSettingPopupLayout.setVisibility(View.GONE);
+
+                updateCurrentInputLomajiModeFromPrefs();
+                updateCurrentVibrationModeFromPrefs();
             }
         });
     }
@@ -396,14 +397,29 @@ public class TaigiIme extends InputMethodService
             mIsNeedToUpdateHanjiFont = false;
         }
 
-        setCurrentInputMode();
+        updateCurrentInputModeFromPrefs();
+        updateCurrentInputLomajiModeFromPrefs();
+        updateCurrentVibrationModeFromPrefs();
+
         handleKeyboardViewAutoCaps();
 
 //        mTaigiKeyboardView.closing();
     }
 
-    private void setCurrentInputMode() {
+    private void updateCurrentInputModeFromPrefs() {
         mCurrentInputMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_MODE, AppPrefs.INPUT_MODE_LOMAJI);
+    }
+
+    private void updateCurrentInputLomajiModeFromPrefs() {
+        int currentInputLomajiMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V3, AppPrefs.INPUT_LOMAJI_MODE_APP_DEFAULT);
+        mTaigiCandidateController.setCurrentInputLomajiMode(currentInputLomajiMode);
+    }
+
+    private void updateCurrentVibrationModeFromPrefs() {
+        mIsVibration = Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_VIBRATION, AppPrefs.PREFS_KEY_IS_VIBRATION_YES);
+        if (mTaigiCandidateView != null) {
+            mTaigiCandidateView.setIsVibration(mIsVibration);
+        }
     }
 
     /**
@@ -839,7 +855,8 @@ public class TaigiIme extends InputMethodService
     public void swipeUp() {
         // Go ChhoeTaigi website
         Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://chhoe.taigi.info/"));
-        startActivity(myIntent);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(myIntent);
     }
 
     public void onPress(int primaryCode) {

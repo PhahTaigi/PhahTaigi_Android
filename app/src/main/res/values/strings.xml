@@ -21,29 +21,32 @@
     <string name="label_subtype_taigi">Tâi-gí 台語</string>
     <string name="spacekey_text">PhahTaigi</string>
 
+    <string name="activity_start_setting">歡迎！輸入法需要先設定才有法度使用，請照下底ê順序來操作1擺就ē安裝好勢。</string>
     <string name="activity_start_step_one">頭一步：</string>
-    <string name="activity_start_step_one_desc">Tī系統設定內底ê『語言與輸入設定』，kā「PhahTaigi 台語輸入法」切做ē-sái使用。</string>
+    <string name="activity_start_step_one_desc">Tī系統設定內底ê『語言與輸入設定』，kā「PhahTaigi 台語輸入法」切做ē-tàng使用。</string>
+    <string name="activity_start_step_one_desc2">補充說明：安裝任何輸入法攏ē提醒安全性ê問題，阮ê軟體程式完全公開，請放心使用。若頭1擺用Play商店，可能會問你信用卡ê資料，直接先跳過就好。</string>
     <string name="activity_start_step_one_button">Kā輸入法開--起-來</string>
     <string name="activity_start_step_two">第二步：</string>
     <string name="activity_start_step_two_desc">Tī切換輸入法ê所在，kéng「PhahTaigi 台語輸入法」。</string>
-    <string name="activity_start_step_two_button">選PhahTaigi 台語輸入法</string>
+    <string name="activity_start_step_two_desc2">補充說明：Nā是m̄知beh按怎切換輸入法，mā ē-sái來chia chhi̍h。</string>
+    <string name="activity_start_step_two_button">選「Tâi-gí / PhahTaigi」</string>
     <string name="activity_start_step_three">第三步：</string>
-    <string name="activity_start_step_three_desc">去ē-sái phah字ê所在開始phah字（Google、LINE等等），輸入法就ē出現！</string>
+    <string name="activity_start_step_three_desc">去任何1-ê所在開始phah字（試看māi tī Google、LINE等等phah字），輸入法ê字盤就跳--出-來。</string>
+    <string name="activity_start_setting_result">恭喜！設定成功！</string>
     <string name="activity_start_more_setting_button">其他設定</string>
     <string name="activity_open_crowdfunding_button">請來關心支持「台文雞絲麵」計劃！</string>
     <string name="activity_open_fanpage_button">PhahTaigi 面冊專頁</string>
     <string name="activity_start_button_finish">完成！</string>
-    <string name="title_activity_about">AboutActivity</string>
-    <string name="action_settings">Settings</string>
 
     <string name="about_version_item_text">版本</string>
     <string name="about_feedback_card_title_text">問題 kap 建議</string>
     <string name="about_facebook_group_item_text">私訊 PhahTaigi 面冊專頁</string>
     <string name="about_facebook_group_url">https://m.me/PhahTaigi</string>
+    <string name="about_crowdfunding_url">https://www.zeczec.com/projects/taibun-kesimi</string>
     <string name="about_author_card_title_text">作者</string>
-    <string name="about_author_item_text">Hê-bí</string>
+    <string name="about_author_item_text">Hê-bí @台文雞絲麵</string>
     <string name="about_author_item_subtext">Tá-káu, Tâi-oân</string>
-    <string name="about_email_me_item_text">寫phoe kā「台文雞絲麵」計劃建議</string>
+    <string name="about_email_me_item_text">寫phoe聯絡</string>
     <string name="about_feedback_email">taibunkesimi@gmail.com</string>
     <string name="about_email_me_mail_title">「PhahTaigi 台語輸入法」ê建議kap指教</string>
 </resources>

@@ -109,9 +109,9 @@ public class AboutActivity extends MaterialAboutActivity {
 
         helpCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text("請支持「台文雞絲麵」")
-                .subText("PhahTaigi 是完全靠「台文雞絲麵 Tâi-bûn Ke-si-mī」募資計畫維持團隊所有ê運作，向望你鬥陣來支持！")
+                .subText("PhahTaigi 是完全靠「台文雞絲麵 Tâi-bûn Ke-si-mī」募資計畫維持團隊所有ê運作，向望你鬥陣來支持！https://www.zeczec.com/projects/taibun-kesimi")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_human).sizeDp(48))
-                .setOnClickListener(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse(getString(R.string.about_facebook_group_url))))
+                .setOnClickListener(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse(getString(R.string.about_crowdfunding_url))))
                 .build());
 
         // author
@@ -145,10 +145,10 @@ public class AboutActivity extends MaterialAboutActivity {
                 appCardBuilder.build(),
                 gestureCardBuilder.build(),
                 functionCardBuilder.build(),
-                helpCardBuilder.build(),
                 feedbackCardBuilder.build(),
-                privacyCardBuilder.build(),
-                authorCardBuilder.build());
+                helpCardBuilder.build(),
+                authorCardBuilder.build(),
+                privacyCardBuilder.build());
     }
 
     @Nullable

@@ -16,12 +16,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <include
-            android:id="@+id/topMenuLayout"
-            layout="@layout/top_menu_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <include
             android:id="@+id/taigiKeyboardView"
             layout="@layout/taigi_keyboard_view"
             android:layout_width="match_parent"

@@ -51,11 +51,8 @@ public class TaigiCandidateController {
             Log.i(TAG, "setRawInput(): " + rawInput);
         }
 
-        if (rawInput == null) {
-            mRawInput = "";
-        } else {
-            mRawInput = rawInput;
-        }
+        mRawInput = rawInput;
+
         mRealm = Realm.getDefaultInstance();
 
         updateCandidateView();
@@ -116,7 +113,7 @@ public class TaigiCandidateController {
 //            candidateImeDicts.add(taigiWord1);
 //        }
 
-        mTaigiCandidateView.setSuggestions(mRawInput, mCandidateImeDictModels, mCurrentInputLomajiMode);
+        mTaigiCandidateView.setSuggestions(mCandidateImeDictModels, mCurrentInputLomajiMode);
 
         getSuggestionsFromDict();
     }
@@ -201,7 +198,7 @@ public class TaigiCandidateController {
                         mCandidateImeDictModels.addAll(imeDictModels);
                         mCandidateImeDictModels.add(0, mInputImeDictModel);
 
-                        mTaigiCandidateView.setSuggestions(mRawInput, mCandidateImeDictModels, mCurrentInputLomajiMode);
+                        mTaigiCandidateView.setSuggestions(mCandidateImeDictModels, mCurrentInputLomajiMode);
                     }
                 })
                 .subscribe();

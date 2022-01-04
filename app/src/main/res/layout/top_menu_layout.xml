@@ -2,18 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/keyboard_background_lxx_dark"
+    android:background="@color/candidate_suggestions_background"
     android:gravity="center_vertical"
-    android:padding="5dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="5dp">
 
     <com.taccotap.phahtaigi.utils.BaselineFixedTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:text="PhahTaigi 台語輸入法"
         android:fontFamily="@font/fontfamily_genyomin_m"
-        android:textColor="@color/colorPrimaryLight"
+        android:text="PhahTaigi 台語輸入法"
+        android:textColor="@color/top_menu_appname_text"
         android:textSize="18sp" />
 
     <RelativeLayout

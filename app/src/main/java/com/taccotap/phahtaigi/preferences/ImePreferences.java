@@ -5,6 +5,8 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Bundle;
@@ -88,6 +90,15 @@ public class ImePreferences extends AppCompatActivity {
         mReLaunchTaskIntent = getPackageManager().getLaunchIntentForPackage(getPackageName());
         mReLaunchTaskIntent.addFlags(FLAG_ACTIVITY_CLEAR_TASK);
         mAppContext = getApplicationContext();
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = mBaseContext.getPackageManager().getPackageInfo(mBaseContext.getPackageName(), 0);
+            String versionName = pInfo.versionName;
+            setTitle("PhahTaigi " + versionName + " pán");
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         init();
     }

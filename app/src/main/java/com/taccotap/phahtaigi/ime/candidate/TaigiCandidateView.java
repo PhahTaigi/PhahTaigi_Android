@@ -318,7 +318,6 @@ public class TaigiCandidateView extends View {
         }
 
         int x = 0;
-        final int fullWordHeight = (int) (mSuggestionsMainTextHeight + Y_GAP_BETWEEN_MAIN_SUGGESTION_AND_HINT_SUGGESTION + mSuggestionsHintTextHeight);
         final int touchX = mTouchX;
         final int scrollX = getScrollX();
         final boolean scrolled = mScrolled;
@@ -378,7 +377,7 @@ public class TaigiCandidateView extends View {
                 if (mTouchX != OUT_OF_BOUNDS) {
                     canvas.translate(x, 0);
                     mSelectionHighlightDrawable.setBounds(0, 0,
-                            fullWordWidth, fullWordHeight);
+                            fullWordWidth, mDesiredHeight);
                     mSelectionHighlightDrawable.draw(canvas);
                     canvas.translate(-x, 0);
                 }
@@ -401,7 +400,7 @@ public class TaigiCandidateView extends View {
                     fullFirstLomajiWidth = MIN_WORD_WIDTH;
                 }
                 canvas.drawLine(x + fullFirstLomajiWidth, 0,
-                        x + fullFirstLomajiWidth, (float) fullWordHeight, mWordSeperatorLinePaint);
+                        x + fullFirstLomajiWidth, (float) mDesiredHeight, mWordSeperatorLinePaint);
 
                 x += fullFirstLomajiWidth;
             } else {
@@ -413,7 +412,7 @@ public class TaigiCandidateView extends View {
 
                 // draw line between words
                 canvas.drawLine(x + fullWordWidth, 0,
-                        x + fullWordWidth, (float) fullWordHeight, mWordSeperatorLinePaint);
+                        x + fullWordWidth, (float) mDesiredHeight, mWordSeperatorLinePaint);
 
                 x += fullWordWidth;
             }

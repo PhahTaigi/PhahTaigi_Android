@@ -23,10 +23,9 @@
     <dimen name="candidate_raw_input_font_height">16sp</dimen>
 
     <dimen name="candidate_main_font_lomaji_height">20sp</dimen>
-    <dimen name="candidate_hint_font_hanji_height">16sp</dimen>
-
+    <dimen name="candidate_hint_font_hanji_height">15sp</dimen>
     <dimen name="candidate_main_font_hanji_height">20sp</dimen>
-    <dimen name="candidate_hint_font_lomaji_height">14sp</dimen>
+    <dimen name="candidate_hint_font_lomaji_height">15sp</dimen>
 
     <dimen name="candidate_vertical_padding">0sp</dimen>
     <dimen name="fab_margin">16dp</dimen>

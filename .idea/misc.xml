@@ -6,9 +6,13 @@
         <entry key="app/src/main/res/drawable/btn_keyboard_key_popup_lxx_dark.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/font/genryumin_m.xml" value="0.28229166666666666" />
         <entry key="app/src/main/res/layout/activity_more_settings.xml" value="0.2520833333333333" />
+        <entry key="app/src/main/res/layout/fake_candidate_layout_for_rawinput.xml" value="0.34556159420289856" />
         <entry key="app/src/main/res/layout/input_view.xml" value="0.2520833333333333" />
+        <entry key="app/src/main/res/layout/input_view_base.xml" value="0.34556159420289856" />
+        <entry key="app/src/main/res/layout/input_view_empty_root_layout.xml" value="0.34556159420289856" />
         <entry key="app/src/main/res/layout/setting_popup_view.xml" value="0.24947916666666667" />
         <entry key="app/src/main/res/layout/setting_scroll_view.xml" value="0.2520833333333333" />
+        <entry key="app/src/main/res/layout/taigi_candidates_and_topmenu_root_layout.xml" value="0.34556159420289856" />
         <entry key="app/src/main/res/layout/taigi_candidates_view_base.xml" value="0.2640625" />
         <entry key="app/src/main/res/layout/taigi_keyboard_view.xml" value="0.2520833333333333" />
         <entry key="app/src/main/res/layout/top_menu_layout.xml" value="0.24947916666666667" />

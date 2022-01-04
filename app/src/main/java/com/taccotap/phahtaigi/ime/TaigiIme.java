@@ -59,15 +59,17 @@ public class TaigiIme extends InputMethodService
     private InputMethodManager mInputMethodManager;
     private Vibrator mVibrator;
 
+    private RelativeLayout mInputViewEmptyRootLayout;
+    private ConstraintLayout mInputView;
+    private ConstraintLayout mSettingPopupRootLayout;
+
     private TaigiKeyboardView mTaigiKeyboardView;
+    private ConstraintLayout mTaigiCandidateAndTopMenuRootLayout;
+    private LinearLayout mTopMenuRootLayout;
     private TaigiCandidateView mTaigiCandidateView;
 
-    private ConstraintLayout mTaigiCandidateViewBase;
+    private ConstraintLayout mFakeCandidateViewForRawInput;
     private TextView mRawInputTextView;
-    private RelativeLayout mInputViewBase;
-    private ConstraintLayout mInputView;
-    private ConstraintLayout mSettingPopupLayout;
-    private LinearLayout mTopMenuLayout;
 
     private KeyboardSwitcher mKeyboardSwitcher;
     private TaigiCandidateController mTaigiCandidateController;
@@ -199,42 +201,88 @@ public class TaigiIme extends InputMethodService
         }
 
         // init InputViewBase
-        if (mInputViewBase == null) {
-            mInputViewBase = (RelativeLayout) getLayoutInflater().inflate(R.layout.input_view_base, null);
-        } else {
-            mInputViewBase.removeAllViews();
+        if (mInputViewEmptyRootLayout == null) {
+            mInputViewEmptyRootLayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.input_view_empty_root_layout, null);
 
-            final ViewGroup viewGroup1 = (ViewGroup) mInputViewBase.getParent();
+            // init real InputView
+            mInputView = (ConstraintLayout) getLayoutInflater().inflate(R.layout.input_view, null);
+
+            // init layouts
+            initTaigiKeyboardView();
+            initSettingPopupView();
+        } else {
+            mInputViewEmptyRootLayout.removeAllViews();
+
+            final ViewGroup viewGroup1 = (ViewGroup) mInputViewEmptyRootLayout.getParent();
             if (viewGroup1 != null) {
-                viewGroup1.removeView(mInputViewBase);
+                viewGroup1.removeView(mInputViewEmptyRootLayout);
             }
         }
 
-        // init real InputView
-        mInputView = (ConstraintLayout) getLayoutInflater().inflate(R.layout.input_view, null);
-
-        // init layouts
-        initTaigiKeyboardView();
-        initSettingPopupView();
-
         // return IbputView for InputMethodService
-        mInputViewBase.addView(mInputView);
-        return mInputViewBase;
+        mInputViewEmptyRootLayout.addView(mInputView);
+        return mInputViewEmptyRootLayout;
     }
 
     private void initTaigiKeyboardView() {
         mTaigiKeyboardView = mInputView.findViewById(R.id.taigiKeyboardView);
         mTaigiKeyboardView.setOnKeyboardActionListener(this);
+
+        if (mTaigiCandidateAndTopMenuRootLayout == null) {
+            mTaigiCandidateAndTopMenuRootLayout = mInputView.findViewById(R.id.taigiCandidateAndTopMenuRootLayout);
+
+            mTaigiCandidateView = mTaigiCandidateAndTopMenuRootLayout.findViewById(R.id.taigiCandidateView);
+            mTaigiCandidateView.setVibrator(mVibrator);
+            mTaigiCandidateView.setService(this);
+
+            mKeyboardSwitcher.setTaigiCandidateView(mTaigiCandidateView);
+            mTaigiCandidateController.setTaigiCandidateView(mTaigiCandidateView);
+            mTaigiCandidateView.setIsVibration(mIsVibration);
+
+            initTopMenuLayout();
+        }
+    }
+
+    private void initTopMenuLayout() {
+        mTopMenuRootLayout = mTaigiCandidateAndTopMenuRootLayout.findViewById(R.id.topMenuRootLayout);
+
+        Button openSettingButton = mTopMenuRootLayout.findViewById(R.id.openSettingButton);
+        openSettingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIsVibration) {
+                    mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+                }
+
+                if (mSettingPopupRootLayout == null) {
+                    mSettingPopupRootLayout = mInputView.findViewById(R.id.settingPopupRootLayout);
+                }
+                mSettingPopupRootLayout.setVisibility(View.VISIBLE);
+            }
+        });
+        Button openAboutButton = mTopMenuRootLayout.findViewById(R.id.openAboutButton);
+        openAboutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIsVibration) {
+                    mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+                }
+
+                final Intent intent = new Intent(TaigiIme.this, AboutActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initSettingPopupView() {
-        if (mSettingPopupLayout == null) {
-            mSettingPopupLayout = mInputView.findViewById(R.id.settingPopupLayout);
+        if (mSettingPopupRootLayout == null) {
+            mSettingPopupRootLayout = mInputView.findViewById(R.id.settingPopupRootLayout);
         }
 
-        com.bitvale.switcher.SwitcherX settingPopupViewPojSwitch = mSettingPopupLayout.findViewById(R.id.settingPopupViewPojSwitch);
-        com.bitvale.switcher.SwitcherX settingPopupViewVibrationSwitch = mSettingPopupLayout.findViewById(R.id.settingPopupViewVibrationSwitch);
-        Button settingPopupViewDoneButton = mSettingPopupLayout.findViewById(R.id.settingPopupViewDoneButton);
+        com.bitvale.switcher.SwitcherX settingPopupViewPojSwitch = mSettingPopupRootLayout.findViewById(R.id.settingPopupViewPojSwitch);
+        com.bitvale.switcher.SwitcherX settingPopupViewVibrationSwitch = mSettingPopupRootLayout.findViewById(R.id.settingPopupViewVibrationSwitch);
+        Button settingPopupViewDoneButton = mSettingPopupRootLayout.findViewById(R.id.settingPopupViewDoneButton);
 
         // settingPopupViewPojSwitch
         final int savedInputLomajiMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V3, AppPrefs.INPUT_LOMAJI_MODE_APP_DEFAULT);
@@ -281,7 +329,7 @@ public class TaigiIme extends InputMethodService
                     mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
                 }
 
-                mSettingPopupLayout.setVisibility(View.GONE);
+                mSettingPopupRootLayout.setVisibility(View.GONE);
 
                 updateCurrentInputLomajiModeFromPrefs();
                 updateCurrentVibrationModeFromPrefs();
@@ -299,14 +347,10 @@ public class TaigiIme extends InputMethodService
             Log.i(TAG, "onCreateCandidatesView");
         }
 
-        if (mTaigiCandidateViewBase == null) {
-            mTaigiCandidateViewBase = (ConstraintLayout) getLayoutInflater().inflate(R.layout.taigi_candidates_view_base, null);
+        if (mFakeCandidateViewForRawInput == null) {
+            mFakeCandidateViewForRawInput = (ConstraintLayout) getLayoutInflater().inflate(R.layout.fake_candidate_layout_for_rawinput, null);
 
-            mTaigiCandidateView = mTaigiCandidateViewBase.findViewById(R.id.taigi_candidate_view);
-            mTaigiCandidateView.setVibrator(mVibrator);
-            mTaigiCandidateView.setService(this);
-
-            mRawInputTextView = mTaigiCandidateViewBase.findViewById(R.id.rawinput_textview);
+            mRawInputTextView = mFakeCandidateViewForRawInput.findViewById(R.id.rawInputTextView);
 
             mKeyboardSwitcher.setTaigiCandidateView(mTaigiCandidateView);
             mTaigiCandidateController.setTaigiCandidateView(mTaigiCandidateView);
@@ -315,44 +359,12 @@ public class TaigiIme extends InputMethodService
             initTopMenuLayout();
         }
 
-        final ViewGroup viewGroup = (ViewGroup) mTaigiCandidateViewBase.getParent();
+        final ViewGroup viewGroup = (ViewGroup) mFakeCandidateViewForRawInput.getParent();
         if (viewGroup != null) {
-            viewGroup.removeView(mTaigiCandidateViewBase);
+            viewGroup.removeView(mFakeCandidateViewForRawInput);
         }
 
-        return mTaigiCandidateViewBase;
-    }
-
-    private void initTopMenuLayout() {
-        mTopMenuLayout = mTaigiCandidateViewBase.findViewById(R.id.topMenuLayout);
-
-        Button openSettingButton = mTopMenuLayout.findViewById(R.id.openSettingButton);
-        openSettingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mIsVibration) {
-                    mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
-                }
-
-                if (mSettingPopupLayout == null) {
-                    mSettingPopupLayout = mInputView.findViewById(R.id.settingPopupLayout);
-                }
-                mSettingPopupLayout.setVisibility(View.VISIBLE);
-            }
-        });
-        Button openAboutButton = mTopMenuLayout.findViewById(R.id.openAboutButton);
-        openAboutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mIsVibration) {
-                    mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
-                }
-
-                final Intent intent = new Intent(TaigiIme.this, AboutActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        });
+        return mFakeCandidateViewForRawInput;
     }
 
     @Override
@@ -375,11 +387,6 @@ public class TaigiIme extends InputMethodService
             Log.i(TAG, "setCandidatesView");
         }
 
-        final ViewGroup viewGroup = (ViewGroup) view.getParent();
-        if (viewGroup != null) {
-            viewGroup.removeView(view);
-        }
-
         super.setCandidatesView(view);
     }
 
@@ -387,8 +394,6 @@ public class TaigiIme extends InputMethodService
 
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
         super.onStartInputView(attribute, restarting);
-
-        setCandidatesViewShown(true);
 
         if (BuildConfig.DEBUG_LOG) {
             Log.i(TAG, "onStartInputView(): restarting = " + restarting);
@@ -404,6 +409,8 @@ public class TaigiIme extends InputMethodService
         updateCurrentInputModeFromPrefs();
         updateCurrentInputLomajiModeFromPrefs();
         updateCurrentVibrationModeFromPrefs();
+
+        updateInputForCandidate();
 
         handleKeyboardViewAutoCaps();
 
@@ -598,15 +605,20 @@ public class TaigiIme extends InputMethodService
         String textRawInput;
 
         if (TextUtils.isEmpty(rawInput)) {
-            mTopMenuLayout.setVisibility(View.VISIBLE);
             textRawInput = "";
+
+            setCandidatesViewShown(false);
+            mTopMenuRootLayout.setVisibility(View.VISIBLE);
             mRawInputTextView.setPadding(0, 0, 0, 0);
         } else {
-            mTopMenuLayout.setVisibility(View.GONE);
             textRawInput = rawInput;
-            mRawInputTextView.setPadding(25, 5, 25, 5);
+
+            setCandidatesViewShown(true);
+            mTopMenuRootLayout.setVisibility(View.GONE);
+            mRawInputTextView.setPadding(20, 0, 20, 0);
         }
         mRawInputTextView.setText(textRawInput);
+
 
         if (mTaigiCandidateController != null) {
             mTaigiCandidateController.setRawInput(textRawInput);

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/keyboardMainLayout"
+        android:id="@+id/keyboardRootLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -16,6 +16,12 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <include
+            android:id="@+id/taigiCandidateAndTopMenuRootLayout"
+            layout="@layout/taigi_candidates_and_topmenu_root_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include
             android:id="@+id/taigiKeyboardView"
             layout="@layout/taigi_keyboard_view"
             android:layout_width="match_parent"
@@ -23,12 +29,12 @@
     </LinearLayout>
 
     <include
-        layout="@layout/setting_popup_view"
+        layout="@layout/setting_popup_root_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/keyboardMainLayout"
-        app:layout_constraintEnd_toEndOf="@id/keyboardMainLayout"
-        app:layout_constraintStart_toStartOf="@id/keyboardMainLayout"
-        app:layout_constraintTop_toTopOf="@id/keyboardMainLayout" />
+        app:layout_constraintBottom_toBottomOf="@id/keyboardRootLayout"
+        app:layout_constraintEnd_toEndOf="@id/keyboardRootLayout"
+        app:layout_constraintStart_toStartOf="@id/keyboardRootLayout"
+        app:layout_constraintTop_toTopOf="@id/keyboardRootLayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,8 +26,8 @@ android {
             }
 
             applicationId "com.taccotap.phahtaigi"
-            versionCode 41
-            versionName "3.2.2"
+            versionCode 42
+            versionName "3.2.3"
 
             multiDexEnabled true
         }

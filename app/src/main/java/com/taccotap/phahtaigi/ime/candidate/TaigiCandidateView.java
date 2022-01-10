@@ -449,9 +449,8 @@ public class TaigiCandidateView extends View {
     protected void setSuggestions(ArrayList<ImeDictModel> suggestions, int currentInputLomajiMode) {
         mCurrentInputLomajiMode = currentInputLomajiMode;
 
-        if (suggestions == null || suggestions.size() == 1) {
-            mSuggestions.clear();
-        } else {
+        mSuggestions.clear();
+        if (suggestions != null && suggestions.size() > 0) {
             mSuggestions.addAll(suggestions);
         }
 

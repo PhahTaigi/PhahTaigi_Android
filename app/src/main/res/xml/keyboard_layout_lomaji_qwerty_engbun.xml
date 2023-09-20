@@ -203,8 +203,8 @@
             android:keyIcon="@drawable/btn_keyboard_spacebar_lxx_dark"
             android:keyWidth="40%p"/>
         <Key
-            android:codes="46,63"
-            android:keyLabel=".\?"
+            android:codes="46"
+            android:keyLabel="."
             android:keyWidth="15%p"/>
         <Key
             android:codes="10"

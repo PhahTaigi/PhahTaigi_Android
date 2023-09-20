@@ -1,2 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.taccotap.chhoetaigi.realm_db_installer" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" />

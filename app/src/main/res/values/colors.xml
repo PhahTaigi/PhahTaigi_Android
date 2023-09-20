@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2b5306</color>
+    <color name="colorPrimary">#4b8b5b</color>
+    <color name="colorPrimaryLight">#afd4b3</color>
     <color name="colorPrimaryDark">#122302</color>
     <color name="colorAccent">#e1b04f</color>
 
@@ -20,7 +21,24 @@
     <color name="candidate_normal">#bbb</color>
     <color name="candidate_recommended">#afd4b3</color>
     <color name="candidate_other">#ff808080</color>
-    <color name="candidate_background">#324048</color>
+    <color name="candidate_background">#00324048</color>
+    <color name="candidate_suggestions_background">#324048</color>
+    <color name="candidate_rawinput_text">#324048</color>
+    <color name="candidate_rawinput_background">#FAE5F3E6</color>
 
-    <color name="mal_color_primary">#4b8308</color>
+    <color name="mal_color_primary">#4b8b5b</color>
+
+    <color name="top_menu_appname_text">#86A189</color>
+
+    <color name="setting_view_background">#ddd</color>
+    <color name="setting_view_section_background">#bbb</color>
+    <color name="setting_view_section_text">#555</color>
+    <color name="setting_view_item_background">@color/setting_view_background</color>
+    <color name="setting_view_item_text">#222</color>
+    <color name="setting_view_item_switch_on">@color/colorPrimary</color>
+    <color name="setting_view_item_switch_off">#ccc</color>
+    <color name="setting_view_item_desc_text">#777</color>
+    <color name="setting_view_title_background">#666</color>
+    <color name="setting_view_title_text">@color/colorPrimaryLight</color>
+    <color name="setting_view_done_button_text">@color/colorPrimary</color>
 </resources>

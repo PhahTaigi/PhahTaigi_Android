@@ -1,9 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/inputView"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
-    android:orientation="vertical">
-</LinearLayout>
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/keyboardRootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/taigiCandidateAndTopMenuRootLayout"
+            layout="@layout/taigi_candidates_and_topmenu_root_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include
+            android:id="@+id/taigiKeyboardView"
+            layout="@layout/taigi_keyboard_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <include
+        layout="@layout/setting_popup_root_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/keyboardRootLayout"
+        app:layout_constraintEnd_toEndOf="@id/keyboardRootLayout"
+        app:layout_constraintStart_toStartOf="@id/keyboardRootLayout"
+        app:layout_constraintTop_toTopOf="@id/keyboardRootLayout" />
+</androidx.constraintlayout.widget.ConstraintLayout>

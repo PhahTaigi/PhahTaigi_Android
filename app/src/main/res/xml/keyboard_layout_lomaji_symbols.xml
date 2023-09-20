@@ -121,18 +121,15 @@
             android:codes="-2"
             android:keyEdgeFlags="left"
             android:keyLabel="Tńg"
-            android:keyWidth="13%p"/>
+            android:keyWidth="15%p"/>
         <Key
             android:codes="59"
             android:keyLabel=";"
             android:keyWidth="10%p"/>
-        <!--
-            android:codes: -2000 is not a framework-defined key code
-        -->
         <Key
-            android:codes="-2000"
-            android:keyLabel="Siat"
-            android:keyWidth="12%p"/>
+            android:codes="63"
+            android:keyLabel="\?"
+            android:keyWidth="10%p"/>
         <Key
             android:codes="32"
             android:isRepeatable="true"

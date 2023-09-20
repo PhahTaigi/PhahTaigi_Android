@@ -20,14 +20,19 @@
 <resources>
     <dimen name="taigi_key_height">52dip</dimen>
 
-    <dimen name="candidate_raw_input_font_height">18sp</dimen>
+    <dimen name="candidate_raw_input_font_height">16sp</dimen>
 
     <dimen name="candidate_main_font_lomaji_height">20sp</dimen>
-    <dimen name="candidate_hint_font_hanji_height">16sp</dimen>
-
+    <dimen name="candidate_hint_font_hanji_height">15sp</dimen>
     <dimen name="candidate_main_font_hanji_height">20sp</dimen>
-    <dimen name="candidate_hint_font_lomaji_height">14sp</dimen>
+    <dimen name="candidate_hint_font_lomaji_height">15sp</dimen>
 
     <dimen name="candidate_vertical_padding">0sp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="setting_view_section_text_size">18sp</dimen>
+    <dimen name="setting_view_item_text_size">20sp</dimen>
+    <dimen name="setting_view_item_desc_text_size">17sp</dimen>
+    <dimen name="setting_view_title_text_size">20sp</dimen>
+    <dimen name="setting_view_done_button_text_size">18sp</dimen>
 </resources>

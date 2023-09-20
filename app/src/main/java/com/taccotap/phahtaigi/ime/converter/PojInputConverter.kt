@@ -9,7 +9,7 @@ import java.util.regex.Pattern
 object PojInputConverter {
     private val TAG = PojInputConverter::class.java.simpleName
 
-    private val sPojWordExtractPattern = Pattern.compile("(?:(ph|p|m|b|th|t|n|l|kh|k|ng|g|h|chh|ch|s|j)?([aiueo+]+(?:nn)?|ng|m)(?:(ng|m|n|re|r)|(p|t|h|k))?([12345789])?|(ph|p|m|b|th|t|n|l|kh|k|ng|g|h|chh|ch|s|j)-?-?)", Pattern.CASE_INSENSITIVE)
+    private val sPojWordExtractPattern = Pattern.compile("(?:(ph|p|m|b|th|t|l|kh|k|ng|n|g|h|chh|ch|s|j)?([aiueo+]+(?:nn)?|ng|m)(?:(ng|m|n|re|r)|(p|t|h|k))?([12345789])?|(ph|p|m|b|th|t|l|kh|k|ng|n|g|h|chh|ch|s|j)-?-?)", Pattern.CASE_INSENSITIVE)
 
     //    // [o, a ,e ,u, i, n, m]
     //    private static int[] sLomajiNumberToWordTempArray = {0, 0, 0, 0, 0, 0, 0};
@@ -132,7 +132,7 @@ object PojInputConverter {
     }
 
     fun getPojSianntiauPosition(pojBoSianntiau: String): PojSianntiauPosition? {
-        val str = pojBoSianntiau.toLowerCase()
+        val str = pojBoSianntiau.lowercase()
         val vowelList = listOf("a", "i", "u", "o͘", "e", "o")
         val semivowelList = listOf("m", "ng", "n")
         val choankhiunnVowelList = listOf("ir", "er")
@@ -180,12 +180,12 @@ object PojInputConverter {
                     // Found HokBoim Jipsiann
 
                     // Handle special cases:
-                    if (str.toLowerCase().contains("iuh")) {
+                    if (str.lowercase().contains("iuh")) {
                         // "iuh" found
                         val findJiboPositionFromLastCharExludingPhinnim = findJiboPositionFromLastCharExludingPhinnim(str, 2)
                         return PojSianntiauPosition(findJiboPositionFromLastCharExludingPhinnim, 1)
                     } else {
-                        if (last2ndJiboString.toLowerCase().matches("[iu]".toRegex())) {
+                        if (last2ndJiboString.lowercase().matches("[iu]".toRegex())) {
                             val findJiboPositionFromLastCharExludingPhinnim = findJiboPositionFromLastCharExludingPhinnim(str, 3)
                             return PojSianntiauPosition(findJiboPositionFromLastCharExludingPhinnim, 1)
                         } else {
@@ -196,7 +196,7 @@ object PojInputConverter {
                     // Found HokBoim Not Jipsiann
 
                     // Handle special cases:
-                    if (last2ndJiboString.toLowerCase() == "i") {
+                    if (last2ndJiboString.lowercase() == "i") {
                         // Tone marks at the last jibo. (excluding phinnim)
                         val findJiboPositionFromLastCharExludingPhinnim = findJiboPositionFromLastCharExludingPhinnim(str, 1)
                         return PojSianntiauPosition(findJiboPositionFromLastCharExludingPhinnim, 1)
@@ -212,7 +212,7 @@ object PojInputConverter {
 
     private fun isPojJipsiann(pojBoSianntiau: String): Boolean {
         val lastCharExcludingPhinnim = pojBoSianntiau.replace("ⁿ", "").substring(pojBoSianntiau.length - 1)
-        return lastCharExcludingPhinnim.toLowerCase().matches("[ptkh]".toRegex())
+        return lastCharExcludingPhinnim.lowercase().matches("[ptkh]".toRegex())
     }
 
     private fun findJiboPositionFromLastCharExludingPhinnim(pojBoSianntiau: String, findWhichCharFromRight: Int): Int {
@@ -229,9 +229,9 @@ object PojInputConverter {
             } else if (currentCharString == "\u0358") {
                 // found "o͘  "'s "͘  "
                 isFoundPojOoPoint = true
-            } else if (currentCharString.toLowerCase() == "g" && pos - 1 >= 0) {
+            } else if (currentCharString.lowercase() == "g" && pos - 1 >= 0) {
                 val nextCharString = pojBoSianntiau.substring(pos - 1, pos)
-                if (nextCharString.toLowerCase() == "n") {
+                if (nextCharString.lowercase() == "n") {
                     // found "ng"
                     isFoundPojNg = true
                 } else {
@@ -288,7 +288,7 @@ object PojInputConverter {
 
 //    private fun calculateTonePosition(pojWithoutNumber: String): Int {
 //        var pojWithoutNumber = pojWithoutNumber
-//        pojWithoutNumber = pojWithoutNumber.toLowerCase()
+//        pojWithoutNumber = pojWithoutNumber.lowercase()
 //        val count = pojWithoutNumber.length
 //
 //        if (BuildConfig.DEBUG_LOG) {

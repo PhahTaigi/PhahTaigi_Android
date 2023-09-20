@@ -21,12 +21,6 @@ import com.taccotap.phahtaigi.R;
 
 public class AboutActivity extends MaterialAboutActivity {
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        setTheme(R.style.Theme_Mal_Light_LightActionBar);
-        super.onCreate(savedInstanceState);
-    }
-
     @NonNull
     @Override
     protected MaterialAboutList getMaterialAboutList(@NonNull Context context) {
@@ -39,19 +33,14 @@ public class AboutActivity extends MaterialAboutActivity {
                 .icon(R.mipmap.ic_launcher)
                 .build());
 
-        try {
-            appCardBuilder.addItem(ConvenienceBuilder.createVersionActionItem(context,
-                    new IconicsDrawable(context, CommunityMaterial.Icon.cmd_android_debug_bridge).sizeDp(48),
-                    getString(R.string.about_version_item_text),
-                    false));
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        appCardBuilder.addItem(ConvenienceBuilder.createVersionActionItem(context,
+                new IconicsDrawable(context, CommunityMaterial.Icon.cmd_android_debug_bridge).sizeDp(48),
+                getString(R.string.about_version_item_text),
+                false));
 
         // gesture
         MaterialAboutCard.Builder gestureCardBuilder = new MaterialAboutCard.Builder();
-        gestureCardBuilder.title("鍵盤 ê 手勢");
+        gestureCardBuilder.title("鍵盤手勢");
 
         gestureCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text("撇去倒pêng：選輸入法")
@@ -62,7 +51,7 @@ public class AboutActivity extends MaterialAboutActivity {
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_arrow_right).sizeDp(48))
                 .build());
         gestureCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text("撇去頂面：叫出設定")
+                .text("撇去頂面：來去「ChhoeTaigi」線頂辭典網站")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_arrow_up).sizeDp(48))
                 .build());
         gestureCardBuilder.addItem(new MaterialAboutActionItem.Builder()
@@ -72,7 +61,7 @@ public class AboutActivity extends MaterialAboutActivity {
 
         // function key
         MaterialAboutCard.Builder functionCardBuilder = new MaterialAboutCard.Builder();
-        functionCardBuilder.title("特殊 ê KEY");
+        functionCardBuilder.title("特殊KEY");
 
         functionCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text("Kā空白key chhi̍h牢咧：選輸入法")
@@ -80,11 +69,12 @@ public class AboutActivity extends MaterialAboutActivity {
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_crop_landscape).sizeDp(48))
                 .build());
 
-        functionCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text("Kā欲選ê字詞chhi̍h牢咧：chhōe辭典")
-                .subText("直接送過辭典ê app chhōe字詞。")
-                .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_crop_landscape).sizeDp(48))
-                .build());
+        // TODO: Kái chò ChhoeTaigi bāng-chí
+//        functionCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+//                .text("Kā欲選ê字詞chhi̍h牢咧：chhōe辭典")
+//                .subText("直接送過辭典ê app chhōe字詞。")
+//                .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_crop_landscape).sizeDp(48))
+//                .build());
 
         // feedback
         MaterialAboutCard.Builder feedbackCardBuilder = new MaterialAboutCard.Builder();
@@ -94,13 +84,13 @@ public class AboutActivity extends MaterialAboutActivity {
                 .text(getString(R.string.about_facebook_group_item_text))
                 .subText(getString(R.string.about_facebook_group_url))
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_facebook).sizeDp(48))
-                .setOnClickListener(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse(getString(R.string.about_facebook_group_url))))
+                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse(getString(R.string.about_facebook_group_url))))
                 .build());
-        feedbackCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text("鬥 phah 五粒星！")
-                .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_star).sizeDp(48))
-                .setOnClickListener(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse("https://play.google.com/store/apps/details?id=com.taccotap.phahtaigi")))
-                .build());
+//        feedbackCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+//                .text("鬥 phah 五粒星！")
+//                .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_star).sizeDp(48))
+//                .setOnClickListener(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse("https://play.google.com/store/apps/details?id=com.taccotap.phahtaigi")))
+//                .build());
 
         // help
         MaterialAboutCard.Builder helpCardBuilder = new MaterialAboutCard.Builder();
@@ -108,9 +98,9 @@ public class AboutActivity extends MaterialAboutActivity {
 
         helpCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text("請支持「台文雞絲麵」")
-                .subText("PhahTaigi 是靠 台文雞絲麵 Tâi-bûn Ke-si-mī 募資計畫維持團隊所有ê運作，向望你鬥陣來支持！")
+                .subText("PhahTaigi 是完全靠「台文雞絲麵 Tâi-bûn Ke-si-mī」募資計畫維持團隊所有ê運作，向望你鬥陣來支持！https://www.zeczec.com/projects/taibun-kesimi")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_human).sizeDp(48))
-                .setOnClickListener(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse(getString(R.string.about_facebook_group_url))))
+                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse(getString(R.string.about_crowdfunding_url))))
                 .build());
 
         // author
@@ -135,24 +125,24 @@ public class AboutActivity extends MaterialAboutActivity {
         privacyCardBuilder.title("隱私權政策");
 
         privacyCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text("使用app tio̍h表示你同意這ê隱私權政策")
+                .text("使用app就表示你同意這ê隱私權政策")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_account_alert).sizeDp(48))
-                .setOnClickListener(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse("http://phahtaigi.blogspot.com/p/phah-tai-gi.html")))
+                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse("http://phahtaigi.blogspot.com/p/phah-tai-gi.html")))
                 .build());
 
         return new MaterialAboutList(
                 appCardBuilder.build(),
                 gestureCardBuilder.build(),
                 functionCardBuilder.build(),
-                helpCardBuilder.build(),
                 feedbackCardBuilder.build(),
-                privacyCardBuilder.build(),
-                authorCardBuilder.build());
+                helpCardBuilder.build(),
+                authorCardBuilder.build(),
+                privacyCardBuilder.build());
     }
 
     @Nullable
     @Override
     protected CharSequence getActivityTitle() {
-        return "關於 PhahTaigi";
+        return "有關 PhahTaigi";
     }
 }

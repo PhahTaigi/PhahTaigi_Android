@@ -3,115 +3,213 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ccc"
+    android:background="#eee"
     android:orientation="vertical"
-    tools:context="com.taccotap.phahtaigi.preferences.ImePreferences">
+    tools:context="com.taccotap.phahtaigi.preferences.PrefsActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                android:fontFamily="@font/fontfamily_genyomin_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/activity_start_setting"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="0dp"
+                android:background="@color/colorPrimaryLight" />
+
+            <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                android:fontFamily="@font/fontfamily_genyomin_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/activity_start_step_one"
+                android:textColor="#222"
+                android:textSize="22sp" />
+
+            <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                android:fontFamily="@font/fontfamily_genyomin_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/activity_start_step_one_desc"
+                android:textColor="#333"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/step1Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/activity_start_step_one_button"
+                android:textAllCaps="false"
+                android:textColor="#222"
+                android:textSize="18sp" />
+
+            <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                android:fontFamily="@font/fontfamily_genyomin_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/activity_start_step_one_desc2"
+                android:textColor="#666"
+                android:textSize="14sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@color/colorPrimaryLight" />
+
+            <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                android:fontFamily="@font/fontfamily_genyomin_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/activity_start_step_two"
+                android:textColor="#222"
+                android:textSize="22sp" />
+
+            <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                android:fontFamily="@font/fontfamily_genyomin_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/activity_start_step_two_desc"
+                android:textColor="#333"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/step2Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/activity_start_step_two_button"
+                android:textAllCaps="false"
+                android:textColor="#222"
+                android:textSize="18sp" />
+
+            <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                android:fontFamily="@font/fontfamily_genyomin_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/activity_start_step_two_desc2"
+                android:textColor="#666"
+                android:textSize="14sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@color/colorPrimaryLight" />
+
+            <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                android:fontFamily="@font/fontfamily_genyomin_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/activity_start_step_three"
+                android:textColor="#222"
+                android:textSize="22sp" />
+
+            <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                android:fontFamily="@font/fontfamily_genyomin_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/activity_start_step_three_desc"
+                android:textColor="#333"
+                android:textSize="16sp" />
+
+            <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                android:fontFamily="@font/fontfamily_genyomin_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="50dp"
+                android:text="@string/activity_start_setting_result"
+                android:textColor="@color/colorPrimary"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:background="#ccc"
+        android:orientation="vertical"
+        android:padding="5dp">
 
-        <ScrollView
+        <Button
+            android:id="@+id/supportButton"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fadeScrollbars="false"
-            android:scrollbars="vertical">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="@color/colorAccent"
+            android:text="@string/activity_open_crowdfunding_button"
+            android:textAllCaps="false"
+            android:textColor="#444"
+            android:textSize="18sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/activity_start_step_one"
-                    android:textColor="#222"
-                    android:textSize="22sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/activity_start_step_one_desc"
-                    android:textColor="#333"
-                    android:textSize="14sp" />
-
-                <Button
-                    android:id="@+id/step1Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/activity_start_step_one_button"
-                    android:textColor="#222"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:text="@string/activity_start_step_two"
-                    android:textColor="#222"
-                    android:textSize="22sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/activity_start_step_two_desc"
-                    android:textColor="#333"
-                    android:textSize="14sp" />
-
-                <Button
-                    android:id="@+id/step2Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/activity_start_step_two_button"
-                    android:textColor="#222"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:text="@string/activity_start_step_three"
-                    android:textColor="#222"
-                    android:textSize="22sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/activity_start_step_three_desc"
-                    android:textColor="#333"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-        </ScrollView>
+        <Button
+            android:id="@+id/feedbackButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/colorPrimaryLight"
+            android:text="@string/activity_open_fanpage_button"
+            android:textAllCaps="false"
+            android:textColor="#444"
+            android:textSize="18sp" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/otherSettingButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="@string/activity_start_more_setting_button"
-        android:textColor="#444"
-        android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/feedbackButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="@string/activity_start_feedback_button"
-        android:textColor="#444"
-        android:textSize="20sp" />
 </LinearLayout>

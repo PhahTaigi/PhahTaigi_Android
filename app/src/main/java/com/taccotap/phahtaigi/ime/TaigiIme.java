@@ -1,4 +1,3 @@
-
 package com.taccotap.phahtaigi.ime;
 
 import android.annotation.SuppressLint;
@@ -8,9 +7,8 @@ import android.content.Intent;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
-import android.os.Handler;
+import android.net.Uri;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Vibrator;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -24,9 +22,10 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import androidx.annotation.IdRes;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.pixplicity.easyprefs.library.Prefs;
 import com.taccotap.phahtaigi.AppPrefs;
@@ -38,13 +37,8 @@ import com.taccotap.phahtaigi.ime.candidate.TaigiCandidateView;
 import com.taccotap.phahtaigi.ime.keyboard.CustomKeycode;
 import com.taccotap.phahtaigi.ime.keyboard.KeyboardSwitcher;
 import com.taccotap.phahtaigi.ime.keyboard.TaigiKeyboardView;
-import com.taccotap.phahtaigi.preferences.MoreSettingsActivity;
-import com.taccotap.phahtaigi.rxbus.RxBus;
-import com.taccotap.phahtaigi.rxbus.events.UpdateHanjiFontEvent;
 
 import java.util.List;
-
-import io.reactivex.functions.Consumer;
 
 
 /**
@@ -56,27 +50,32 @@ import io.reactivex.functions.Consumer;
  */
 public class TaigiIme extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
-    private static final String TAG = TaigiIme.class.getSimpleName();
-
     public static final int KEY_VIBRATION_MILLISECONDS = 5;
+    private static final String TAG = TaigiIme.class.getSimpleName();
 
     private String mWordSeparators;
     private String mWordEndingSentence;
 
     private InputMethodManager mInputMethodManager;
     private Vibrator mVibrator;
+
+    private RelativeLayout mInputViewEmptyRootLayout;
+    private ConstraintLayout mInputView;
+    private ConstraintLayout mSettingPopupRootLayout;
+
     private TaigiKeyboardView mTaigiKeyboardView;
+    private ConstraintLayout mTaigiCandidateAndTopMenuRootLayout;
+    private LinearLayout mTopMenuRootLayout;
     private TaigiCandidateView mTaigiCandidateView;
 
-    private LinearLayout mInputView;
-    private LinearLayout mKeyboardSettingLayout;
-    private RadioGroup mLomajiSelectionRadioGroup;
+    private ConstraintLayout mFakeCandidateViewForRawInput;
+    private TextView mRawInputTextView;
 
     private KeyboardSwitcher mKeyboardSwitcher;
     private TaigiCandidateController mTaigiCandidateController;
 
+    //    private int mCurrentInputLomajiMode;
     private int mCurrentInputMode;
-    private int mCurrentInputLomajiMode;
 
     private StringBuilder mComposing = new StringBuilder();
     private boolean mIsCapsLock;
@@ -101,14 +100,14 @@ public class TaigiIme extends InputMethodService
         mWordSeparators = getResources().getString(R.string.word_separators);
         mWordEndingSentence = getResources().getString(R.string.word_ending_sentence);
 
-        RxBus.get().asFlowable().subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(Object event) throws Exception {
-                if (event instanceof UpdateHanjiFontEvent) {
-                    mIsNeedToUpdateHanjiFont = true;
-                }
-            }
-        });
+//        RxBus.get().asFlowable().subscribe(new Consumer<Object>() {
+//            @Override
+//            public void accept(Object event) throws Exception {
+//                if (event instanceof UpdateHanjiFontEvent) {
+//                    mIsNeedToUpdateHanjiFont = true;
+//                }
+//            }
+//        });
     }
 
     /**
@@ -139,12 +138,13 @@ public class TaigiIme extends InputMethodService
     @Override
     public void onStartInput(EditorInfo attribute, boolean restarting) {
         super.onStartInput(attribute, restarting);
+        super.setCandidatesViewShown(true);
 
         if (BuildConfig.DEBUG_LOG) {
             Log.i(TAG, "onStartInput(): restarting = " + restarting);
         }
 
-        mIsVibration = Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_VIBRATION, AppPrefs.PREFS_KEY_IS_VIBRATION_YES);
+        updateCurrentVibrationModeFromPrefs();
 
         // We are now going to initialize our state based on the type of
         // text being edited.
@@ -201,52 +201,72 @@ public class TaigiIme extends InputMethodService
             Log.i(TAG, "onCreateInputView");
         }
 
-        if (mInputView == null) {
-            mInputView = (LinearLayout) getLayoutInflater().inflate(R.layout.input_view, null);
-        } else {
-            mInputView.removeAllViews();
+        // init InputViewBase
+        if (mInputViewEmptyRootLayout == null) {
+            mInputViewEmptyRootLayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.input_view_empty_root_layout, null);
 
-            final ViewGroup viewGroup1 = (ViewGroup) mInputView.getParent();
+            // init real InputView
+            mInputView = (ConstraintLayout) getLayoutInflater().inflate(R.layout.input_view, null);
+
+            // init layouts
+            initTaigiKeyboardView();
+            initSettingPopupView();
+        } else {
+            mInputViewEmptyRootLayout.removeAllViews();
+
+            final ViewGroup viewGroup1 = (ViewGroup) mInputViewEmptyRootLayout.getParent();
             if (viewGroup1 != null) {
-                viewGroup1.removeView(mInputView);
+                viewGroup1.removeView(mInputViewEmptyRootLayout);
             }
         }
-        initSettingLayout();
 
-        if (mTaigiKeyboardView == null) {
-            mTaigiKeyboardView = (TaigiKeyboardView) getLayoutInflater().inflate(R.layout.taigi_keyboard_view, null);
-            mTaigiKeyboardView.setOnKeyboardActionListener(this);
-        }
-        mInputView.addView(mTaigiKeyboardView);
-
-        return mInputView;
+        // return IbputView for InputMethodService
+        mInputViewEmptyRootLayout.addView(mInputView);
+        return mInputViewEmptyRootLayout;
     }
 
-    @SuppressLint("InflateParams")
-    private void initSettingLayout() {
-        mKeyboardSettingLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.keyboard_settings, null);
-        mInputView.addView(mKeyboardSettingLayout);
+    private void initTaigiKeyboardView() {
+        mTaigiKeyboardView = mInputView.findViewById(R.id.taigiKeyboardView);
+        mTaigiKeyboardView.setOnKeyboardActionListener(this);
 
-        if (!Prefs.getBoolean(AppPrefs.PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V2, false)
-                || Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_SHOW_SETTING, true)) {
-            mKeyboardSettingLayout.setVisibility(View.VISIBLE);
+        if (mTaigiCandidateAndTopMenuRootLayout == null) {
+            mTaigiCandidateAndTopMenuRootLayout = mInputView.findViewById(R.id.taigiCandidateAndTopMenuRootLayout);
+
+            mTaigiCandidateView = mTaigiCandidateAndTopMenuRootLayout.findViewById(R.id.taigiCandidateView);
+            mTaigiCandidateView.setVibrator(mVibrator);
+            mTaigiCandidateView.setService(this);
+
+            mKeyboardSwitcher.setTaigiCandidateView(mTaigiCandidateView);
+            mTaigiCandidateController.setTaigiCandidateView(mTaigiCandidateView);
+            mTaigiCandidateView.setIsVibration(mIsVibration);
+
+            initTopMenuLayout();
+        }
+    }
+
+    private void initTopMenuLayout() {
+        if (mTaigiCandidateAndTopMenuRootLayout == null) {
+            return;
         }
 
-        Button moreSettingButton = (Button) mKeyboardSettingLayout.findViewById(R.id.moreSettingButton);
-        moreSettingButton.setOnClickListener(new View.OnClickListener() {
+        mTopMenuRootLayout = mTaigiCandidateAndTopMenuRootLayout.findViewById(R.id.topMenuRootLayout);
+
+        Button openSettingButton = mTopMenuRootLayout.findViewById(R.id.openSettingButton);
+        openSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mIsVibration) {
                     mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
                 }
 
-                final Intent intent = new Intent(TaigiIme.this, MoreSettingsActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                if (mSettingPopupRootLayout == null) {
+                    mSettingPopupRootLayout = mInputView.findViewById(R.id.settingPopupRootLayout);
+                }
+                mSettingPopupRootLayout.setVisibility(View.VISIBLE);
             }
         });
-        Button aboutButton = (Button) mKeyboardSettingLayout.findViewById(R.id.aboutButton);
-        aboutButton.setOnClickListener(new View.OnClickListener() {
+        Button openAboutButton = mTopMenuRootLayout.findViewById(R.id.openAboutButton);
+        openAboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mIsVibration) {
@@ -258,14 +278,66 @@ public class TaigiIme extends InputMethodService
                 startActivity(intent);
             }
         });
-        Button settingCloseButton = (Button) mKeyboardSettingLayout.findViewById(R.id.keyboardSettingCloseButton);
-        settingCloseButton.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void initSettingPopupView() {
+        if (mSettingPopupRootLayout == null) {
+            mSettingPopupRootLayout = mInputView.findViewById(R.id.settingPopupRootLayout);
+        }
+
+        com.bitvale.switcher.SwitcherX settingPopupViewPojSwitch = mSettingPopupRootLayout.findViewById(R.id.settingPopupViewPojSwitch);
+        com.bitvale.switcher.SwitcherX settingPopupViewVibrationSwitch = mSettingPopupRootLayout.findViewById(R.id.settingPopupViewVibrationSwitch);
+        Button settingPopupViewDoneButton = mSettingPopupRootLayout.findViewById(R.id.settingPopupViewDoneButton);
+
+        // settingPopupViewPojSwitch
+        final int savedInputLomajiMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V3, AppPrefs.INPUT_LOMAJI_MODE_APP_DEFAULT);
+        if (savedInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
+            settingPopupViewPojSwitch.setChecked(true, false);
+        } else {
+            settingPopupViewPojSwitch.setChecked(false, false);
+        }
+        mTaigiCandidateController.setCurrentInputLomajiMode(savedInputLomajiMode);
+        settingPopupViewPojSwitch.setOnCheckedChangeListener(checked -> {
+            if (mIsVibration) {
+                mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+            }
+
+            if (checked) {
+                Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V3, AppPrefs.INPUT_LOMAJI_MODE_POJ);
+            } else {
+                Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V3, AppPrefs.INPUT_LOMAJI_MODE_KIP);
+            }
+            return null;
+        });
+
+        // settingPopupViewVibrationSwitch
+        final boolean isVibration = Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_VIBRATION, AppPrefs.PREFS_KEY_IS_VIBRATION_YES);
+        if (isVibration == AppPrefs.PREFS_KEY_IS_VIBRATION_YES) {
+            settingPopupViewVibrationSwitch.setChecked(true, false);
+        } else {
+            settingPopupViewVibrationSwitch.setChecked(false, false);
+        }
+        settingPopupViewVibrationSwitch.setOnCheckedChangeListener(checked -> {
+            if (mIsVibration) {
+                mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
+            }
+
+            Prefs.putBoolean(AppPrefs.PREFS_KEY_IS_VIBRATION, checked);
+            return null;
+        });
+
+        // settingPopupViewVibrationSwitch
+        settingPopupViewDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 if (mIsVibration) {
                     mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
                 }
-                handleOpenCloseSettingLayout();
+
+                mSettingPopupRootLayout.setVisibility(View.GONE);
+
+                updateCurrentInputLomajiModeFromPrefs();
+                updateCurrentVibrationModeFromPrefs();
             }
         });
     }
@@ -276,24 +348,32 @@ public class TaigiIme extends InputMethodService
      */
     @Override
     public View onCreateCandidatesView() {
+        super.setCandidatesViewShown(true);
+
         if (BuildConfig.DEBUG_LOG) {
             Log.i(TAG, "onCreateCandidatesView");
         }
 
-        if (mTaigiCandidateView == null) {
-            mTaigiCandidateView = new TaigiCandidateView(this, mVibrator, new Handler(Looper.getMainLooper()));
-            mTaigiCandidateView.setService(this);
+        if (mFakeCandidateViewForRawInput == null) {
+            mFakeCandidateViewForRawInput = (ConstraintLayout) getLayoutInflater().inflate(R.layout.fake_candidate_layout_for_rawinput, null);
+
+            mRawInputTextView = mFakeCandidateViewForRawInput.findViewById(R.id.rawInputTextView);
 
             mKeyboardSwitcher.setTaigiCandidateView(mTaigiCandidateView);
             mTaigiCandidateController.setTaigiCandidateView(mTaigiCandidateView);
+            if (mTaigiCandidateView != null) {
+                mTaigiCandidateView.setIsVibration(mIsVibration);
+            }
+
+//            initTopMenuLayout();
         }
 
-        final ViewGroup viewGroup = (ViewGroup) mTaigiCandidateView.getParent();
+        final ViewGroup viewGroup = (ViewGroup) mFakeCandidateViewForRawInput.getParent();
         if (viewGroup != null) {
-            viewGroup.removeView(mTaigiCandidateView);
+            viewGroup.removeView(mFakeCandidateViewForRawInput);
         }
 
-        return mTaigiCandidateView;
+        return mFakeCandidateViewForRawInput;
     }
 
     @Override
@@ -316,11 +396,6 @@ public class TaigiIme extends InputMethodService
             Log.i(TAG, "setCandidatesView");
         }
 
-        final ViewGroup viewGroup = (ViewGroup) view.getParent();
-        if (viewGroup != null) {
-            viewGroup.removeView(view);
-        }
-
         super.setCandidatesView(view);
     }
 
@@ -340,47 +415,31 @@ public class TaigiIme extends InputMethodService
             mIsNeedToUpdateHanjiFont = false;
         }
 
-        setCurrentInputMode();
+        updateCurrentInputModeFromPrefs();
+        updateCurrentInputLomajiModeFromPrefs();
+        updateCurrentVibrationModeFromPrefs();
+
+        updateInputForCandidate();
+
         handleKeyboardViewAutoCaps();
 
 //        mTaigiKeyboardView.closing();
     }
 
-    private void setCurrentInputMode() {
+    private void updateCurrentInputModeFromPrefs() {
         mCurrentInputMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_MODE, AppPrefs.INPUT_MODE_LOMAJI);
-
-        mLomajiSelectionRadioGroup = (RadioGroup) mInputView.findViewById(R.id.lomajiSelectionRadioGroup);
-        mCurrentInputLomajiMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V2, AppPrefs.INPUT_LOMAJI_MODE_APP_DEFAULT);
-        setCurrentInputLomajiMode(mCurrentInputLomajiMode);
-
-        mLomajiSelectionRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                if (mIsVibration) {
-                    mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
-                }
-
-                if (checkedId == R.id.tailoRadioButton) {
-                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ);
-                } else if (checkedId == R.id.pojRadioButton) {
-                    setCurrentInputLomajiMode(AppPrefs.INPUT_LOMAJI_MODE_POJ);
-                }
-            }
-        });
     }
 
-    private void setCurrentInputLomajiMode(int inputMode) {
-        mCurrentInputLomajiMode = inputMode;
+    private void updateCurrentInputLomajiModeFromPrefs() {
+        int currentInputLomajiMode = Prefs.getInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V3, AppPrefs.INPUT_LOMAJI_MODE_APP_DEFAULT);
+        mTaigiCandidateController.setCurrentInputLomajiMode(currentInputLomajiMode);
+    }
 
-        Prefs.putInt(AppPrefs.PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V2, inputMode);
-
-        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
-            mLomajiSelectionRadioGroup.check(R.id.tailoRadioButton);
-        } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
-            mLomajiSelectionRadioGroup.check(R.id.pojRadioButton);
+    private void updateCurrentVibrationModeFromPrefs() {
+        mIsVibration = Prefs.getBoolean(AppPrefs.PREFS_KEY_IS_VIBRATION, AppPrefs.PREFS_KEY_IS_VIBRATION_YES);
+        if (mTaigiCandidateView != null) {
+            mTaigiCandidateView.setIsVibration(mIsVibration);
         }
-
-        mTaigiCandidateController.setCurrentInputLomajiMode(inputMode);
     }
 
     /**
@@ -447,6 +506,7 @@ public class TaigiIme extends InputMethodService
     }
 
     // Implementation of KeyboardViewListener
+    @Override
     public void onKey(int primaryCode, int[] keyCodes) {
         boolean isShiftKey = false;
 
@@ -468,8 +528,6 @@ public class TaigiIme extends InputMethodService
         } else if (primaryCode == CustomKeycode.KEYCODE_SWITCH_TO_ENGBUN) {
             commitRawInputSuggestion();
             mKeyboardSwitcher.setKeyboardByType(KeyboardSwitcher.KEYBOARD_TYPE_TO_ENGBUN);
-        } else if (primaryCode == CustomKeycode.KEYCODE_SETTINGS) {
-            handleOpenCloseSettingLayout();
         } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE && mTaigiKeyboardView != null) {
             commitRawInputSuggestion();
             mKeyboardSwitcher.switchKeyboard();
@@ -508,19 +566,6 @@ public class TaigiIme extends InputMethodService
         return isNeedVibration;
     }
 
-    private void handleOpenCloseSettingLayout() {
-        if (mKeyboardSettingLayout.getVisibility() == View.VISIBLE) {
-            mKeyboardSettingLayout.setVisibility(View.GONE);
-
-            Prefs.putBoolean(AppPrefs.PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V2, true);
-            Prefs.putBoolean(AppPrefs.PREFS_KEY_IS_SHOW_SETTING, false);
-        } else {
-            mKeyboardSettingLayout.setVisibility(View.VISIBLE);
-
-            Prefs.putBoolean(AppPrefs.PREFS_KEY_IS_SHOW_SETTING, true);
-        }
-    }
-
     private void handleWordSeparator(int primaryCode) {
         if (mKeyboardSwitcher.isCurrentKeyboardViewUseQwertyKeyboard() && mTaigiCandidateController.hasRawInputSuggestion()) {
             commitRawInputSuggestion();
@@ -548,6 +593,7 @@ public class TaigiIme extends InputMethodService
         }
     }
 
+    @Override
     public void onText(CharSequence text) {
     }
 
@@ -565,16 +611,26 @@ public class TaigiIme extends InputMethodService
     }
 
     public void setRawInputForCandidate(String rawInput) {
-        if (!TextUtils.isEmpty(rawInput)) {
-            setCandidatesViewShown(true);
-        } else if (isExtractViewShown()) {
-            setCandidatesViewShown(true);
-        } else {
+        String textRawInput;
+
+        if (TextUtils.isEmpty(rawInput)) {
+            textRawInput = "";
+
             setCandidatesViewShown(false);
+            mTopMenuRootLayout.setVisibility(View.VISIBLE);
+            mRawInputTextView.setPadding(0, 0, 0, 0);
+        } else {
+            textRawInput = rawInput;
+
+            setCandidatesViewShown(true);
+            mTopMenuRootLayout.setVisibility(View.GONE);
+            mRawInputTextView.setPadding(20, 0, 20, 0);
         }
+        mRawInputTextView.setText(textRawInput);
+
 
         if (mTaigiCandidateController != null) {
-            mTaigiCandidateController.setRawInput(rawInput);
+            mTaigiCandidateController.setRawInput(textRawInput);
 
             if (BuildConfig.DEBUG_LOG) {
                 Log.d(TAG, "setRawInputForCandidate: " + rawInput);
@@ -804,6 +860,7 @@ public class TaigiIme extends InputMethodService
 //        return getCurrentInputConnection().getExtractedText(new ExtractedTextRequest(), 0).selectionEnd;
 //    }
 
+    @Override
     public void swipeRight() {
         if (mIsVibration) {
             mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
@@ -811,6 +868,7 @@ public class TaigiIme extends InputMethodService
         switchToNextIme();
     }
 
+    @Override
     public void swipeLeft() {
         if (mIsVibration) {
             mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
@@ -818,6 +876,7 @@ public class TaigiIme extends InputMethodService
         showImePicker();
     }
 
+    @Override
     public void swipeDown() {
         if (mIsVibration) {
             mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
@@ -825,16 +884,19 @@ public class TaigiIme extends InputMethodService
         handleClose();
     }
 
+    @Override
     public void swipeUp() {
-        if (mIsVibration) {
-            mVibrator.vibrate(KEY_VIBRATION_MILLISECONDS);
-        }
-        handleOpenCloseSettingLayout();
+        // Go ChhoeTaigi website
+        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://chhoe.taigi.info/"));
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(myIntent);
     }
 
+    @Override
     public void onPress(int primaryCode) {
     }
 
+    @Override
     public void onRelease(int primaryCode) {
     }
 

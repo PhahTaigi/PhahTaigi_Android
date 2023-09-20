@@ -2,14 +2,12 @@ package com.taccotap.phahtaigi;
 
 public class AppPrefs {
     public static final String PREFS_KEY_CURRENT_INPUT_MODE = "PREFS_KEY_CURRENT_INPUT_MODE";
-    public static final String PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V2 = "PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V2";
-    public static final String PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V2 = "PREFS_KEY_HAS_SHOW_SETTING_FIRST_TIME_V2";
-    public static final String PREFS_KEY_IS_SHOW_SETTING = "PREFS_KEY_IS_SHOW_SETTING";
+    public static final String PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V3 = "PREFS_KEY_CURRENT_INPUT_LOMAJI_MODE_V3";
 
     public static final int INPUT_MODE_LOMAJI = 0;
     public static final int INPUT_MODE_HANJI = 1;
 
-    public static final int INPUT_LOMAJI_MODE_KIPLMJ = 0;
+    public static final int INPUT_LOMAJI_MODE_KIP = 0;
     public static final int INPUT_LOMAJI_MODE_POJ = 1;
     public static final int INPUT_LOMAJI_MODE_APP_DEFAULT = INPUT_LOMAJI_MODE_POJ;
 

@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.taccotap.phahtaigi.AppPrefs;
 import com.taccotap.phahtaigi.BuildConfig;
-import com.taccotap.phahtaigi.ime.converter.KiplmjInputConverter;
+import com.taccotap.phahtaigi.ime.converter.KipInputConverter;
 import com.taccotap.phahtaigi.ime.converter.PojInputConverter;
 import com.taccotap.phahtaigi.imedict.ImeDictModel;
 
@@ -43,8 +43,6 @@ public class TaigiCandidateController {
     private RealmResults<ImeDictModel> mImeDictModels;
     private ImeDictModel mInputImeDictModel;
 
-    private boolean mIsSetQueryLimit = false;
-
     public TaigiCandidateController() {
     }
 
@@ -53,11 +51,8 @@ public class TaigiCandidateController {
             Log.i(TAG, "setRawInput(): " + rawInput);
         }
 
-        if (rawInput == null) {
-            mRawInput = "";
-        } else {
-            mRawInput = rawInput;
-        }
+        mRawInput = rawInput;
+
         mRealm = Realm.getDefaultInstance();
 
         updateCandidateView();
@@ -92,8 +87,8 @@ public class TaigiCandidateController {
 
         mInputImeDictModel = new ImeDictModel();
 
-        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
-            mRawInputSuggestion = KiplmjInputConverter.INSTANCE.convertTailoNumberRawInputToTailoWords(mRawInput);
+        if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIP) {
+            mRawInputSuggestion = KipInputConverter.INSTANCE.convertKipNumberRawInputToTailoWords(mRawInput);
             mInputImeDictModel.setKip(mRawInputSuggestion);
             mInputImeDictModel.setPoj("");
         } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
@@ -118,7 +113,7 @@ public class TaigiCandidateController {
 //            candidateImeDicts.add(taigiWord1);
 //        }
 
-        mTaigiCandidateView.setSuggestions(mRawInput, mCandidateImeDictModels, mCurrentInputLomajiMode);
+        mTaigiCandidateView.setSuggestions(mCandidateImeDictModels, mCurrentInputLomajiMode);
 
         getSuggestionsFromDict();
     }
@@ -137,14 +132,13 @@ public class TaigiCandidateController {
 //                .replaceAll("6", "2");
 
         if (!search.matches(".*\\d+.*")) {
-            mIsSetQueryLimit = true;
-
-            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIP) {
                 mImeDictModels = mRealm.where(ImeDictModel.class)
                         .beginsWith("kipSujipBoSooji", search)
                         .or()
                         .beginsWith("kipSujipThauJibo", search)
                         .sort("kipPriority", Sort.ASCENDING)
+                        .limit(100)
                         .findAllAsync();
             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDictModels = mRealm.where(ImeDictModel.class)
@@ -152,20 +146,21 @@ public class TaigiCandidateController {
                         .or()
                         .beginsWith("pojSujipThauJibo", search)
                         .sort("pojPriority", Sort.ASCENDING)
+                        .limit(100)
                         .findAllAsync();
             }
         } else {
-            mIsSetQueryLimit = true;
-
-            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+            if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIP) {
                 mImeDictModels = mRealm.where(ImeDictModel.class)
                         .beginsWith("kipSujip", search)
                         .sort("kipPriority", Sort.ASCENDING)
+                        .limit(100)
                         .findAllAsync();
             } else if (mCurrentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                 mImeDictModels = mRealm.where(ImeDictModel.class)
                         .beginsWith("pojSujip", search)
                         .sort("pojPriority", Sort.ASCENDING)
+                        .limit(100)
                         .findAllAsync();
             }
         }
@@ -177,21 +172,15 @@ public class TaigiCandidateController {
                     return;
                 }
 
-                int count = imeDictModels.size();
-
                 if (BuildConfig.DEBUG_LOG) {
-                    Log.w(TAG, "handleQueryResults: count = " + count);
-                }
-
-                if (mIsSetQueryLimit && count > QUERY_LIMIT_100) {
-                    count = QUERY_LIMIT_100;
+                    Log.w(TAG, "handleQueryResults: count = " + imeDictModels.size());
                 }
 
 //                for (ImeDict imeDict : mImeDicts) {
 //                    Log.d(TAG, "poj = " + imeDict.poj + ", hanji = " + imeDict.getHanji());
 //                }
 
-                ArrayList<ImeDictModel> mutableArrayList = new ArrayList<>(mRealm.copyFromRealm(imeDictModels.subList(0, count)));
+                ArrayList<ImeDictModel> mutableArrayList = new ArrayList<>(mRealm.copyFromRealm(imeDictModels));
 
                 handleQueryResultsAsync(mutableArrayList);
             }
@@ -209,7 +198,7 @@ public class TaigiCandidateController {
                         mCandidateImeDictModels.addAll(imeDictModels);
                         mCandidateImeDictModels.add(0, mInputImeDictModel);
 
-                        mTaigiCandidateView.setSuggestions(mRawInput, mCandidateImeDictModels, mCurrentInputLomajiMode);
+                        mTaigiCandidateView.setSuggestions(mCandidateImeDictModels, mCurrentInputLomajiMode);
                     }
                 })
                 .subscribe();
@@ -226,16 +215,17 @@ public class TaigiCandidateController {
                     final ImeDictModel imeDictModel = imeDictModels.get(i);
                     ImeDictModel newImeDictModel = new ImeDictModel(imeDictModel);
 
-                    if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                    boolean isRawInputEqual = rawInput.substring(0, 1).toUpperCase().equals(rawInput.substring(0, 1));
+                    if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIP) {
                         if (rawInput.toUpperCase().equals(rawInput)) {
                             newImeDictModel.setKip(imeDictModel.getKip().toUpperCase());
-                        } else if (rawInput.substring(0, 1).toUpperCase().equals(rawInput.substring(0, 1))) {
+                        } else if (isRawInputEqual) {
                             newImeDictModel.setKip(imeDictModel.getKip().substring(0, 1).toUpperCase() + imeDictModel.getKip().substring(1));
                         }
                     } else if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_POJ) {
                         if (rawInput.toUpperCase().equals(rawInput)) {
                             newImeDictModel.setPoj(imeDictModel.getPoj().toUpperCase());
-                        } else if (rawInput.substring(0, 1).toUpperCase().equals(rawInput.substring(0, 1))) {
+                        } else if (isRawInputEqual) {
                             newImeDictModel.setPoj(imeDictModel.getPoj().substring(0, 1).toUpperCase() + imeDictModel.getPoj().substring(1));
                         }
                     }
@@ -247,7 +237,7 @@ public class TaigiCandidateController {
                 Collections.sort(suggestions, new Comparator<ImeDictModel>() {
                     @Override
                     public int compare(ImeDictModel o1, ImeDictModel o2) {
-                        if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+                        if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIP) {
                             if (o1.getKip().length() > o2.getKip().length()) {
                                 return 1;
                             } else if (o1.getKip().length() < o2.getKip().length()) {
@@ -276,7 +266,7 @@ public class TaigiCandidateController {
     }
 
     private int getPrioritySorting(int currentInputLomajiMode, ImeDictModel o1, ImeDictModel o2) {
-        if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIPLMJ) {
+        if (currentInputLomajiMode == AppPrefs.INPUT_LOMAJI_MODE_KIP) {
             if (o1.getKipPriority() > o2.getKipPriority()) {
                 return 1;
             } else if (o1.getKipPriority() < o2.getKipPriority()) {

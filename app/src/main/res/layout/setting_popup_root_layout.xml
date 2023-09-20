@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settingPopupRootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/setting_view_background"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <ScrollView
+        android:id="@+id/settingTopScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fadeScrollbars="false"
+        app:layout_constraintBottom_toTopOf="@id/settingBottomView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/setting_view_section_background"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="5dp">
+
+                    <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/fontfamily_genyomin_m"
+                        android:text="一般設定"
+                        android:textColor="@color/setting_view_section_text"
+                        android:textSize="@dimen/setting_view_section_text_size" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/setting_view_item_background"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="10dp">
+
+                    <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/fontfamily_genyomin_m"
+                        android:text="使用白話字（台灣羅馬字）"
+                        android:textColor="@color/setting_view_item_text"
+                        android:textSize="@dimen/setting_view_item_text_size" />
+
+                    <com.bitvale.switcher.SwitcherX
+                        android:id="@+id/settingPopupViewPojSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        app:switcher_off_color="@color/setting_view_item_switch_off"
+                        app:switcher_on_color="@color/setting_view_item_switch_on" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="10dp">
+
+                    <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:fontFamily="@font/fontfamily_genyomin_m"
+                        android:text="文字使用百外冬歷史ê Pe̍h-ōe-jī。Nā無就是教育部羅馬拼音。"
+                        android:textColor="@color/setting_view_item_desc_text"
+                        android:textSize="@dimen/setting_view_item_desc_text_size"
+                        app:switcher_off_color="@color/setting_view_item_switch_off"
+                        app:switcher_on_color="@color/setting_view_item_switch_on" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/setting_view_section_background"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="5dp">
+
+                    <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:fontFamily="@font/fontfamily_genyomin_m"
+                        android:text="進階設定"
+                        android:textColor="@color/setting_view_section_text"
+                        android:textSize="@dimen/setting_view_section_text_size" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/setting_view_item_background"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="10dp">
+
+                    <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/fontfamily_genyomin_m"
+                        android:text="Phah字ê時震動"
+                        android:textColor="@color/setting_view_item_text"
+                        android:textSize="@dimen/setting_view_item_text_size" />
+
+                    <com.bitvale.switcher.SwitcherX
+                        android:id="@+id/settingPopupViewVibrationSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        app:switcher_off_color="@color/setting_view_item_switch_off"
+                        app:switcher_on_color="@color/setting_view_item_switch_on" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="10dp">
+
+                    <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginRight="5dp"
+                        android:fontFamily="@font/fontfamily_genyomin_m"
+                        android:text="Phah字ê時ē震動，ē有較好ê phah字體驗，建議使用。"
+                        android:textColor="@color/setting_view_item_desc_text"
+                        android:textSize="@dimen/setting_view_item_desc_text_size" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/settingBottomView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/setting_view_title_background"
+        android:paddingLeft="10dp"
+        android:paddingTop="0dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_weight="1">
+
+        <com.taccotap.phahtaigi.utils.BaselineFixedTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/fontfamily_genyomin_m"
+            android:text="PhahTaigi 設定"
+            android:textColor="@color/setting_view_title_text"
+            android:textSize="@dimen/setting_view_title_text_size"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/settingPopupViewDoneButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="完成"
+            android:textColor="@color/setting_view_done_button_text"
+            android:textSize="@dimen/setting_view_done_button_text_size"
+            android:textStyle="bold" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

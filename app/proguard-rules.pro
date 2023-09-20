@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# https://issuetracker.google.com/issues/247066506
+-dontwarn android.content.res.**
+-dontwarn org.kxml2.io.**

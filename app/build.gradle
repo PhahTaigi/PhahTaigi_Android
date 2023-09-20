@@ -11,12 +11,12 @@ android {
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 31
+        targetSdkVersion 33
 
         defaultConfig {
             applicationId "com.taccotap.phahtaigi"
-            versionCode 43
-            versionName "3.3.0"
+            versionCode 44
+            versionName "3.2.4"
 
             multiDexEnabled true
         }

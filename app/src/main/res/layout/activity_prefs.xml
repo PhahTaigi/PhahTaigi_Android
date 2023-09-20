@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#eee"
     android:orientation="vertical"
-    tools:context="com.taccotap.phahtaigi.preferences.ImePreferences">
+    tools:context="com.taccotap.phahtaigi.preferences.PrefsActivity">
 
     <ScrollView
         android:layout_width="match_parent"

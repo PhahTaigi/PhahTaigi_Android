@@ -6,34 +6,24 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
 
 android {
-    compileSdkVersion 30
+    namespace 'com.taccotap.phahtaigi'
+    compileSdk 34
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 30
+        minSdkVersion 26
+        targetSdkVersion 31
 
-        /*
-            The minCompileSdk (31) specified in a
-            dependency's AAR metadata (META-INF/com/android/build/gradle/aar-metadata.properties)
-            is greater than this module's compileSdkVersion (android-30).
-            Dependency: androidx.core:core-ktx:1.7.0.
-
-            https://stackoverflow.com/questions/69034879/how-to-resolve-this-error-the-mincompilesdk-31-specified-in-a-dependencys-aar
-         */
-        configurations.all {
-            resolutionStrategy {
-                force 'androidx.core:core-ktx:1.6.0'
-            }
-
+        defaultConfig {
             applicationId "com.taccotap.phahtaigi"
-            versionCode 42
-            versionName "3.2.3"
+            versionCode 43
+            versionName "3.3.0"
 
             multiDexEnabled true
         }
 
         buildFeatures {
             viewBinding true
+            dataBinding true
         }
 
         buildTypes {
@@ -42,25 +32,13 @@ android {
                 shrinkResources true
                 proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-                manifestPlaceholders = [enableCrashReporting: "true"]
-
-                Properties properties = new Properties()
-                properties.load(project.rootProject.file('local.properties').newDataInputStream())
-                def publicKey = properties.getProperty('publickey')
-                buildConfigField "String", "PUBLIC_KEY", publicKey
-
-                buildConfigField "boolean", "DEBUG_LOG", "false"
+                manifestPlaceholders["enableCrashReporting"] = "true"
+                buildConfigField("boolean", "DEBUG_LOG", "false")
             }
 
             debug {
-                manifestPlaceholders = [enableCrashReporting: "false"]
-
-                Properties properties = new Properties()
-                properties.load(project.rootProject.file('local.properties').newDataInputStream())
-                def publicKey = properties.getProperty('publickey')
-                buildConfigField "String", "PUBLIC_KEY", publicKey
-
-                buildConfigField "boolean", "DEBUG_LOG", "true"
+                manifestPlaceholders["enableCrashReporting"] = "false"
+                buildConfigField("boolean", "DEBUG_LOG", "true")
             }
         }
 
@@ -71,10 +49,17 @@ android {
             abortOnError false
         }
 
-        // Butterknife requires Java 8.
         compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_8
-            targetCompatibility JavaVersion.VERSION_1_8
+            sourceCompatibility JavaVersion.VERSION_17
+            targetCompatibility JavaVersion.VERSION_17
+        }
+        kotlinOptions {
+            jvmTarget = '17'
+        }
+
+        packagingOptions {
+            pickFirst 'META-INF/AL2.0'
+            pickFirst 'META-INF/LGPL2.1'
         }
     }
 
@@ -83,15 +68,21 @@ android {
     }
 
     dependencies {
+        // Androidx
+        implementation 'androidx.core:core-ktx:1.12.0'
+        implementation 'androidx.appcompat:appcompat:1.6.1'
+        implementation 'androidx.multidex:multidex:2.0.1'
+        implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
         implementation fileTree(dir: 'libs', include: ['*.jar'])
 
         implementation project(':realm_db_installer')
 
-        implementation 'com.google.gms:google-services:4.3.10'
+        implementation 'com.google.gms:google-services:4.4.0'
 
         implementation platform('com.google.firebase:firebase-bom:26.2.0')
-        implementation 'com.google.firebase:firebase-crashlytics:18.2.6'
-        implementation 'com.google.firebase:firebase-analytics:20.0.2'
+        implementation 'com.google.firebase:firebase-crashlytics:18.4.3'
+        implementation 'com.google.firebase:firebase-analytics:21.3.0'
 
         // rx
         implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
@@ -105,19 +96,8 @@ android {
         implementation 'com.mikepenz:iconics-core:2.8.2@aar'
         implementation 'com.mikepenz:community-material-typeface:1.7.22.1@aar'
 
-        // ButterKnife
-        implementation 'com.jakewharton:butterknife:10.2.3'
-        kapt 'com.jakewharton:butterknife-compiler:10.2.3'
-
-        // Androidx
-        implementation 'androidx.core:core-ktx:1.7.0'
-        implementation 'androidx.multidex:multidex:2.0.1'
-        implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-
         implementation 'com.pixplicity.easyprefs:EasyPrefs:1.10.0'
-        implementation 'com.github.daniel-stoneuk:material-about-library:1.8.2'
+        implementation 'com.github.daniel-stoneuk:material-about-library:3.1.2'
         implementation 'io.github.bitvale:switcher:1.1.2'
-
-//    testImplementation 'junit:junit:4.12'
     }
 }

@@ -21,12 +21,6 @@ import com.taccotap.phahtaigi.R;
 
 public class AboutActivity extends MaterialAboutActivity {
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        setTheme(R.style.Theme_Mal_Light_LightActionBar);
-        super.onCreate(savedInstanceState);
-    }
-
     @NonNull
     @Override
     protected MaterialAboutList getMaterialAboutList(@NonNull Context context) {
@@ -39,15 +33,10 @@ public class AboutActivity extends MaterialAboutActivity {
                 .icon(R.mipmap.ic_launcher)
                 .build());
 
-        try {
-            appCardBuilder.addItem(ConvenienceBuilder.createVersionActionItem(context,
-                    new IconicsDrawable(context, CommunityMaterial.Icon.cmd_android_debug_bridge).sizeDp(48),
-                    getString(R.string.about_version_item_text),
-                    false));
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        appCardBuilder.addItem(ConvenienceBuilder.createVersionActionItem(context,
+                new IconicsDrawable(context, CommunityMaterial.Icon.cmd_android_debug_bridge).sizeDp(48),
+                getString(R.string.about_version_item_text),
+                false));
 
         // gesture
         MaterialAboutCard.Builder gestureCardBuilder = new MaterialAboutCard.Builder();
@@ -95,7 +84,7 @@ public class AboutActivity extends MaterialAboutActivity {
                 .text(getString(R.string.about_facebook_group_item_text))
                 .subText(getString(R.string.about_facebook_group_url))
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_facebook).sizeDp(48))
-                .setOnClickListener(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse(getString(R.string.about_facebook_group_url))))
+                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse(getString(R.string.about_facebook_group_url))))
                 .build());
 //        feedbackCardBuilder.addItem(new MaterialAboutActionItem.Builder()
 //                .text("鬥 phah 五粒星！")
@@ -111,7 +100,7 @@ public class AboutActivity extends MaterialAboutActivity {
                 .text("請支持「台文雞絲麵」")
                 .subText("PhahTaigi 是完全靠「台文雞絲麵 Tâi-bûn Ke-si-mī」募資計畫維持團隊所有ê運作，向望你鬥陣來支持！https://www.zeczec.com/projects/taibun-kesimi")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_human).sizeDp(48))
-                .setOnClickListener(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse(getString(R.string.about_crowdfunding_url))))
+                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse(getString(R.string.about_crowdfunding_url))))
                 .build());
 
         // author
@@ -138,7 +127,7 @@ public class AboutActivity extends MaterialAboutActivity {
         privacyCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text("使用app就表示你同意這ê隱私權政策")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_account_alert).sizeDp(48))
-                .setOnClickListener(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse("http://phahtaigi.blogspot.com/p/phah-tai-gi.html")))
+                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse("http://phahtaigi.blogspot.com/p/phah-tai-gi.html")))
                 .build());
 
         return new MaterialAboutList(

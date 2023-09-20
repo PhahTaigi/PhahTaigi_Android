@@ -7,6 +7,7 @@
     android:clickable="false"
     android:focusable="false"
     android:focusableInTouchMode="false"
+    android:backgroundTint="@android:color/holo_red_light"
     android:longClickable="false">
 
     <TextView

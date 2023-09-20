@@ -138,6 +138,7 @@ public class TaigiIme extends InputMethodService
     @Override
     public void onStartInput(EditorInfo attribute, boolean restarting) {
         super.onStartInput(attribute, restarting);
+        super.setCandidatesViewShown(true);
 
         if (BuildConfig.DEBUG_LOG) {
             Log.i(TAG, "onStartInput(): restarting = " + restarting);
@@ -244,6 +245,10 @@ public class TaigiIme extends InputMethodService
     }
 
     private void initTopMenuLayout() {
+        if (mTaigiCandidateAndTopMenuRootLayout == null) {
+            return;
+        }
+
         mTopMenuRootLayout = mTaigiCandidateAndTopMenuRootLayout.findViewById(R.id.topMenuRootLayout);
 
         Button openSettingButton = mTopMenuRootLayout.findViewById(R.id.openSettingButton);
@@ -343,6 +348,8 @@ public class TaigiIme extends InputMethodService
      */
     @Override
     public View onCreateCandidatesView() {
+        super.setCandidatesViewShown(true);
+
         if (BuildConfig.DEBUG_LOG) {
             Log.i(TAG, "onCreateCandidatesView");
         }
@@ -354,9 +361,11 @@ public class TaigiIme extends InputMethodService
 
             mKeyboardSwitcher.setTaigiCandidateView(mTaigiCandidateView);
             mTaigiCandidateController.setTaigiCandidateView(mTaigiCandidateView);
-            mTaigiCandidateView.setIsVibration(mIsVibration);
+            if (mTaigiCandidateView != null) {
+                mTaigiCandidateView.setIsVibration(mIsVibration);
+            }
 
-            initTopMenuLayout();
+//            initTopMenuLayout();
         }
 
         final ViewGroup viewGroup = (ViewGroup) mFakeCandidateViewForRawInput.getParent();

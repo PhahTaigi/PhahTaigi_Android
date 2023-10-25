@@ -15,7 +15,7 @@ android {
 
         defaultConfig {
             applicationId "com.taccotap.phahtaigi"
-            versionCode 44
+            versionCode 46
             versionName "3.2.4"
 
             multiDexEnabled true
@@ -28,8 +28,8 @@ android {
 
         buildTypes {
             release {
-                minifyEnabled true
-                shrinkResources true
+                minifyEnabled false
+                shrinkResources false
                 proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
                 manifestPlaceholders["enableCrashReporting"] = "true"

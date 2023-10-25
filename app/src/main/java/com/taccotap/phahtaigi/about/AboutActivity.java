@@ -127,7 +127,7 @@ public class AboutActivity extends MaterialAboutActivity {
         privacyCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text("使用app就表示你同意這ê隱私權政策")
                 .icon(new IconicsDrawable(context, CommunityMaterial.Icon.cmd_account_alert).sizeDp(48))
-                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse("http://phahtaigi.blogspot.com/p/phah-tai-gi.html")))
+                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(this, Uri.parse("https://phahtaigi.blogspot.com/p/phahtaigi-privacy-policy.html")))
                 .build());
 
         return new MaterialAboutList(

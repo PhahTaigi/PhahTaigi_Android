@@ -4,13 +4,13 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/PhahTaigi.PhahTaigi_Android.iml" filepath="$PROJECT_DIR$/.idea/modules/PhahTaigi.PhahTaigi_Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.androidTest~1.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.androidTest~1.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.main~1.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.main~1.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.unitTest~1.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.unitTest~1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PhahTaigi.PhahTaigi_Android.app.unitTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.iml" filepath="$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.androidTest~1.iml" filepath="$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.androidTest~1.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.main~1.iml" filepath="$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.main~1.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.unitTest~1.iml" filepath="$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.unitTest~1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.main.iml" filepath="$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/realm_db_installer/PhahTaigi.PhahTaigi_Android.realm_db_installer.unitTest.iml" />
     </modules>
   </component>
 </project>
